@@ -25,10 +25,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
       {label && (
         <label
           htmlFor={inputId}
-          className="text-xs font-bold uppercase tracking-wider text-[#4a5568] font-technical flex items-center justify-between"
+          className="text-sm font-semibold text-[#4A4A40] font-body"
         >
-          <span>{label}</span>
-          <span className="text-[10px] text-[#718096]">[DATA_SLOT]</span>
+          {label}
         </label>
       )}
 
@@ -44,15 +43,15 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
           id={inputId}
           disabled={disabled}
           className={`
-            w-full min-h-[56px] rounded-lg
-            bg-[#d9e0ea] text-[#2d3436] font-technical text-sm
-            shadow-chassis-recessed border-none outline-none
-            placeholder:text-[#718096]/60 placeholder:font-normal
-            transition-mechanical
-            focus:ring-2 focus:ring-[#ff4757]/70 focus:bg-[#d4dce7]
+            w-full h-12 rounded-full
+            bg-white/60 text-[#2C2C24] font-body text-sm
+            border border-[#DED8CF]
+            placeholder:text-[#78786C]/60
+            transition-all duration-300
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5D7052]/30 focus-visible:ring-offset-2 focus-visible:border-[#5D7052]
             disabled:opacity-50 disabled:cursor-not-allowed
-            ${prefixIcon ? 'pl-12 pr-5' : 'px-5'}
-            ${errorText ? 'ring-2 ring-[#ff4757]' : ''}
+            ${prefixIcon ? 'pl-11 pr-5' : 'px-5'}
+            ${errorText ? 'border-[#A85448] ring-2 ring-[#A85448]/20' : ''}
             ${className}
           `.trim()}
           {...props}
@@ -60,12 +59,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
       </div>
 
       {errorText ? (
-        <p className="text-xs font-technical text-[#ff4757] font-semibold flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#ff4757] inline-block" />
+        <p className="text-xs font-body text-[#A85448] font-semibold flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#A85448] inline-block" />
           {errorText}
         </p>
       ) : helperText ? (
-        <p className="text-xs font-technical text-[#718096]">{helperText}</p>
+        <p className="text-xs font-body text-[#78786C]">{helperText}</p>
       ) : null}
     </div>
   )

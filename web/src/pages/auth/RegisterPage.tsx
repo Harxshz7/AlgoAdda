@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { Button, Card, Input, LedIndicator } from '../../components/ui'
-import { Mail, Lock, Terminal, ArrowRight, AlertTriangle, ShieldCheck } from 'lucide-react'
+import { Button, Card, Input } from '../../components/ui'
+import { Mail, Lock, ArrowRight, AlertTriangle, ShieldCheck } from 'lucide-react'
 
 export const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('')
@@ -42,89 +42,85 @@ export const RegisterPage: React.FC = () => {
       })
       navigate('/seller/onboard', { replace: true })
     } catch (err: any) {
-      setError(err.message || 'Registration failed. Please check your details and try again.')
+      setError(err.message || 'Registration failed. Please check your details.')
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-[#e0e5ec] flex flex-col justify-center items-center p-4 selection:bg-[#ff4757]/20 selection:text-[#ff4757]">
-      <div className="w-full max-w-md flex flex-col gap-6">
-        {/* Header */}
+    <div className="min-h-screen bg-[#FDFCF8] flex flex-col justify-center items-center p-4 relative overflow-hidden">
+      {/* Ambient blob backgrounds */}
+      <div
+        className="absolute -top-32 -right-32 w-80 h-80 bg-[#5D7052]/8 blur-3xl pointer-events-none"
+        style={{ borderRadius: '40% 60% 70% 30% / 60% 40% 30% 70%' }}
+      />
+      <div
+        className="absolute -bottom-24 -left-24 w-72 h-72 bg-[#C18C5D]/8 blur-3xl pointer-events-none"
+        style={{ borderRadius: '60% 40% 30% 70% / 40% 60% 70% 30%' }}
+      />
+
+      <div className="w-full max-w-md flex flex-col gap-6 relative z-10">
+        {/* Branding */}
         <div className="flex flex-col items-center text-center gap-2">
-          <div className="w-14 h-14 rounded-2xl bg-[#e0e5ec] shadow-chassis-floating flex items-center justify-center border border-white/80">
-            <Terminal className="w-8 h-8 text-[#ff4757]" />
+          <div className="w-12 h-12 rounded-full bg-[#5D7052] flex items-center justify-center mb-1">
+            <ShieldCheck className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-2xl font-black font-technical tracking-wider text-[#2d3436]">
-            ALGO<span className="text-[#ff4757]">ADDA</span> // ONBOARDING
+          <h1 className="text-3xl font-heading font-bold text-[#2C2C24]">
+            Create your account
           </h1>
-          <p className="text-xs font-technical text-[#718096] uppercase tracking-wider">
-            REGISTER AS A QUANT SELLER
+          <p className="text-sm font-body text-[#78786C]">
+            Join AlgoAdda as a strategy seller
           </p>
         </div>
 
         {/* Registration Card */}
         <Card className="p-8">
-          <div className="flex items-center justify-between pb-4 mb-6 border-b border-black/5">
-            <span className="text-xs font-bold font-technical text-[#4a5568] uppercase tracking-wider">
-              NEW OPERATOR ENROLLMENT
-            </span>
-            <LedIndicator status="amber" label="SELLER TIER" pulse={false} />
-          </div>
-
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-[#ff4757]/10 border border-[#ff4757]/30 shadow-chassis-recessed flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-[#ff4757] shrink-0 mt-0.5" />
-              <div className="flex flex-col">
-                <span className="text-xs font-bold font-technical text-[#ff4757] uppercase">
-                  REGISTRATION REJECTED
-                </span>
-                <span className="text-xs font-technical text-[#ff4757]/90 mt-0.5">
-                  {error}
-                </span>
-              </div>
+            <div className="mb-6 p-4 rounded-2xl bg-[#A85448]/8 border border-[#A85448]/25 flex items-start gap-3">
+              <AlertTriangle className="w-4 h-4 text-[#A85448] shrink-0 mt-0.5" />
+              <span className="text-sm font-body text-[#A85448]">{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Input
-              label="OPERATOR EMAIL"
+              label="Email address"
               type="email"
-              placeholder="trader@algoadda.com"
+              placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              prefixIcon={<Mail className="w-4 h-4" />}
+              prefixIcon={<Mail className="w-4 h-4 text-[#78786C]" />}
               autoComplete="email"
               required
             />
 
             <Input
-              label="PASSWORD (MIN 6 CHARS)"
+              label="Password (min. 6 characters)"
               type="password"
-              placeholder="••••••••••••"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              prefixIcon={<Lock className="w-4 h-4" />}
+              prefixIcon={<Lock className="w-4 h-4 text-[#78786C]" />}
               autoComplete="new-password"
               required
             />
 
             <Input
-              label="CONFIRM PASSWORD"
+              label="Confirm password"
               type="password"
-              placeholder="••••••••••••"
+              placeholder="••••••••"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              prefixIcon={<Lock className="w-4 h-4" />}
+              prefixIcon={<Lock className="w-4 h-4 text-[#78786C]" />}
               autoComplete="new-password"
               required
             />
 
-            <div className="p-3 rounded-lg bg-[#d9e0ea] shadow-chassis-recessed flex items-center gap-2.5">
-              <ShieldCheck className="w-4 h-4 text-[#2ed573] shrink-0" />
-              <span className="text-[11px] font-technical text-[#4a5568]">
-                Enrolls in SELLER tier with full bot upload & backtest access.
+            <div className="p-3 rounded-2xl bg-[#5D7052]/8 border border-[#5D7052]/20 flex items-center gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-[#5D7052] shrink-0" />
+              <span className="text-sm font-body text-[#4A4A40]">
+                Registers you as a seller with full bot upload &amp; backtest access.
               </span>
             </div>
 
@@ -133,20 +129,21 @@ export const RegisterPage: React.FC = () => {
               variant="primary"
               size="lg"
               disabled={isSubmitting}
-              className="w-full mt-2 gap-2"
+              className="w-full mt-2"
+              icon={<ArrowRight className="w-4 h-4" />}
+              iconPosition="right"
             >
-              <span>{isSubmitting ? 'ENROLLING OPERATOR...' : 'INITIALIZE ACCOUNT'}</span>
-              <ArrowRight className="w-4 h-4" />
+              {isSubmitting ? 'Creating account…' : 'Create account'}
             </Button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-black/5 flex items-center justify-between text-xs font-technical text-[#718096]">
-            <span>ALREADY REGISTERED?</span>
+          <div className="mt-6 pt-6 border-t border-[#DED8CF]/50 flex items-center justify-between text-sm font-body text-[#78786C]">
+            <span>Already have an account?</span>
             <Link
               to="/login"
-              className="text-[#ff4757] hover:underline font-bold uppercase tracking-wider flex items-center gap-1"
+              className="text-[#5D7052] hover:text-[#4e6045] font-semibold flex items-center gap-1 transition-colors"
             >
-              <span>SIGN IN</span>
+              <span>Sign in</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -155,3 +152,5 @@ export const RegisterPage: React.FC = () => {
     </div>
   )
 }
+
+

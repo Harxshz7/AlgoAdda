@@ -18,52 +18,47 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  // Sizing definitions ensuring minimum 48px touch height on mobile/default
+  // Sizing — h-12 default meets 48px minimum touch target
   const sizeStyles = {
-    sm: 'h-10 px-4 text-xs tracking-wider gap-1.5 rounded-md',
-    md: 'min-h-[48px] px-6 py-3 text-xs md:text-sm tracking-wider gap-2 rounded-lg',
-    lg: 'min-h-[56px] px-8 py-4 text-sm md:text-base tracking-widest gap-2.5 rounded-xl',
+    sm: 'h-10 px-5 text-sm gap-1.5',
+    md: 'h-12 px-8 text-sm gap-2',
+    lg: 'h-14 px-10 text-base gap-2.5',
   }[size]
 
-  // Variant definitions
   let variantStyles = ''
   if (variant === 'primary') {
     variantStyles = `
-      bg-[#ff4757] text-white font-bold uppercase
-      shadow-accent-btn
-      border border-white/20
-      hover:brightness-105
-      active:translate-y-[2px] active:shadow-accent-btn-pressed
-      focus-visible:ring-2 focus-visible:ring-[#ff4757] focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]
+      bg-[#5D7052] text-[#F3F4F1] font-bold
+      shadow-[0_4px_20px_-2px_rgba(93,112,82,0.15)]
+      hover:bg-[#4e6045] hover:shadow-[0_6px_24px_-4px_rgba(93,112,82,0.25)]
+      focus-visible:ring-2 focus-visible:ring-[#5D7052] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDFCF8]
     `
   } else if (variant === 'secondary') {
     variantStyles = `
-      bg-[#e0e5ec] text-[#2d3436] font-bold uppercase
-      shadow-chassis-card
-      hover:text-[#ff4757] hover:shadow-chassis-floating
-      active:translate-y-[2px] active:shadow-chassis-pressed
-      focus-visible:ring-2 focus-visible:ring-[#ff4757] focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]
+      bg-transparent text-[#C18C5D] font-bold
+      border-2 border-[#C18C5D]
+      hover:bg-[#C18C5D]/10
+      focus-visible:ring-2 focus-visible:ring-[#C18C5D] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDFCF8]
     `
   } else if (variant === 'ghost') {
     variantStyles = `
-      bg-transparent text-[#4a5568] font-semibold uppercase
-      hover:bg-[#d1d9e6]/50 hover:text-[#2d3436] hover:shadow-chassis-recessed
-      active:translate-y-[1px] active:shadow-chassis-pressed
-      focus-visible:ring-2 focus-visible:ring-[#4a5568] focus-visible:ring-offset-2
+      bg-transparent text-[#5D7052] font-semibold
+      hover:bg-[#5D7052]/10
+      focus-visible:ring-2 focus-visible:ring-[#5D7052] focus-visible:ring-offset-2
     `
   }
 
   const disabledStyles = disabled
     ? 'opacity-50 cursor-not-allowed pointer-events-none'
-    : 'cursor-pointer'
+    : 'cursor-pointer hover:scale-105 active:scale-95'
 
   return (
     <button
       disabled={disabled}
       className={`
         inline-flex items-center justify-center
-        font-technical select-none
-        transition-mechanical outline-none
+        font-body rounded-full select-none
+        transition-all duration-300 outline-none
         ${sizeStyles}
         ${variantStyles}
         ${disabledStyles}

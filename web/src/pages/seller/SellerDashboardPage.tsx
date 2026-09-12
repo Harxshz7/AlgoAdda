@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { SellerDashboardBot } from '../../lib/api'
-import { Button, Card, LedIndicator } from '../../components/ui'
+import { Button, Card, StatusBadge } from '../../components/ui'
 import { PlusCircle, Bot as BotIcon, ArrowUpRight, BarChart3, AlertCircle, RefreshCw } from 'lucide-react'
 
 export const SellerDashboardPage: React.FC = () => {
@@ -17,7 +17,7 @@ export const SellerDashboardPage: React.FC = () => {
       const data = await api.getSellerBots()
       setBots(data)
     } catch (err: any) {
-      setError(err.message || 'Failed to load seller bots.')
+      setError(err.message || 'Failed to load your bots.')
     } finally {
       setIsLoading(false)
     }
@@ -27,163 +27,161 @@ export const SellerDashboardPage: React.FC = () => {
     fetchBots()
   }, [])
 
-  const getStatusLed = (status: string) => {
+  // Maps bot listing status → organic StatusBadge props
+  const getBotStatusBadge = (status: string) => {
     switch (status) {
       case 'PUBLISHED':
-        return <LedIndicator status="green" label="PUBLISHED" pulse={false} />
+        return <StatusBadge status="green" label="Published" />
       case 'PENDING_REVIEW':
-        return <LedIndicator status="amber" label="IN REVIEW" pulse />
+        return <StatusBadge status="amber" label="In review" pulse />
       case 'REJECTED':
-        return <LedIndicator status="orange" label="REJECTED" pulse={false} />
+        return <StatusBadge status="orange" label="Rejected" />
       case 'DRAFT':
       default:
-        return <LedIndicator status="neutral" label="DRAFT" pulse={false} />
+        return <StatusBadge status="neutral" label="Draft" />
     }
   }
 
-  const getBacktestLed = (status: string | null) => {
+  // Maps backtest status → inline organic pill
+  const getBacktestBadge = (status: string | null) => {
     switch (status) {
       case 'COMPLETED':
-        return <span className="text-[10px] font-bold font-technical text-[#2ed573] flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#2ed573] glow-led-green" /> BACKTEST READY</span>
+        return <StatusBadge status="green" label="Backtest ready" />
       case 'FAILED':
-        return <span className="text-[10px] font-bold font-technical text-[#ff4757] flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#ff4757] glow-led-orange" /> BACKTEST FAILED</span>
+        return <StatusBadge status="orange" label="Backtest failed" />
       case 'PENDING':
-        return <span className="text-[10px] font-bold font-technical text-[#ffa502] flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#ffa502] animate-pulse" /> PROCESSING</span>
+        return <StatusBadge status="amber" label="Processing" pulse />
       default:
-        return <span className="text-[10px] font-technical text-[#718096]">NO BACKTEST</span>
+        return <span className="text-xs font-body text-[#78786C]">No backtest yet</span>
     }
   }
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Top Banner & Control Deck */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/60">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#DED8CF]/50">
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black font-technical tracking-wider text-[#2d3436]">
-              QUANT BOT PORTFOLIO
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-heading font-bold text-[#2C2C24]">
+              Your strategies
             </h1>
-            <span className="text-xs font-technical px-2 py-0.5 rounded-full bg-[#d1d9e6] font-bold text-[#4a5568]">
-              {bots.length} {bots.length === 1 ? 'ALGO' : 'ALGOS'}
+            <span className="text-sm font-body px-2.5 py-1 rounded-full bg-[#E6DCCD] text-[#4A4A40] font-semibold">
+              {bots.length} {bots.length === 1 ? 'bot' : 'bots'}
             </span>
           </div>
-          <p className="text-xs font-technical text-[#718096] uppercase tracking-wider">
-            MANAGE DEPLOYED STRATEGIES, VERSIONS, AND VECTORBT BACKTESTS
+          <p className="text-sm font-body text-[#78786C]">
+            Manage your algorithms, versions, and backtest results
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant="secondary" size="md" onClick={fetchBots} disabled={isLoading} className="gap-2">
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-            <span>REFRESH</span>
+          <Button variant="secondary" size="md" onClick={fetchBots} disabled={isLoading} icon={<RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />}>
+            Refresh
           </Button>
-
           <Link to="/seller/bots/new">
-            <Button variant="primary" size="md" className="gap-2">
-              <PlusCircle className="w-4 h-4" />
-              <span>UPLOAD NEW BOT</span>
+            <Button variant="primary" size="md" icon={<PlusCircle className="w-4 h-4" />}>
+              Upload bot
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* Error Callout */}
+      {/* Error */}
       {error && (
-        <div className="p-4 rounded-xl bg-[#ff4757]/10 border border-[#ff4757]/30 shadow-chassis-recessed flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-[#A85448]/8 border border-[#A85448]/25 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-[#ff4757]" />
-            <span className="text-xs font-technical text-[#ff4757] font-semibold">{error}</span>
+            <AlertCircle className="w-4 h-4 text-[#A85448]" />
+            <span className="text-sm font-body text-[#A85448]">{error}</span>
           </div>
-          <Button variant="ghost" size="sm" onClick={fetchBots} className="text-[#ff4757]">
-            RETRY
+          <Button variant="ghost" size="sm" onClick={fetchBots} className="text-[#A85448]">
+            Retry
           </Button>
         </div>
       )}
 
-      {/* Loading Skeleton */}
+      {/* Loading skeletons */}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
             <Card key={i} className="p-6 flex flex-col gap-4 animate-pulse">
-              <div className="h-6 w-1/2 bg-[#d1d9e6] rounded" />
-              <div className="h-4 w-1/3 bg-[#d1d9e6] rounded" />
-              <div className="h-24 bg-[#d1d9e6] rounded-xl mt-2" />
+              <div className="h-5 w-1/2 bg-[#E6DCCD] rounded-full" />
+              <div className="h-4 w-1/3 bg-[#E6DCCD] rounded-full" />
+              <div className="h-20 bg-[#F0EBE5] rounded-2xl mt-2" />
             </Card>
           ))}
         </div>
       ) : bots.length === 0 ? (
-        /* Empty State */
+        /* Empty state */
         <Card className="p-12 flex flex-col items-center justify-center text-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-[#e0e5ec] shadow-chassis-floating flex items-center justify-center border border-white/80 text-[#718096]">
+          <div className="w-16 h-16 rounded-2xl bg-[#5D7052]/10 flex items-center justify-center text-[#5D7052]">
             <BotIcon className="w-8 h-8" />
           </div>
-          <div className="flex flex-col gap-1 max-w-sm">
-            <h3 className="text-base font-bold font-technical text-[#2d3436] uppercase tracking-wider">
-              NO BOTS DEPLOYED YET
+          <div className="flex flex-col gap-2 max-w-sm">
+            <h3 className="text-lg font-heading font-bold text-[#2C2C24]">
+              No bots yet
             </h3>
-            <p className="text-xs font-technical text-[#718096]">
-              Upload your first quantitative trading algorithm to begin backtesting and listing on AlgoAdda.
+            <p className="text-sm font-body text-[#78786C]">
+              Upload your first quantitative trading algorithm to start backtesting and listing on AlgoAdda.
             </p>
           </div>
           <Link to="/seller/bots/new" className="mt-2">
-            <Button variant="primary" size="lg" className="gap-2">
-              <PlusCircle className="w-4 h-4" />
-              <span>UPLOAD YOUR FIRST BOT</span>
+            <Button variant="primary" size="lg" icon={<PlusCircle className="w-4 h-4" />}>
+              Upload your first bot
             </Button>
           </Link>
         </Card>
       ) : (
-        /* Bot Grid */
+        /* Bot grid */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {bots.map((bot) => (
-            <Card key={bot.botId} className="p-6 flex flex-col justify-between group hover:scale-[1.01] transition-mechanical">
+            <Card key={bot.botId} interactive className="p-6 flex flex-col justify-between">
               <div className="flex flex-col gap-4">
-                {/* Status Header */}
+                {/* Status row */}
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[10px] font-bold font-technical px-2.5 py-1 rounded-md bg-[#d9e0ea] text-[#4a5568] shadow-chassis-sharp uppercase tracking-wider">
+                  <span className="text-xs font-semibold font-body px-2.5 py-1 rounded-full bg-[#E6DCCD] text-[#4A4A40]">
                     {bot.strategyType}
                   </span>
-                  {getStatusLed(bot.status)}
+                  {getBotStatusBadge(bot.status)}
                 </div>
 
-                {/* Bot Details */}
-                <div className="flex flex-col gap-1">
-                  <h3 className="text-lg font-black font-technical text-[#2d3436] group-hover:text-[#ff4757] transition-colors tracking-wide">
+                {/* Bot name & meta */}
+                <div className="flex flex-col gap-0.5">
+                  <h3 className="text-lg font-heading font-bold text-[#2C2C24] group-hover:text-[#5D7052] transition-colors">
                     {bot.name}
                   </h3>
-                  <span className="text-[10px] font-technical text-[#718096]">
-                    ID: {bot.botId.slice(0, 8)}... • CREATED {new Date(bot.createdAt).toLocaleDateString()}
+                  <span className="text-xs font-body text-[#78786C]">
+                    Created {new Date(bot.createdAt).toLocaleDateString()}
                   </span>
                 </div>
 
-                {/* Backtest Status Data Slot */}
-                <div className="p-3.5 rounded-xl bg-[#d9e0ea] shadow-chassis-recessed flex items-center justify-between">
+                {/* Version & backtest data row */}
+                <div className="p-3 rounded-2xl bg-[#F0EBE5] flex items-center justify-between">
                   <div className="flex flex-col">
-                    <span className="text-[9px] font-bold font-technical text-[#718096] uppercase">
-                      LATEST VERSION
+                    <span className="text-[10px] font-semibold font-body text-[#78786C] uppercase tracking-wide">
+                      Version
                     </span>
-                    <span className="text-xs font-black font-technical text-[#2d3436]">
+                    <span className="text-sm font-bold font-body text-[#2C2C24]">
                       v{bot.latestVersionNumber || '1.0.0'}
                     </span>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="text-[9px] font-bold font-technical text-[#718096] uppercase">
-                      ENGINE STATE
+                    <span className="text-[10px] font-semibold font-body text-[#78786C] uppercase tracking-wide mb-1">
+                      Backtest
                     </span>
-                    {getBacktestLed(bot.backtestStatus)}
+                    {getBacktestBadge(bot.backtestStatus)}
                   </div>
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="mt-6 pt-4 border-t border-black/5 flex items-center gap-3">
+              {/* Actions */}
+              <div className="mt-5 pt-4 border-t border-[#DED8CF]/50 flex items-center gap-3">
                 <Link to={`/seller/bots/${bot.botId}`} className="flex-1">
                   <Button variant="secondary" size="sm" className="w-full justify-between">
                     <span className="flex items-center gap-1.5">
-                      <BarChart3 className="w-3.5 h-3.5 text-[#ff4757]" />
-                      <span>VIEW METRICS</span>
+                      <BarChart3 className="w-3.5 h-3.5" />
+                      <span>View metrics</span>
                     </span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-[#718096]" />
+                    <ArrowUpRight className="w-3.5 h-3.5" />
                   </Button>
                 </Link>
               </div>

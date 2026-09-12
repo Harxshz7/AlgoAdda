@@ -22,21 +22,19 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({
 
   return (
     <div className="w-full flex flex-col gap-2">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         {label && (
           <label
             htmlFor={textareaId}
-            className="text-xs font-bold uppercase tracking-wider text-[#4a5568] font-technical flex items-center gap-2"
+            className="text-sm font-semibold text-[#4A4A40] font-body"
           >
-            <span>{label}</span>
+            {label}
           </label>
         )}
-        {complianceBadge ? (
-          <span className="text-[10px] font-technical px-2 py-0.5 rounded bg-[#ff4757]/10 text-[#ff4757] font-semibold border border-[#ff4757]/30 tracking-tight">
-            [MANDATORY WHITE-BOX COMPLIANCE]
+        {complianceBadge && (
+          <span className="inline-flex items-center gap-1 text-xs font-semibold font-body px-2.5 py-1 rounded-full bg-[#C18C5D]/12 text-[#7a5530] border border-[#C18C5D]/35 shrink-0">
+            Mandatory · White-Box
           </span>
-        ) : (
-          <span className="text-[10px] text-[#718096] font-technical">[LOGIC_BUFFER]</span>
         )}
       </div>
 
@@ -45,26 +43,26 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({
         id={textareaId}
         disabled={disabled}
         className={`
-          w-full min-h-[120px] rounded-lg p-4
-          bg-[#d9e0ea] text-[#2d3436] font-technical text-sm leading-relaxed
-          shadow-chassis-recessed border-none outline-none resize-y
-          placeholder:text-[#718096]/60 placeholder:font-normal
-          transition-mechanical
-          focus:ring-2 focus:ring-[#ff4757]/70 focus:bg-[#d4dce7]
+          w-full min-h-[120px] rounded-2xl p-4
+          bg-white/60 text-[#2C2C24] font-body text-sm leading-relaxed
+          border border-[#DED8CF]
+          placeholder:text-[#78786C]/60
+          transition-all duration-300 resize-y
+          focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5D7052]/30 focus-visible:ring-offset-2 focus-visible:border-[#5D7052]
           disabled:opacity-50 disabled:cursor-not-allowed
-          ${errorText ? 'ring-2 ring-[#ff4757]' : ''}
+          ${errorText ? 'border-[#A85448] ring-2 ring-[#A85448]/20' : ''}
           ${className}
         `.trim()}
         {...props}
       />
 
       {errorText ? (
-        <p className="text-xs font-technical text-[#ff4757] font-semibold flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#ff4757] inline-block" />
+        <p className="text-xs font-body text-[#A85448] font-semibold flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#A85448] inline-block" />
           {errorText}
         </p>
       ) : helperText ? (
-        <p className="text-xs font-technical text-[#718096]">{helperText}</p>
+        <p className="text-xs font-body text-[#78786C]">{helperText}</p>
       ) : null}
     </div>
   )

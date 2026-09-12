@@ -33,10 +33,9 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(({
       {label && (
         <label
           htmlFor={selectId}
-          className="text-xs font-bold uppercase tracking-wider text-[#4a5568] font-technical flex items-center justify-between"
+          className="text-sm font-semibold text-[#4A4A40] font-body"
         >
-          <span>{label}</span>
-          <span className="text-[10px] text-[#718096]">[SELECTOR_SLOT]</span>
+          {label}
         </label>
       )}
 
@@ -52,37 +51,37 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(({
           id={selectId}
           disabled={disabled}
           className={`
-            w-full min-h-[56px] rounded-lg appearance-none
-            bg-[#d9e0ea] text-[#2d3436] font-technical text-sm
-            shadow-chassis-recessed border-none outline-none
-            transition-mechanical cursor-pointer
-            focus:ring-2 focus:ring-[#ff4757]/70 focus:bg-[#d4dce7]
+            w-full h-12 rounded-full appearance-none
+            bg-white/60 text-[#2C2C24] font-body text-sm
+            border border-[#DED8CF]
+            transition-all duration-300 cursor-pointer
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5D7052]/30 focus-visible:ring-offset-2 focus-visible:border-[#5D7052]
             disabled:opacity-50 disabled:cursor-not-allowed
-            ${prefixIcon ? 'pl-12 pr-10' : 'pl-5 pr-10'}
-            ${errorText ? 'ring-2 ring-[#ff4757]' : ''}
+            ${prefixIcon ? 'pl-11 pr-10' : 'pl-5 pr-10'}
+            ${errorText ? 'border-[#A85448] ring-2 ring-[#A85448]/20' : ''}
             ${className}
           `.trim()}
           {...props}
         >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-[#e0e5ec] text-[#2d3436]">
+            <option key={opt.value} value={opt.value} className="bg-white text-[#2C2C24]">
               {opt.label}
             </option>
           ))}
         </select>
 
-        <div className="absolute right-4 flex items-center pointer-events-none text-[#718096]">
+        <div className="absolute right-4 flex items-center pointer-events-none text-[#78786C]">
           <ChevronDown className="w-4 h-4" />
         </div>
       </div>
 
       {errorText ? (
-        <p className="text-xs font-technical text-[#ff4757] font-semibold flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#ff4757] inline-block" />
+        <p className="text-xs font-body text-[#A85448] font-semibold flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#A85448] inline-block" />
           {errorText}
         </p>
       ) : helperText ? (
-        <p className="text-xs font-technical text-[#718096]">{helperText}</p>
+        <p className="text-xs font-body text-[#78786C]">{helperText}</p>
       ) : null}
     </div>
   )

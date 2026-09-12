@@ -58,10 +58,9 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
   return (
     <div className={`w-full flex flex-col gap-2 ${className}`}>
       <div className="flex items-center justify-between">
-        <label className="text-xs font-bold uppercase tracking-wider text-[#4a5568] font-technical flex items-center justify-between">
-          <span>{label}</span>
+        <label className="text-sm font-semibold text-[#4A4A40] font-body">
+          {label}
         </label>
-        <span className="text-[10px] text-[#718096] font-technical">[STORAGE_S3_PAYLOAD]</span>
       </div>
 
       <input
@@ -82,49 +81,49 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
           border-2 border-dashed transition-all duration-200
           ${
             isDragOver
-              ? 'bg-[#d0d8e4] border-[#ff4757] scale-[1.01]'
+              ? 'bg-[#5D7052]/8 border-[#5D7052] scale-[1.01]'
               : selectedFile
-              ? 'bg-[#d8e0ea] border-[#2ed573]/60 shadow-chassis-recessed'
-              : 'bg-[#d9e0ea] border-[#babecc] shadow-chassis-recessed hover:border-[#718096]'
+              ? 'bg-[#E6DCCD]/40 border-[#5D7052]/50'
+              : 'bg-white/40 border-[#DED8CF] hover:border-[#5D7052]/50 hover:bg-[#5D7052]/5'
           }
           ${errorText ? 'border-[#ff4757]' : ''}
         `}
       >
         {selectedFile ? (
-          <div className="flex items-center justify-between w-full max-w-md p-3 rounded-lg bg-[#e0e5ec] shadow-chassis-sharp">
+          <div className="flex items-center justify-between w-full max-w-md p-3 rounded-2xl bg-[#F0EBE5]">
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="w-9 h-9 rounded-lg bg-[#2ed573]/20 flex items-center justify-center text-[#2ed573]">
+              <div className="w-9 h-9 rounded-xl bg-[#5D7052]/15 flex items-center justify-center text-[#5D7052]">
                 <FileCode className="w-5 h-5" />
               </div>
               <div className="flex flex-col text-left overflow-hidden">
-                <span className="text-xs font-bold font-technical text-[#2d3436] truncate">
+                <span className="text-sm font-semibold font-body text-[#2C2C24] truncate">
                   {selectedFile.name}
                 </span>
-                <span className="text-[10px] font-technical text-[#718096]">
-                  {(selectedFile.size / 1024).toFixed(1)} KB • READY FOR S3
+                <span className="text-xs font-body text-[#78786C]">
+                  {(selectedFile.size / 1024).toFixed(1)} KB
                 </span>
               </div>
             </div>
             <button
               type="button"
               onClick={handleClear}
-              className="p-1.5 rounded-full hover:bg-black/10 text-[#718096] hover:text-[#ff4757] transition-colors"
+              className="p-1.5 rounded-full hover:bg-[#A85448]/10 text-[#78786C] hover:text-[#A85448] transition-colors"
               title="Remove file"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 rounded-xl bg-[#e0e5ec] shadow-chassis-card flex items-center justify-center text-[#4a5568]">
+          <div className="flex flex-col items-center gap-3 py-2">
+            <div className="w-12 h-12 rounded-2xl bg-[#5D7052]/10 flex items-center justify-center text-[#5D7052]">
               <UploadCloud className="w-6 h-6" />
             </div>
-            <div className="flex flex-col gap-0.5">
-              <span className="text-xs font-bold font-technical text-[#2d3436] uppercase tracking-wider">
-                Click to browse or drop strategy file
+            <div className="flex flex-col gap-0.5 text-center">
+              <span className="text-sm font-semibold font-body text-[#2C2C24]">
+                Click to browse or drop your strategy file
               </span>
-              <span className="text-[10px] font-technical text-[#718096]">
-                Code will be securely encrypted & archived in S3
+              <span className="text-xs font-body text-[#78786C]">
+                Supports .py, .json, .yaml — securely stored in S3
               </span>
             </div>
           </div>
@@ -132,12 +131,12 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
       </div>
 
       {errorText ? (
-        <p className="text-xs font-technical text-[#ff4757] font-semibold flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#ff4757] inline-block" />
+        <p className="text-xs font-body text-[#A85448] font-semibold flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#A85448] inline-block" />
           {errorText}
         </p>
       ) : helperText ? (
-        <p className="text-xs font-technical text-[#718096]">{helperText}</p>
+        <p className="text-xs font-body text-[#78786C]">{helperText}</p>
       ) : null}
     </div>
   )

@@ -20,46 +20,47 @@ export const MetricGauge: React.FC<MetricGaugeProps> = ({
   className = '',
 }) => {
   const trendColor = {
-    positive: 'text-[#2ed573]',
-    negative: 'text-[#ff4757]',
-    neutral: 'text-[#2d3436]',
+    positive: 'text-[#5D7052]',
+    negative: 'text-[#A85448]',
+    neutral:  'text-[#2C2C24]',
   }[trend]
 
   return (
     <div
       className={`
-        p-4 rounded-xl bg-[#e0e5ec] shadow-chassis-card border border-white/60
-        flex flex-col justify-between relative overflow-hidden group
+        p-4 rounded-2xl bg-[#FEFEFA]
+        border border-[#DED8CF]/50
+        shadow-[0_4px_20px_-2px_rgba(93,112,82,0.12)]
+        flex flex-col gap-2
         ${className}
       `}
     >
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <span className="text-[10px] font-bold font-technical text-[#4a5568] uppercase tracking-wider">
+      {/* Label row */}
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs font-semibold font-body text-[#78786C] uppercase tracking-wide">
           {label}
         </span>
         {badge && (
-          <span className="text-[9px] font-technical px-1.5 py-0.5 rounded bg-[#d1d9e6] text-[#2d3436] font-semibold border border-white/40">
+          <span className="text-[10px] font-body px-1.5 py-0.5 rounded-full bg-[#E6DCCD] text-[#4A4A40] font-semibold">
             {badge}
           </span>
         )}
       </div>
 
-      <div className="p-3 rounded-lg bg-[#14181f] text-white shadow-[inset_2px_2px_6px_rgba(0,0,0,0.8)] flex items-baseline justify-between">
-        <div className="flex items-baseline gap-1">
-          <span className={`text-2xl font-black font-technical tracking-tight ${trendColor}`}>
-            {value}
+      {/* Value display */}
+      <div className="flex items-baseline gap-1">
+        <span className={`text-2xl font-heading font-bold leading-none ${trendColor}`}>
+          {value}
+        </span>
+        {unit && (
+          <span className="text-xs font-body text-[#78786C] font-semibold uppercase">
+            {unit}
           </span>
-          {unit && (
-            <span className="text-xs font-technical text-[#718096] uppercase font-bold">
-              {unit}
-            </span>
-          )}
-        </div>
-        <div className="w-2 h-2 rounded-full bg-[#2ed573] glow-led-green opacity-80" />
+        )}
       </div>
 
       {sublabel && (
-        <span className="text-[10px] font-technical text-[#718096] mt-2 tracking-tight">
+        <span className="text-[11px] font-body text-[#78786C] leading-tight">
           {sublabel}
         </span>
       )}

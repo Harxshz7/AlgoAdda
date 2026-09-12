@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../lib/api'
-import { Button, Card, Input, Textarea, LedIndicator } from '../../components/ui'
+import { Button, Card, Input, Textarea } from '../../components/ui'
 import { UserCheck, ArrowRight, AlertTriangle, ShieldCheck, User } from 'lucide-react'
 
 export const SellerOnboardPage: React.FC = () => {
@@ -17,7 +17,7 @@ export const SellerOnboardPage: React.FC = () => {
     setError(null)
 
     if (!displayName.trim()) {
-      setError('Please provide your seller / studio display name.')
+      setError('Please provide your seller display name.')
       return
     }
 
@@ -36,71 +36,68 @@ export const SellerOnboardPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#e0e5ec] flex flex-col justify-center items-center p-4 selection:bg-[#ff4757]/20 selection:text-[#ff4757]">
-      <div className="w-full max-w-xl flex flex-col gap-6">
+    <div className="min-h-screen bg-[#FDFCF8] flex flex-col justify-center items-center p-4 relative overflow-hidden">
+      {/* Ambient blobs */}
+      <div
+        className="absolute -top-32 -left-20 w-72 h-72 bg-[#5D7052]/8 blur-3xl pointer-events-none"
+        style={{ borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' }}
+      />
+      <div
+        className="absolute -bottom-20 -right-20 w-64 h-64 bg-[#C18C5D]/8 blur-3xl pointer-events-none"
+        style={{ borderRadius: '40% 60% 70% 30% / 60% 40% 30% 70%' }}
+      />
+
+      <div className="w-full max-w-xl flex flex-col gap-6 relative z-10">
         {/* Header */}
         <div className="flex flex-col items-center text-center gap-2">
-          <div className="w-14 h-14 rounded-2xl bg-[#e0e5ec] shadow-chassis-floating flex items-center justify-center border border-white/80">
-            <UserCheck className="w-8 h-8 text-[#ff4757]" />
+          <div className="w-12 h-12 rounded-full bg-[#5D7052] flex items-center justify-center mb-1">
+            <UserCheck className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-2xl font-black font-technical tracking-wider text-[#2d3436]">
-            SELLER PROFILE // SETUP
+          <h1 className="text-3xl font-heading font-bold text-[#2C2C24]">
+            Set up your seller profile
           </h1>
-          <p className="text-xs font-technical text-[#718096] uppercase tracking-wider">
-            ESTABLISH YOUR QUANT TRADING DESK IDENTIFIER
+          <p className="text-sm font-body text-[#78786C]">
+            Your public identity on AlgoAdda
           </p>
         </div>
 
         <Card className="p-8">
-          <div className="flex items-center justify-between pb-4 mb-6 border-b border-black/5">
-            <span className="text-xs font-bold font-technical text-[#4a5568] uppercase tracking-wider">
-              QUANT STUDIO METADATA
-            </span>
-            <LedIndicator status="amber" label="KYC STUBBED" pulse={false} />
-          </div>
-
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-[#ff4757]/10 border border-[#ff4757]/30 shadow-chassis-recessed flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-[#ff4757] shrink-0 mt-0.5" />
-              <div className="flex flex-col">
-                <span className="text-xs font-bold font-technical text-[#ff4757] uppercase">
-                  ONBOARDING ERROR
-                </span>
-                <span className="text-xs font-technical text-[#ff4757]/90 mt-0.5">
-                  {error}
-                </span>
-              </div>
+            <div className="mb-6 p-4 rounded-2xl bg-[#A85448]/8 border border-[#A85448]/25 flex items-start gap-3">
+              <AlertTriangle className="w-4 h-4 text-[#A85448] shrink-0 mt-0.5" />
+              <span className="text-sm font-body text-[#A85448]">{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <Input
-              label="STUDIO / TRADER DISPLAY NAME"
+              label="Display name"
               placeholder="e.g. Apex Quant Labs, Momentum Capital"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              prefixIcon={<User className="w-4 h-4" />}
-              helperText="This public name will appear on all your strategy listings."
+              prefixIcon={<User className="w-4 h-4 text-[#78786C]" />}
+              helperText="This public name appears on all your strategy listings."
               required
             />
 
             <Textarea
-              label="QUANT PROFILE BIO & PHILOSOPHY"
-              placeholder="Describe your quantitative methodology, asset classes, and risk management framework..."
+              label="Bio & philosophy"
+              placeholder="Describe your quantitative methodology, asset classes, and risk management approach…"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              helperText="Optional trader bio shown to prospective bot subscribers."
+              helperText="Optional — shown to prospective buyers."
               rows={4}
             />
 
-            <div className="p-4 rounded-xl bg-[#d9e0ea] shadow-chassis-recessed flex items-start gap-3 border border-white/50">
-              <ShieldCheck className="w-5 h-5 text-[#2ed573] shrink-0 mt-0.5" />
+            {/* Compliance info block */}
+            <div className="p-4 rounded-2xl bg-[#5D7052]/8 border border-[#5D7052]/20 flex items-start gap-3">
+              <ShieldCheck className="w-5 h-5 text-[#5D7052] shrink-0 mt-0.5" />
               <div className="flex flex-col gap-1">
-                <span className="text-xs font-bold font-technical text-[#2d3436]">
-                  WHITE-BOX COMPLIANCE READY
+                <span className="text-sm font-semibold font-body text-[#2C2C24]">
+                  White-box compliance required
                 </span>
-                <span className="text-[11px] font-technical text-[#4a5568] leading-normal">
-                  AlgoAdda enforces algorithmic logic disclosure for full transparency. No "black-box" or guaranteed return promises permitted.
+                <span className="text-sm font-body text-[#78786C] leading-normal">
+                  AlgoAdda enforces strategy logic disclosure for full transparency. No black-box or guaranteed-return strategies permitted.
                 </span>
               </div>
             </div>
@@ -110,10 +107,11 @@ export const SellerOnboardPage: React.FC = () => {
               variant="primary"
               size="lg"
               disabled={isSubmitting}
-              className="w-full mt-2 gap-2"
+              className="w-full mt-2"
+              icon={<ArrowRight className="w-4 h-4" />}
+              iconPosition="right"
             >
-              <span>{isSubmitting ? 'CONFIGURING DESK...' : 'COMPLETE ONBOARDING & ENTER DASHBOARD'}</span>
-              <ArrowRight className="w-4 h-4" />
+              {isSubmitting ? 'Setting up your profile…' : 'Complete setup & go to dashboard'}
             </Button>
           </form>
         </Card>

@@ -1,63 +1,60 @@
 import React from 'react'
 
-export interface LedIndicatorProps {
+// StatusBadge replaces the old LedIndicator.
+// Maps semantic status values to organic pill badges — no LED glow.
+export interface StatusBadgeProps {
   status?: 'green' | 'orange' | 'amber' | 'neutral'
   label?: string
   sublabel?: string
-  pulse?: boolean
+  pulse?: boolean   // kept for API compat — drives a gentle opacity animation on pending states
   className?: string
 }
 
-export const LedIndicator: React.FC<LedIndicatorProps> = ({
-  status = 'green',
-  label = 'SYSTEM OPERATIONAL',
+export const StatusBadge: React.FC<StatusBadgeProps> = ({
+  status = 'neutral',
+  label = 'Active',
   sublabel,
-  pulse = true,
+  pulse = false,
   className = '',
 }) => {
-  const statusConfig = {
+  const config = {
     green: {
-      dot: 'bg-[#2ed573] glow-led-green',
-      text: 'text-[#2b8a3e]',
+      pill: 'status-published',
+      dot: 'bg-[#5D7052]',
     },
     orange: {
-      dot: 'bg-[#ff4757] glow-led-orange',
-      text: 'text-[#d63031]',
+      // orange = rejected/failed in organic palette → burnt sienna
+      pill: 'status-rejected',
+      dot: 'bg-[#A85448]',
     },
     amber: {
-      dot: 'bg-[#ffa502] glow-led-amber',
-      text: 'text-[#d35400]',
+      // amber = pending/in-review → terracotta/sand
+      pill: 'status-pending',
+      dot: 'bg-[#C18C5D]',
     },
     neutral: {
-      dot: 'bg-[#718096] shadow-[0_0_4px_rgba(0,0,0,0.2)]',
-      text: 'text-[#4a5568]',
+      pill: 'status-draft',
+      dot: 'bg-[#78786C]',
     },
   }[status]
 
   return (
     <div
-      className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-[#d1d9e6]/60 shadow-[inset_2px_2px_4px_#babecc,inset_-2px_-2px_4px_#ffffff] border border-white/50 ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold font-body ${config.pill} ${className}`}
       role="status"
-      aria-label={`${label} ${sublabel || ''}`}
+      aria-label={`${label}${sublabel ? ` — ${sublabel}` : ''}`}
     >
-      <div className="relative flex items-center justify-center">
-        <span
-          className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${statusConfig.dot} ${
-            pulse ? 'animate-pulse' : ''
-          }`}
-        />
-      </div>
-
-      <div className="flex flex-col leading-none">
-        <span className="text-[11px] font-bold font-technical tracking-wider text-[#2d3436] uppercase">
-          {label}
-        </span>
-        {sublabel && (
-          <span className="text-[9px] font-technical tracking-tight text-[#718096] uppercase mt-0.5">
-            {sublabel}
-          </span>
-        )}
-      </div>
+      <span
+        className={`w-1.5 h-1.5 rounded-full shrink-0 ${config.dot} ${pulse ? 'animate-pulse' : ''}`}
+      />
+      <span>{label}</span>
+      {sublabel && (
+        <span className="opacity-70 text-[10px]">· {sublabel}</span>
+      )}
     </div>
   )
 }
+
+// Backward-compatible alias — all existing imports of LedIndicator continue to work unchanged
+export const LedIndicator = StatusBadge
+export type LedIndicatorProps = StatusBadgeProps
