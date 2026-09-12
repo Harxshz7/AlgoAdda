@@ -2,7 +2,6 @@ package com.algoadda.core.bot.service;
 
 import com.algoadda.core.bot.*;
 import com.algoadda.core.bot.dto.*;
-import com.algoadda.core.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

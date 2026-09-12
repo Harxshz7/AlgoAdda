@@ -126,7 +126,3 @@ export const LoginPage: React.FC = () => {
     </div>
   )
 }
-</div>
-    </div>
-  )
-}
