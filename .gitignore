@@ -15,6 +15,7 @@
 *.tar.gz
 *.rar
 core-api/.mvn/wrapper/maven-wrapper.jar
+core-api/.maven/
 .mtj.tmp/
 
 # ------------------------------------------------------------------------------
