@@ -9,4 +9,5 @@ import java.util.UUID;
 @Repository
 public interface BacktestResultRepository extends JpaRepository<BacktestResult, UUID> {
     List<BacktestResult> findByBotVersionId(UUID botVersionId);
+    java.util.Optional<BacktestResult> findFirstByBotVersionIdOrderByCreatedAtDesc(UUID botVersionId);
 }

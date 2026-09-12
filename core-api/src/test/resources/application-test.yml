@@ -21,3 +21,12 @@ algoadda:
     secret: test-secret-key-for-jwt-signing-that-has-sufficient-bits-length-for-hmac-sha-256
     access-token-validity-minutes: 15
     refresh-token-validity-days: 7
+  aws:
+    s3:
+      bucket-name: test-bucket
+      region: ap-south-1
+  backtest-service:
+    url: http://localhost:8000
+    connect-timeout-ms: 1000
+    read-timeout-ms: 2000
+    max-retries: 1

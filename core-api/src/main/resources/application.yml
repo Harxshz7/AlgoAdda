@@ -31,6 +31,15 @@ algoadda:
     secret: ${JWT_SECRET:algoadda-super-secure-jwt-secret-key-that-is-at-least-256-bits-long-and-cryptographically-sound}
     access-token-validity-minutes: ${JWT_ACCESS_VALIDITY:15}
     refresh-token-validity-days: ${JWT_REFRESH_VALIDITY:7}
+  aws:
+    s3:
+      bucket-name: ${S3_BUCKET_NAME:algoadda-bot-artifacts}
+      region: ${AWS_REGION:ap-south-1}
+  backtest-service:
+    url: ${BACKTEST_SERVICE_URL:http://localhost:8000}
+    connect-timeout-ms: 5000
+    read-timeout-ms: 30000
+    max-retries: 2
 
 logging:
   level:

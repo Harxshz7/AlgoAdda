@@ -22,19 +22,19 @@ service), S3-compatible storage, Razorpay.
 - [ ] Push initial scaffolds, confirm all services start and can ping each other
 
 ## Phase 1 — Core Domain & Auth (Weeks 2–3)
-- [ ] Design and migrate DB schema: User, Bot, BotVersion, Listing, Order, License, ComplianceCheck, BacktestResult
-- [ ] Implement JWT auth (register/login/refresh) — reuse pattern from quant-journal
-- [ ] Role-based access: buyer / seller / admin
-- [ ] Basic seller onboarding flow (profile, no KYC yet — stub it)
-- [ ] Unit tests for auth and core entities
+- [x] Design and migrate DB schema: User, Bot, BotVersion, Listing, Order, License, ComplianceCheck, BacktestResult
+- [x] Implement JWT auth (register/login/refresh) — reuse pattern from quant-journal
+- [x] Role-based access: buyer / seller / admin
+- [x] Basic seller onboarding flow (profile, no KYC yet — stub it)
+- [x] Unit tests for auth and core entities
 
 ## Phase 2 — Seller Flow: Upload & Backtest (Weeks 4–5)
-- [ ] Bot upload endpoint — accepts strategy config/code, stores in S3/MinIO
-- [ ] BotVersion creation with mandatory `disclosed_logic` field (compliance requirement)
-- [ ] Backtest-service API contract: request (config + date range) → response (metrics + report)
-- [ ] Core API → Backtest Service integration (REST call, handle timeouts/failures)
-- [ ] Store BacktestResult, render metrics (win rate, drawdown, Sharpe, equity curve) back to seller
-- [ ] Seller dashboard: view bot status (draft → pending review → published/rejected)
+- [x] Bot upload endpoint — accepts strategy config/code, stores in S3/MinIO
+- [x] BotVersion creation with mandatory `disclosed_logic` field (compliance requirement)
+- [x] Backtest-service API contract: request (config + date range) → response (metrics + report)
+- [x] Core API → Backtest Service integration (REST call, handle timeouts/failures)
+- [x] Store BacktestResult, render metrics (win rate, drawdown, Sharpe, equity curve) back to seller
+- [x] Seller dashboard: view bot status (draft → pending review → published/rejected)
 
 ## Phase 3 — Compliance Gate (Week 6)
 - [ ] Build ComplianceCheck: automated checklist (disclosed_logic present, no "guaranteed"/"assured" language, risk disclaimer present)

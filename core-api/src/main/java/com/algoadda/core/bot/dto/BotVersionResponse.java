@@ -1,118 +1,91 @@
-package com.algoadda.core.bot;
+package com.algoadda.core.bot.dto;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
+import com.algoadda.core.bot.BacktestStatus;
 
 import java.time.Instant;
 import java.util.UUID;
 
-@Entity
-@Table(
-    name = "bot_versions",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "uq_bot_version", columnNames = {"bot_id", "version_number"})
-    }
-)
-public class BotVersion {
+public class BotVersionResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bot_id", nullable = false)
-    private Bot bot;
-
-    @Column(name = "version_number", nullable = false, length = 50)
+    private UUID botId;
     private String versionNumber;
-
-    @Column(name = "disclosed_logic", nullable = false, columnDefinition = "TEXT")
     private String disclosedLogic;
-
-    @Column(name = "file_storage_key", length = 500)
     private String fileStorageKey;
-
-    @Column(columnDefinition = "TEXT")
     private String changelog;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "backtest_status", nullable = false, length = 50)
-    private BacktestStatus backtestStatus = BacktestStatus.PENDING;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    private BacktestStatus backtestStatus;
     private Instant createdAt;
 
-    public BotVersion() {
+    public BotVersionResponse() {
     }
 
-    public BotVersion(UUID id, Bot bot, String versionNumber, String disclosedLogic, String fileStorageKey, String changelog, BacktestStatus backtestStatus, Instant createdAt) {
+    public BotVersionResponse(UUID id, UUID botId, String versionNumber, String disclosedLogic, String fileStorageKey, String changelog, BacktestStatus backtestStatus, Instant createdAt) {
         this.id = id;
-        this.bot = bot;
+        this.botId = botId;
         this.versionNumber = versionNumber;
         this.disclosedLogic = disclosedLogic;
         this.fileStorageKey = fileStorageKey;
         this.changelog = changelog;
-        this.backtestStatus = backtestStatus != null ? backtestStatus : BacktestStatus.PENDING;
+        this.backtestStatus = backtestStatus;
         this.createdAt = createdAt;
     }
 
-    public static BotVersionBuilder builder() {
-        return new BotVersionBuilder();
+    public static BotVersionResponseBuilder builder() {
+        return new BotVersionResponseBuilder();
     }
 
-    public static class BotVersionBuilder {
+    public static class BotVersionResponseBuilder {
         private UUID id;
-        private Bot bot;
+        private UUID botId;
         private String versionNumber;
         private String disclosedLogic;
         private String fileStorageKey;
         private String changelog;
-        private BacktestStatus backtestStatus = BacktestStatus.PENDING;
+        private BacktestStatus backtestStatus;
         private Instant createdAt;
 
-        public BotVersionBuilder id(UUID id) {
+        public BotVersionResponseBuilder id(UUID id) {
             this.id = id;
             return this;
         }
 
-        public BotVersionBuilder bot(Bot bot) {
-            this.bot = bot;
+        public BotVersionResponseBuilder botId(UUID botId) {
+            this.botId = botId;
             return this;
         }
 
-        public BotVersionBuilder versionNumber(String versionNumber) {
+        public BotVersionResponseBuilder versionNumber(String versionNumber) {
             this.versionNumber = versionNumber;
             return this;
         }
 
-        public BotVersionBuilder disclosedLogic(String disclosedLogic) {
+        public BotVersionResponseBuilder disclosedLogic(String disclosedLogic) {
             this.disclosedLogic = disclosedLogic;
             return this;
         }
 
-        public BotVersionBuilder fileStorageKey(String fileStorageKey) {
+        public BotVersionResponseBuilder fileStorageKey(String fileStorageKey) {
             this.fileStorageKey = fileStorageKey;
             return this;
         }
 
-        public BotVersionBuilder changelog(String changelog) {
+        public BotVersionResponseBuilder changelog(String changelog) {
             this.changelog = changelog;
             return this;
         }
 
-        public BotVersionBuilder backtestStatus(BacktestStatus backtestStatus) {
+        public BotVersionResponseBuilder backtestStatus(BacktestStatus backtestStatus) {
             this.backtestStatus = backtestStatus;
             return this;
         }
 
-        public BotVersionBuilder createdAt(Instant createdAt) {
+        public BotVersionResponseBuilder createdAt(Instant createdAt) {
             this.createdAt = createdAt;
             return this;
         }
 
-        public BotVersion build() {
-            return new BotVersion(id, bot, versionNumber, disclosedLogic, fileStorageKey, changelog, backtestStatus, createdAt);
+        public BotVersionResponse build() {
+            return new BotVersionResponse(id, botId, versionNumber, disclosedLogic, fileStorageKey, changelog, backtestStatus, createdAt);
         }
     }
 
@@ -124,12 +97,12 @@ public class BotVersion {
         this.id = id;
     }
 
-    public Bot getBot() {
-        return bot;
+    public UUID getBotId() {
+        return botId;
     }
 
-    public void setBot(Bot bot) {
-        this.bot = bot;
+    public void setBotId(UUID botId) {
+        this.botId = botId;
     }
 
     public String getVersionNumber() {

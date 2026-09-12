@@ -10,5 +10,7 @@ import java.util.UUID;
 @Repository
 public interface BotVersionRepository extends JpaRepository<BotVersion, UUID> {
     List<BotVersion> findByBotId(UUID botId);
+    List<BotVersion> findByBotIdOrderByCreatedAtDesc(UUID botId);
+    Optional<BotVersion> findFirstByBotIdOrderByCreatedAtDesc(UUID botId);
     Optional<BotVersion> findByBotIdAndVersionNumber(UUID botId, String versionNumber);
 }
