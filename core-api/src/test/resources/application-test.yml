@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  flyway:
+    enabled: false
+
+algoadda:
+  jwt:
+    secret: test-secret-key-for-jwt-signing-that-has-sufficient-bits-length-for-hmac-sha-256
+    access-token-validity-minutes: 15
+    refresh-token-validity-days: 7
