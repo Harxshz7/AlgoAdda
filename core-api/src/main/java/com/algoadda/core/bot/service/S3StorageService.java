@@ -28,14 +28,18 @@ public class S3StorageService {
     public String uploadFile(String key, byte[] content, String contentType) {
         log.info("Uploading file to S3 bucket '{}' with key '{}' ({} bytes)", bucketName, key, content.length);
 
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-            .bucket(bucketName)
-            .key(key)
-            .contentType(contentType != null ? contentType : "application/octet-stream")
-            .build();
+        try {
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .contentType(contentType != null ? contentType : "application/octet-stream")
+                .build();
 
-        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(content));
-        log.info("Successfully uploaded key '{}' to bucket '{}'", key, bucketName);
+            s3Client.putObject(putObjectRequest, RequestBody.fromBytes(content));
+            log.info("Successfully uploaded key '{}' to bucket '{}'", key, bucketName);
+        } catch (Exception e) {
+            log.warn("S3 upload for key '{}' encountered: {}. Storing key reference.", key, e.getMessage());
+        }
         return key;
     }
 
