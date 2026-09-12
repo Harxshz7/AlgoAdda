@@ -16,11 +16,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// Suppress Eclipse JDT null-safety false positives caused by Spring Data JPA's @NonNull-annotated generic save() methods
+@SuppressWarnings("null")
 @DataJpaTest
 @ActiveProfiles("test")
 class RepositoryTest {
