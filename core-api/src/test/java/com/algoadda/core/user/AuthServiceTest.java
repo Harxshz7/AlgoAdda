@@ -24,6 +24,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+// Suppress Eclipse JDT null-safety false positives caused by Mockito & Spring Data generic interfaces
+@SuppressWarnings("null")
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 

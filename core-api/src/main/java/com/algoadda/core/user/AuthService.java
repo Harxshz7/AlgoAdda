@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+// Suppress Eclipse JDT null-safety false positives caused by Spring Data JPA generic interfaces
+@SuppressWarnings("null")
 @Service
 public class AuthService {
 

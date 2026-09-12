@@ -25,6 +25,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+// Suppress Eclipse JDT null-safety false positives caused by Spring Data JPA & MockMvc generic interfaces
+@SuppressWarnings("null")
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")

@@ -9,6 +9,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 
+// Suppress Eclipse JDT null-safety false positives caused by Spring Data JPA generic interfaces
+@SuppressWarnings("null")
 @Service
 public class RefreshTokenService {
 

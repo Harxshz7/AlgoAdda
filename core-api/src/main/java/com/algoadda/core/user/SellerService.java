@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+// Suppress Eclipse JDT null-safety false positives caused by Spring Data JPA generic interfaces
+@SuppressWarnings("null")
 @Service
 public class SellerService {
 
