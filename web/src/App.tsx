@@ -3,12 +3,16 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
 import { SellerLayout } from './components/layout/SellerLayout'
+import { PublicLayout } from './components/layout/PublicLayout'
 import { LoginPage } from './pages/auth/LoginPage'
 import { RegisterPage } from './pages/auth/RegisterPage'
 import { SellerOnboardPage } from './pages/seller/SellerOnboardPage'
 import { SellerDashboardPage } from './pages/seller/SellerDashboardPage'
 import { BotUploadPage } from './pages/seller/BotUploadPage'
 import { BotDetailPage } from './pages/seller/BotDetailPage'
+import { MarketplacePage } from './pages/marketplace/MarketplacePage'
+import { ListingDetailPage } from './pages/marketplace/ListingDetailPage'
+import { PublicSellerProfilePage } from './pages/seller/PublicSellerProfilePage'
 
 export const App: React.FC = () => {
   return (
@@ -18,6 +22,32 @@ export const App: React.FC = () => {
           {/* Public Auth Routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+
+          {/* Public Marketplace Routes */}
+          <Route
+            path="/marketplace"
+            element={
+              <PublicLayout>
+                <MarketplacePage />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/marketplace/:listingId"
+            element={
+              <PublicLayout>
+                <ListingDetailPage />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/sellers/:sellerId"
+            element={
+              <PublicLayout>
+                <PublicSellerProfilePage />
+              </PublicLayout>
+            }
+          />
 
           {/* Seller Onboarding Route */}
           <Route
@@ -64,7 +94,8 @@ export const App: React.FC = () => {
           />
 
           {/* Fallback Route */}
-          <Route path="*" element={<Navigate to="/seller/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/marketplace" replace />} />
+          <Route path="*" element={<Navigate to="/marketplace" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
