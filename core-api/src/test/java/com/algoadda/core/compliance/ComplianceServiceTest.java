@@ -29,6 +29,9 @@ class ComplianceServiceTest {
     private BotVersionRepository botVersionRepository;
 
     @Mock
+    private BotRepository botRepository;
+
+    @Mock
     private BacktestResultRepository backtestResultRepository;
 
     private ObjectMapper objectMapper;
@@ -42,6 +45,7 @@ class ComplianceServiceTest {
         complianceService = new ComplianceService(
             complianceCheckRepository,
             botVersionRepository,
+            botRepository,
             backtestResultRepository,
             objectMapper,
             blocklist

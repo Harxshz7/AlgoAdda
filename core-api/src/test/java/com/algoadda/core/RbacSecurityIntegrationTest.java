@@ -45,6 +45,21 @@ class RbacSecurityIntegrationTest {
     private SellerProfileRepository sellerProfileRepository;
 
     @Autowired
+    private com.algoadda.core.bot.BotRepository botRepository;
+
+    @Autowired
+    private com.algoadda.core.bot.BotVersionRepository botVersionRepository;
+
+    @Autowired
+    private com.algoadda.core.compliance.ComplianceCheckRepository complianceCheckRepository;
+
+    @Autowired
+    private com.algoadda.core.bot.BacktestResultRepository backtestResultRepository;
+
+    @Autowired
+    private com.algoadda.core.listing.ListingRepository listingRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -59,6 +74,11 @@ class RbacSecurityIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        listingRepository.deleteAll();
+        complianceCheckRepository.deleteAll();
+        backtestResultRepository.deleteAll();
+        botVersionRepository.deleteAll();
+        botRepository.deleteAll();
         refreshTokenRepository.deleteAll();
         sellerProfileRepository.deleteAll();
         userRepository.deleteAll();
