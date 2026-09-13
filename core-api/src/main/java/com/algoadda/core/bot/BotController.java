@@ -30,6 +30,7 @@ public class BotController {
         @AuthenticationPrincipal UserPrincipal principal,
         @RequestParam("name") String name,
         @RequestParam(value = "description", required = false) String description,
+        @RequestParam(value = "riskDisclaimer", required = false) String riskDisclaimer,
         @RequestParam("strategyType") String strategyType,
         @RequestParam("disclosedLogic") String disclosedLogic,
         @RequestParam(value = "strategyConfig", required = false) String strategyConfig,
@@ -40,6 +41,7 @@ public class BotController {
         BotUploadRequest request = BotUploadRequest.builder()
             .name(name)
             .description(description)
+            .riskDisclaimer(riskDisclaimer)
             .strategyType(strategyType)
             .disclosedLogic(disclosedLogic)
             .strategyConfig(strategyConfig)
@@ -72,6 +74,18 @@ public class BotController {
             .build();
 
         BotVersionResponse response = botService.createBotVersion(principal.getId(), botId, request, file);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/bots/{botId}/versions/{versionId}/publish")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<PublishResponse> publishBotVersion(
+        @AuthenticationPrincipal UserPrincipal principal,
+        @PathVariable UUID botId,
+        @PathVariable UUID versionId,
+        @RequestBody PublishRequest request
+    ) {
+        PublishResponse response = botService.publishBotVersion(principal.getId(), botId, versionId, request);
         return ResponseEntity.ok(response);
     }
 

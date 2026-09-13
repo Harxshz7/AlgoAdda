@@ -1,6 +1,7 @@
 package com.algoadda.core.bot.dto;
 
 import com.algoadda.core.bot.BacktestStatus;
+import com.algoadda.core.compliance.dto.ComplianceCheckResponse;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -15,11 +16,12 @@ public class BotVersionResponse {
     private String changelog;
     private BacktestStatus backtestStatus;
     private Instant createdAt;
+    private ComplianceCheckResponse latestComplianceCheck;
 
     public BotVersionResponse() {
     }
 
-    public BotVersionResponse(UUID id, UUID botId, String versionNumber, String disclosedLogic, String fileStorageKey, String changelog, BacktestStatus backtestStatus, Instant createdAt) {
+    public BotVersionResponse(UUID id, UUID botId, String versionNumber, String disclosedLogic, String fileStorageKey, String changelog, BacktestStatus backtestStatus, Instant createdAt, ComplianceCheckResponse latestComplianceCheck) {
         this.id = id;
         this.botId = botId;
         this.versionNumber = versionNumber;
@@ -28,6 +30,7 @@ public class BotVersionResponse {
         this.changelog = changelog;
         this.backtestStatus = backtestStatus;
         this.createdAt = createdAt;
+        this.latestComplianceCheck = latestComplianceCheck;
     }
 
     public static BotVersionResponseBuilder builder() {
@@ -43,6 +46,7 @@ public class BotVersionResponse {
         private String changelog;
         private BacktestStatus backtestStatus;
         private Instant createdAt;
+        private ComplianceCheckResponse latestComplianceCheck;
 
         public BotVersionResponseBuilder id(UUID id) {
             this.id = id;
@@ -84,8 +88,13 @@ public class BotVersionResponse {
             return this;
         }
 
+        public BotVersionResponseBuilder latestComplianceCheck(ComplianceCheckResponse latestComplianceCheck) {
+            this.latestComplianceCheck = latestComplianceCheck;
+            return this;
+        }
+
         public BotVersionResponse build() {
-            return new BotVersionResponse(id, botId, versionNumber, disclosedLogic, fileStorageKey, changelog, backtestStatus, createdAt);
+            return new BotVersionResponse(id, botId, versionNumber, disclosedLogic, fileStorageKey, changelog, backtestStatus, createdAt, latestComplianceCheck);
         }
     }
 
@@ -151,5 +160,13 @@ public class BotVersionResponse {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public ComplianceCheckResponse getLatestComplianceCheck() {
+        return latestComplianceCheck;
+    }
+
+    public void setLatestComplianceCheck(ComplianceCheckResponse latestComplianceCheck) {
+        this.latestComplianceCheck = latestComplianceCheck;
     }
 }

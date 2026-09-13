@@ -4,6 +4,8 @@ import com.algoadda.core.bot.dto.*;
 import com.algoadda.core.bot.service.BacktestServiceClient;
 import com.algoadda.core.bot.service.BotService;
 import com.algoadda.core.bot.service.S3StorageService;
+import com.algoadda.core.compliance.ComplianceService;
+import com.algoadda.core.listing.ListingRepository;
 import com.algoadda.core.user.Role;
 import com.algoadda.core.user.User;
 import com.algoadda.core.user.UserRepository;
@@ -41,6 +43,9 @@ class BotServiceTest {
     private BacktestResultRepository backtestResultRepository;
 
     @Mock
+    private ListingRepository listingRepository;
+
+    @Mock
     private UserRepository userRepository;
 
     @Mock
@@ -48,6 +53,9 @@ class BotServiceTest {
 
     @Mock
     private BacktestServiceClient backtestServiceClient;
+
+    @Mock
+    private ComplianceService complianceService;
 
     private BotService botService;
 
@@ -57,9 +65,11 @@ class BotServiceTest {
             botRepository,
             botVersionRepository,
             backtestResultRepository,
+            listingRepository,
             userRepository,
             s3StorageService,
-            backtestServiceClient
+            backtestServiceClient,
+            complianceService
         );
     }
 

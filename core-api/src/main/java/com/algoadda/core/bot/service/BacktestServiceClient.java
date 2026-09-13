@@ -7,6 +7,8 @@ import com.algoadda.core.bot.BotVersion;
 import com.algoadda.core.bot.BotVersionRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.algoadda.core.compliance.ComplianceService;
+import org.springframework.context.annotation.Lazy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +32,7 @@ public class BacktestServiceClient {
 
     private final BotVersionRepository botVersionRepository;
     private final BacktestResultRepository backtestResultRepository;
+    private final ComplianceService complianceService;
     private final ObjectMapper objectMapper;
     private final RestClient restClient;
     private final int maxRetries;
@@ -37,6 +40,7 @@ public class BacktestServiceClient {
     public BacktestServiceClient(
         BotVersionRepository botVersionRepository,
         BacktestResultRepository backtestResultRepository,
+        @Lazy ComplianceService complianceService,
         ObjectMapper objectMapper,
         @Value("${algoadda.backtest-service.url:http://localhost:8000}") String baseUrl,
         @Value("${algoadda.backtest-service.connect-timeout-ms:5000}") int connectTimeoutMs,
@@ -45,6 +49,7 @@ public class BacktestServiceClient {
     ) {
         this.botVersionRepository = botVersionRepository;
         this.backtestResultRepository = backtestResultRepository;
+        this.complianceService = complianceService;
         this.objectMapper = objectMapper;
         this.maxRetries = maxRetries;
 
@@ -116,8 +121,14 @@ public class BacktestServiceClient {
                     backtestResultRepository.save(backtestResult);
 
                     botVersion.setBacktestStatus(BacktestStatus.COMPLETED);
-                    botVersionRepository.save(botVersion);
+                    BotVersion savedVersion = botVersionRepository.save(botVersion);
                     log.info("Backtest successfully completed and persisted for botVersion {}", botVersion.getId());
+
+                    try {
+                        complianceService.runAutomatedComplianceCheck(savedVersion);
+                    } catch (Exception e) {
+                        log.error("Failed to run automated compliance check for botVersion {}: {}", botVersion.getId(), e.getMessage(), e);
+                    }
                     return true;
                 }
             } catch (Exception e) {

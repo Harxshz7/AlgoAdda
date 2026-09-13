@@ -1,6 +1,7 @@
 package com.algoadda.core.bot;
 
 import com.algoadda.core.bot.service.BacktestServiceClient;
+import com.algoadda.core.compliance.ComplianceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +27,9 @@ class BacktestServiceClientTest {
     @Mock
     private BacktestResultRepository backtestResultRepository;
 
+    @Mock
+    private ComplianceService complianceService;
+
     private ObjectMapper objectMapper;
     private BacktestServiceClient client;
 
@@ -36,6 +40,7 @@ class BacktestServiceClientTest {
         client = new BacktestServiceClient(
             botVersionRepository,
             backtestResultRepository,
+            complianceService,
             objectMapper,
             "http://127.0.0.1:59999", // non-existent port
             100,

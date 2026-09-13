@@ -2,8 +2,14 @@ package com.algoadda.core.bot.service;
 
 import com.algoadda.core.bot.*;
 import com.algoadda.core.bot.dto.*;
+import com.algoadda.core.compliance.ComplianceService;
+import com.algoadda.core.compliance.dto.ComplianceCheckResponse;
+import com.algoadda.core.listing.LicenseType;
+import com.algoadda.core.listing.Listing;
+import com.algoadda.core.listing.ListingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,24 +28,30 @@ public class BotService {
     private final BotRepository botRepository;
     private final BotVersionRepository botVersionRepository;
     private final BacktestResultRepository backtestResultRepository;
+    private final ListingRepository listingRepository;
     private final com.algoadda.core.user.UserRepository userRepository;
     private final S3StorageService s3StorageService;
     private final BacktestServiceClient backtestServiceClient;
+    private final ComplianceService complianceService;
 
     public BotService(
         BotRepository botRepository,
         BotVersionRepository botVersionRepository,
         BacktestResultRepository backtestResultRepository,
+        ListingRepository listingRepository,
         com.algoadda.core.user.UserRepository userRepository,
         S3StorageService s3StorageService,
-        BacktestServiceClient backtestServiceClient
+        BacktestServiceClient backtestServiceClient,
+        @Lazy ComplianceService complianceService
     ) {
         this.botRepository = botRepository;
         this.botVersionRepository = botVersionRepository;
         this.backtestResultRepository = backtestResultRepository;
+        this.listingRepository = listingRepository;
         this.userRepository = userRepository;
         this.s3StorageService = s3StorageService;
         this.backtestServiceClient = backtestServiceClient;
+        this.complianceService = complianceService;
     }
 
     @Transactional
@@ -63,6 +75,7 @@ public class BotService {
             .seller(seller)
             .name(request.getName().trim())
             .description(request.getDescription())
+            .riskDisclaimer(request.getRiskDisclaimer())
             .strategyType(request.getStrategyType().trim().toUpperCase())
             .status(BotStatus.DRAFT)
             .build();
@@ -155,6 +168,56 @@ public class BotService {
         return mapToBotVersionResponse(updatedVersion);
     }
 
+    @Transactional
+    public PublishResponse publishBotVersion(UUID sellerId, UUID botId, UUID versionId, PublishRequest request) {
+        Bot bot = botRepository.findById(botId)
+            .orElseThrow(() -> new IllegalArgumentException("Bot not found with id: " + botId));
+
+        if (!bot.getSeller().getId().equals(sellerId)) {
+            throw new IllegalArgumentException("Unauthorized: Bot belongs to another seller");
+        }
+
+        BotVersion version = botVersionRepository.findById(versionId)
+            .orElseThrow(() -> new IllegalArgumentException("Bot version not found with id: " + versionId));
+
+        if (!version.getBot().getId().equals(botId)) {
+            throw new IllegalArgumentException("Version " + versionId + " does not belong to bot " + botId);
+        }
+
+        ComplianceCheckResponse latestCheck = complianceService.getLatestComplianceCheck(versionId)
+            .orElseThrow(() -> new IllegalStateException("Publish blocked: No compliance check found for version " + versionId));
+
+        if (!latestCheck.isPassed()) {
+            throw new IllegalStateException("Publish blocked: Compliance check failed. Results: " + latestCheck.getChecklistResults());
+        }
+
+        if (request == null || request.getPrice() == null) {
+            throw new IllegalArgumentException("Listing price is required to publish a bot version");
+        }
+
+        Listing listing = Listing.builder()
+            .botVersion(version)
+            .price(request.getPrice())
+            .licenseType(request.getLicenseType() != null ? request.getLicenseType() : LicenseType.ONE_TIME)
+            .active(true)
+            .build();
+
+        Listing savedListing = listingRepository.save(listing);
+
+        bot.setStatus(BotStatus.PUBLISHED);
+        botRepository.save(bot);
+
+        return PublishResponse.builder()
+            .listingId(savedListing.getId())
+            .botId(botId)
+            .botVersionId(versionId)
+            .price(savedListing.getPrice())
+            .licenseType(savedListing.getLicenseType())
+            .active(savedListing.isActive())
+            .botStatus(bot.getStatus())
+            .build();
+    }
+
     @Transactional(readOnly = true)
     public List<SellerDashboardBotDto> getSellerDashboardBots(UUID sellerId) {
         List<Bot> bots = botRepository.findBySellerId(sellerId);
@@ -213,6 +276,7 @@ public class BotService {
             .sellerId(bot.getSeller().getId())
             .name(bot.getName())
             .description(bot.getDescription())
+            .riskDisclaimer(bot.getRiskDisclaimer())
             .strategyType(bot.getStrategyType())
             .status(bot.getStatus())
             .createdAt(bot.getCreatedAt())
@@ -221,6 +285,7 @@ public class BotService {
     }
 
     private BotVersionResponse mapToBotVersionResponse(BotVersion version) {
+        ComplianceCheckResponse latestCheck = complianceService.getLatestComplianceCheck(version.getId()).orElse(null);
         return BotVersionResponse.builder()
             .id(version.getId())
             .botId(version.getBot().getId())
@@ -230,6 +295,7 @@ public class BotService {
             .changelog(version.getChangelog())
             .backtestStatus(version.getBacktestStatus())
             .createdAt(version.getCreatedAt())
+            .latestComplianceCheck(latestCheck)
             .build();
     }
 }

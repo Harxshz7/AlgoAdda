@@ -1,9 +1,6 @@
 package com.algoadda.core.compliance;
 
-import com.algoadda.core.bot.BacktestResultRepository;
-import com.algoadda.core.bot.BacktestStatus;
-import com.algoadda.core.bot.BotVersion;
-import com.algoadda.core.bot.BotVersionRepository;
+import com.algoadda.core.bot.*;
 import com.algoadda.core.compliance.dto.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +20,7 @@ public class ComplianceService {
 
     private final ComplianceCheckRepository complianceCheckRepository;
     private final BotVersionRepository botVersionRepository;
+    private final BotRepository botRepository;
     private final BacktestResultRepository backtestResultRepository;
     private final ObjectMapper objectMapper;
     private final List<String> blocklist;
@@ -30,12 +28,14 @@ public class ComplianceService {
     public ComplianceService(
         ComplianceCheckRepository complianceCheckRepository,
         BotVersionRepository botVersionRepository,
+        BotRepository botRepository,
         BacktestResultRepository backtestResultRepository,
         ObjectMapper objectMapper,
         @Value("${algoadda.compliance.blocklist:guaranteed,assured returns,risk-free,no loss,100% profit,guaranteed profit,risk free,assured return}") List<String> blocklist
     ) {
         this.complianceCheckRepository = complianceCheckRepository;
         this.botVersionRepository = botVersionRepository;
+        this.botRepository = botRepository;
         this.backtestResultRepository = backtestResultRepository;
         this.objectMapper = objectMapper;
         this.blocklist = blocklist != null ? blocklist : Collections.emptyList();
@@ -167,10 +167,11 @@ public class ComplianceService {
     }
 
     public CheckItemResult checkGuaranteedReturnLanguage(BotVersion botVersion) {
+        Bot bot = resolveBot(botVersion);
         String textToScan = (
             (botVersion.getDisclosedLogic() != null ? botVersion.getDisclosedLogic() : "") + " " +
-            (botVersion.getBot() != null && botVersion.getBot().getDescription() != null ? botVersion.getBot().getDescription() : "") + " " +
-            (botVersion.getBot() != null && botVersion.getBot().getName() != null ? botVersion.getBot().getName() : "")
+            (bot != null && bot.getDescription() != null ? bot.getDescription() : "") + " " +
+            (bot != null && bot.getName() != null ? bot.getName() : "")
         ).toLowerCase();
 
         for (String phrase : blocklist) {
@@ -185,10 +186,8 @@ public class ComplianceService {
     }
 
     public CheckItemResult checkRiskDisclaimer(BotVersion botVersion) {
-        String disclaimer = null;
-        if (botVersion.getBot() != null) {
-            disclaimer = botVersion.getBot().getRiskDisclaimer();
-        }
+        Bot bot = resolveBot(botVersion);
+        String disclaimer = bot != null ? bot.getRiskDisclaimer() : null;
 
         if (disclaimer != null && !disclaimer.trim().isEmpty()) {
             return new CheckItemResult(true, "Risk disclaimer present");
@@ -208,6 +207,16 @@ public class ComplianceService {
         } else {
             return new CheckItemResult(false, "Backtest status is " + botVersion.getBacktestStatus());
         }
+    }
+
+    private Bot resolveBot(BotVersion botVersion) {
+        if (botVersion == null || botVersion.getBot() == null) {
+            return null;
+        }
+        if (botRepository != null && botVersion.getBot().getId() != null) {
+            return botRepository.findById(botVersion.getBot().getId()).orElse(botVersion.getBot());
+        }
+        return botVersion.getBot();
     }
 
     private ComplianceCheckResponse mapToResponse(ComplianceCheck check) {
