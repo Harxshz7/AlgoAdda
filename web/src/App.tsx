@@ -13,6 +13,7 @@ import { BotDetailPage } from './pages/seller/BotDetailPage'
 import { MarketplacePage } from './pages/marketplace/MarketplacePage'
 import { ListingDetailPage } from './pages/marketplace/ListingDetailPage'
 import { PublicSellerProfilePage } from './pages/seller/PublicSellerProfilePage'
+import { BuyerDashboardPage } from './pages/buyer/BuyerDashboardPage'
 
 export const App: React.FC = () => {
   return (
@@ -46,6 +47,18 @@ export const App: React.FC = () => {
               <PublicLayout>
                 <PublicSellerProfilePage />
               </PublicLayout>
+            }
+          />
+
+          {/* Buyer Authenticated Route */}
+          <Route
+            path="/buyer/dashboard"
+            element={
+              <ProtectedRoute requiredRole="BUYER">
+                <PublicLayout>
+                  <BuyerDashboardPage />
+                </PublicLayout>
+              </ProtectedRoute>
             }
           />
 

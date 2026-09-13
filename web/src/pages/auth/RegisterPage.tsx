@@ -2,12 +2,13 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { Button, Card, Input } from '../../components/ui'
-import { Mail, Lock, ArrowRight, AlertTriangle, ShieldCheck } from 'lucide-react'
+import { Mail, Lock, ArrowRight, AlertTriangle, ShieldCheck, ShoppingBag } from 'lucide-react'
 
 export const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [role, setRole] = useState<'BUYER' | 'SELLER'>('BUYER')
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -38,9 +39,13 @@ export const RegisterPage: React.FC = () => {
       await register({
         email: email.trim(),
         password,
-        role: 'SELLER',
+        role,
       })
-      navigate('/seller/onboard', { replace: true })
+      if (role === 'BUYER') {
+        navigate('/buyer/dashboard', { replace: true })
+      } else {
+        navigate('/seller/onboard', { replace: true })
+      }
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please check your details.')
     } finally {
@@ -70,7 +75,7 @@ export const RegisterPage: React.FC = () => {
             Create your account
           </h1>
           <p className="text-sm font-body text-[#78786C]">
-            Join AlgoAdda as a strategy seller
+            Join AlgoAdda marketplace
           </p>
         </div>
 
@@ -84,6 +89,40 @@ export const RegisterPage: React.FC = () => {
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            {/* Role Selection Tabs */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-[#78786C] uppercase tracking-wider">
+                Select Account Role
+              </label>
+              <div className="grid grid-cols-2 gap-2 p-1 bg-[#F5F2EB] rounded-2xl border border-[#DED8CF]/60">
+                <button
+                  type="button"
+                  onClick={() => setRole('BUYER')}
+                  className={`flex flex-col items-center justify-center p-3 rounded-xl gap-1 text-xs font-body transition-all ${
+                    role === 'BUYER'
+                      ? 'bg-white text-[#5D7052] font-bold shadow-sm border border-[#DED8CF]/80'
+                      : 'text-[#78786C] hover:text-[#2C2C24]'
+                  }`}
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Buyer</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setRole('SELLER')}
+                  className={`flex flex-col items-center justify-center p-3 rounded-xl gap-1 text-xs font-body transition-all ${
+                    role === 'SELLER'
+                      ? 'bg-white text-[#5D7052] font-bold shadow-sm border border-[#DED8CF]/80'
+                      : 'text-[#78786C] hover:text-[#2C2C24]'
+                  }`}
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Seller</span>
+                </button>
+              </div>
+            </div>
+
             <Input
               label="Email address"
               type="email"
@@ -119,8 +158,10 @@ export const RegisterPage: React.FC = () => {
 
             <div className="p-3 rounded-2xl bg-[#5D7052]/8 border border-[#5D7052]/20 flex items-center gap-2.5">
               <ShieldCheck className="w-4 h-4 text-[#5D7052] shrink-0" />
-              <span className="text-sm font-body text-[#4A4A40]">
-                Registers you as a seller with full bot upload &amp; backtest access.
+              <span className="text-xs font-body text-[#4A4A40]">
+                {role === 'BUYER'
+                  ? 'Buyer account: Browse, evaluate & license verified trading algorithms.'
+                  : 'Seller account: Full bot upload, backtesting & strategy listing access.'}
               </span>
             </div>
 
@@ -152,5 +193,6 @@ export const RegisterPage: React.FC = () => {
     </div>
   )
 }
+
 
 

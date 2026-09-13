@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { Button } from '../ui'
-import { Leaf, Store, LayoutDashboard, LogIn, UserPlus, LogOut } from 'lucide-react'
+import { Leaf, Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag } from 'lucide-react'
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth()
@@ -61,6 +61,19 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
                   >
                     <LayoutDashboard className="w-4 h-4" />
                     <span>Seller Portal</span>
+                  </Button>
+                </Link>
+              )}
+
+              {user?.role === 'BUYER' && (
+                <Link to="/buyer/dashboard">
+                  <Button
+                    variant={isActive('/buyer') ? 'primary' : 'ghost'}
+                    size="sm"
+                    className="gap-1.5"
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    <span>My Purchased Bots</span>
                   </Button>
                 </Link>
               )}

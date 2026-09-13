@@ -7,8 +7,8 @@ interface AuthContextType {
   token: string | null
   isAuthenticated: boolean
   isLoading: boolean
-  login: (credentials: { email: string; password: string }) => Promise<void>
-  register: (data: { email: string; password: string; role: 'BUYER' | 'SELLER' }) => Promise<void>
+  login: (credentials: { email: string; password: string }) => Promise<User>
+  register: (data: { email: string; password: string; role: 'BUYER' | 'SELLER' }) => Promise<User>
   logout: () => void
 }
 
@@ -42,6 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('algoadda_user', JSON.stringify(response.user))
     setToken(response.accessToken)
     setUser(response.user)
+    return response.user
   }
 
   const register = async (data: { email: string; password: string; role: 'BUYER' | 'SELLER' }) => {
@@ -50,6 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('algoadda_user', JSON.stringify(response.user))
     setToken(response.accessToken)
     setUser(response.user)
+    return response.user
   }
 
   const logout = () => {

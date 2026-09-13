@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingDetail, BacktestMetrics, EquityPoint } from '../../lib/api'
+import { useAuth } from '../../context/AuthContext'
 import { Button, Card, MetricGauge } from '../../components/ui'
 import {
   ArrowLeft,
@@ -14,6 +15,7 @@ import {
   AlertCircle,
   FileText,
   Lock,
+  LogIn,
 } from 'lucide-react'
 import {
   ResponsiveContainer,
@@ -27,6 +29,7 @@ import {
 
 export const ListingDetailPage: React.FC = () => {
   const { listingId } = useParams<{ listingId: string }>()
+  const { user } = useAuth()
 
   const [listing, setListing] = useState<ListingDetail | null>(null)
   const [metrics, setMetrics] = useState<BacktestMetrics | null>(null)
@@ -148,27 +151,57 @@ export const ListingDetailPage: React.FC = () => {
             </span>
           </div>
 
-          {/* Buy Button - Disabled with Tooltip for Phase 5 */}
+          {/* Buy Button - Contextual Tooltip */}
           <div className="relative group">
-            <Button
-              variant="primary"
-              size="lg"
-              disabled
-              className="gap-2 opacity-60 cursor-not-allowed shadow-none"
-            >
-              <ShoppingCart className="w-5 h-5" />
-              <span>Buy Algorithm</span>
-            </Button>
-            <div className="absolute right-0 bottom-full mb-2 hidden group-hover:block w-64 p-3 rounded-xl bg-[#2C2C24] text-white text-xs font-body shadow-xl z-50">
-              <div className="flex items-center gap-1.5 font-semibold text-[#5D7052] mb-1">
-                <Lock className="w-3.5 h-3.5" />
-                <span>Phase 5 Upcoming</span>
-              </div>
-              Checkout & purchasing flow coming soon in Phase 5.
-            </div>
+            {!user ? (
+              <Link to="/login">
+                <Button variant="primary" size="lg" className="gap-2">
+                  <LogIn className="w-5 h-5" />
+                  <span>Log in to Purchase</span>
+                </Button>
+              </Link>
+            ) : user.role === 'SELLER' ? (
+              <>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  disabled
+                  className="gap-2 opacity-60 cursor-not-allowed shadow-none"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  <span>Buy Algorithm</span>
+                </Button>
+                <div className="absolute right-0 bottom-full mb-2 hidden group-hover:block w-64 p-3 rounded-xl bg-[#2C2C24] text-white text-xs font-body shadow-xl z-50">
+                  <div className="flex items-center gap-1.5 font-semibold text-[#C18C5D] mb-1">
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Seller Account</span>
+                  </div>
+                  Sellers cannot purchase algorithms. Switch to a Buyer account.
+                </div>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  disabled
+                  className="gap-2 opacity-60 cursor-not-allowed shadow-none"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  <span>Buy Algorithm</span>
+                </Button>
+                <div className="absolute right-0 bottom-full mb-2 hidden group-hover:block w-64 p-3 rounded-xl bg-[#2C2C24] text-white text-xs font-body shadow-xl z-50">
+                  <div className="flex items-center gap-1.5 font-semibold text-[#5D7052] mb-1">
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Phase 5 Upcoming</span>
+                  </div>
+                  Checkout &amp; purchasing flow coming soon in Phase 5.
+                </div>
+              </>
+            )}
           </div>
         </div>
-      </div>
+      </div>v>
 
       {/* Main Grid: Overview & Metrics */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

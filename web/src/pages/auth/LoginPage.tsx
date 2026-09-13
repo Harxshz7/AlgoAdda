@@ -14,8 +14,6 @@ export const LoginPage: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const from = location.state?.from?.pathname || '/seller/dashboard'
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -27,8 +25,15 @@ export const LoginPage: React.FC = () => {
 
     setIsSubmitting(true)
     try {
-      await login({ email: email.trim(), password })
-      navigate(from, { replace: true })
+      const loggedUser = await login({ email: email.trim(), password })
+      const fromPath = location.state?.from?.pathname
+      if (fromPath && fromPath !== '/seller/dashboard' && fromPath !== '/buyer/dashboard') {
+        navigate(fromPath, { replace: true })
+      } else if (loggedUser.role === 'BUYER') {
+        navigate('/buyer/dashboard', { replace: true })
+      } else {
+        navigate('/seller/dashboard', { replace: true })
+      }
     } catch (err: any) {
       setError(err.message || 'Invalid credentials. Please try again.')
     } finally {
