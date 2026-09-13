@@ -3,7 +3,6 @@ package com.algoadda.core.listing;
 import com.algoadda.core.bot.*;
 import com.algoadda.core.compliance.ComplianceCheckRepository;
 import com.algoadda.core.user.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,10 +14,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,9 +55,6 @@ class ListingPublicEndpointTest {
 
     private User seller;
     private Listing listingMomentum;
-    private Listing listingScalper;
-    private Listing listingArbitrage;
-    private Listing listingTrend;
     private Listing listingDraft;
 
     @BeforeEach
@@ -135,7 +129,7 @@ class ListingPublicEndpointTest {
             .metrics("{\"win_rate\": 54.0, \"max_drawdown\": 12.5, \"sharpe_ratio\": 1.45}")
             .createdAt(java.time.Instant.now())
             .build());
-        listingScalper = listingRepository.save(Listing.builder()
+        listingRepository.save(Listing.builder()
             .botVersion(v2)
             .price(new BigDecimal("249.00"))
             .licenseType(LicenseType.ONE_TIME)
@@ -163,7 +157,7 @@ class ListingPublicEndpointTest {
             .metrics("{\"win_rate\": 81.2, \"max_drawdown\": 3.8, \"sharpe_ratio\": 3.05}")
             .createdAt(java.time.Instant.now())
             .build());
-        listingArbitrage = listingRepository.save(Listing.builder()
+        listingRepository.save(Listing.builder()
             .botVersion(v3)
             .price(new BigDecimal("149.50"))
             .licenseType(LicenseType.ONE_TIME)
@@ -191,7 +185,7 @@ class ListingPublicEndpointTest {
             .metrics("{\"win_rate\": 45.0, \"max_drawdown\": 18.0, \"sharpe_ratio\": 1.10}")
             .createdAt(java.time.Instant.now())
             .build());
-        listingTrend = listingRepository.save(Listing.builder()
+        listingRepository.save(Listing.builder()
             .botVersion(v4)
             .price(new BigDecimal("49.99"))
             .licenseType(LicenseType.ONE_TIME)
