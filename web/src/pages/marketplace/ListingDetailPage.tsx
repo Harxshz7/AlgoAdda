@@ -199,6 +199,7 @@ export const ListingDetailPage: React.FC = () => {
                 </div>
               </>
             )}
+          </div>
         </div>
       </div>
 
