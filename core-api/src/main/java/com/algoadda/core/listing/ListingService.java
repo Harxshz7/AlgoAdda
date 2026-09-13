@@ -47,12 +47,30 @@ public class ListingService {
         int page,
         int size
     ) {
+        return getPublicListings(q, strategyType, minPrice, maxPrice, sortBy, page, size, null);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<ListingSummaryResponse> getPublicListings(
+        String q,
+        String strategyType,
+        BigDecimal minPrice,
+        BigDecimal maxPrice,
+        String sortBy,
+        int page,
+        int size,
+        Boolean officialOnly
+    ) {
         List<Listing> activeListings = listingRepository.findByActiveTrue();
 
         // Filter by published bot status & criteria
         List<ListingSummaryResponse> summaries = new ArrayList<>();
 
         for (Listing listing : activeListings) {
+            if (officialOnly != null && officialOnly && !listing.isOfficial()) {
+                continue;
+            }
+
             BotVersion version = listing.getBotVersion();
             if (version == null) continue;
             Bot bot = version.getBot();
@@ -124,6 +142,7 @@ public class ListingService {
                 .winRate(winRate)
                 .maxDrawdown(maxDrawdown)
                 .sharpeRatio(sharpeRatio)
+                .isOfficial(listing.isOfficial())
                 .createdAt(listing.getCreatedAt())
                 .build());
         }
@@ -167,11 +186,20 @@ public class ListingService {
 
     @Transactional(readOnly = true)
     public ListingDetailResponse getListingDetail(UUID listingId) {
+        return getListingDetail(listingId, null);
+    }
+
+    @Transactional(readOnly = true)
+    public ListingDetailResponse getListingDetail(UUID listingId, Boolean officialOnly) {
         Listing listing = listingRepository.findById(listingId)
-            .orElseThrow(() -> new IllegalArgumentException("Listing not found with id: " + listingId));
+            .orElseThrow(() -> new java.util.NoSuchElementException("Listing not found with id: " + listingId));
 
         if (!listing.isActive()) {
             throw new IllegalArgumentException("Listing is no longer active");
+        }
+
+        if (officialOnly != null && officialOnly && !listing.isOfficial()) {
+            throw new java.util.NoSuchElementException("Official listing not found with id: " + listingId);
         }
 
         BotVersion version = listing.getBotVersion();
@@ -207,6 +235,7 @@ public class ListingService {
             .methodologyNotes(backtest != null ? backtest.getMethodologyNotes() : null)
             .metrics(backtest != null ? backtest.getMetrics() : null)
             .reportFileKey(backtest != null ? backtest.getReportFileKey() : null)
+            .isOfficial(listing.isOfficial())
             .createdAt(listing.getCreatedAt())
             .build();
     }

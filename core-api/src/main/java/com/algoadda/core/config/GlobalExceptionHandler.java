@@ -63,6 +63,14 @@ public class GlobalExceptionHandler {
         ));
     }
 
+    @ExceptionHandler(java.util.NoSuchElementException.class)
+    public ResponseEntity<Map<String, String>> handleNotFound(java.util.NoSuchElementException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+            "error", "Not Found",
+            "message", ex.getMessage()
+        ));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(

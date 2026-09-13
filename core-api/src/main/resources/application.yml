@@ -40,6 +40,7 @@ algoadda:
     connect-timeout-ms: 5000
     read-timeout-ms: 30000
     max-retries: 2
+  official-seller-email: ${OFFICIAL_SELLER_EMAIL:official@algoadda.com}
 
 logging:
   level:

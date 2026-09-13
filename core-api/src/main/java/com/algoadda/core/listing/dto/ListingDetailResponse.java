@@ -25,6 +25,7 @@ public class ListingDetailResponse {
     private String methodologyNotes;
     private String metrics;
     private String reportFileKey;
+    private boolean isOfficial;
     private Instant createdAt;
 
     public ListingDetailResponse() {
@@ -48,6 +49,7 @@ public class ListingDetailResponse {
         String methodologyNotes,
         String metrics,
         String reportFileKey,
+        boolean isOfficial,
         Instant createdAt
     ) {
         this.listingId = listingId;
@@ -67,6 +69,7 @@ public class ListingDetailResponse {
         this.methodologyNotes = methodologyNotes;
         this.metrics = metrics;
         this.reportFileKey = reportFileKey;
+        this.isOfficial = isOfficial;
         this.createdAt = createdAt;
     }
 
@@ -92,6 +95,7 @@ public class ListingDetailResponse {
         private String methodologyNotes;
         private String metrics;
         private String reportFileKey;
+        private boolean isOfficial;
         private Instant createdAt;
 
         public ListingDetailResponseBuilder listingId(UUID listingId) {
@@ -179,6 +183,11 @@ public class ListingDetailResponse {
             return this;
         }
 
+        public ListingDetailResponseBuilder isOfficial(boolean isOfficial) {
+            this.isOfficial = isOfficial;
+            return this;
+        }
+
         public ListingDetailResponseBuilder createdAt(Instant createdAt) {
             this.createdAt = createdAt;
             return this;
@@ -188,7 +197,7 @@ public class ListingDetailResponse {
             return new ListingDetailResponse(
                 listingId, botId, botVersionId, name, description, strategyType,
                 price, licenseType, disclosedLogic, riskDisclaimer, sellerId, sellerDisplayName,
-                sellerBio, sellerCreatedAt, methodologyNotes, metrics, reportFileKey, createdAt
+                sellerBio, sellerCreatedAt, methodologyNotes, metrics, reportFileKey, isOfficial, createdAt
             );
         }
     }
@@ -327,6 +336,14 @@ public class ListingDetailResponse {
 
     public void setReportFileKey(String reportFileKey) {
         this.reportFileKey = reportFileKey;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
     }
 
     public Instant getCreatedAt() {

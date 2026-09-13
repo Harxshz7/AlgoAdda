@@ -13,18 +13,20 @@ public class PublishResponse {
     private BigDecimal price;
     private LicenseType licenseType;
     private boolean active;
+    private boolean isOfficial;
     private BotStatus botStatus;
 
     public PublishResponse() {
     }
 
-    public PublishResponse(UUID listingId, UUID botId, UUID botVersionId, BigDecimal price, LicenseType licenseType, boolean active, BotStatus botStatus) {
+    public PublishResponse(UUID listingId, UUID botId, UUID botVersionId, BigDecimal price, LicenseType licenseType, boolean active, boolean isOfficial, BotStatus botStatus) {
         this.listingId = listingId;
         this.botId = botId;
         this.botVersionId = botVersionId;
         this.price = price;
         this.licenseType = licenseType;
         this.active = active;
+        this.isOfficial = isOfficial;
         this.botStatus = botStatus;
     }
 
@@ -39,6 +41,7 @@ public class PublishResponse {
         private BigDecimal price;
         private LicenseType licenseType;
         private boolean active;
+        private boolean isOfficial;
         private BotStatus botStatus;
 
         public PublishResponseBuilder listingId(UUID listingId) {
@@ -71,13 +74,18 @@ public class PublishResponse {
             return this;
         }
 
+        public PublishResponseBuilder isOfficial(boolean isOfficial) {
+            this.isOfficial = isOfficial;
+            return this;
+        }
+
         public PublishResponseBuilder botStatus(BotStatus botStatus) {
             this.botStatus = botStatus;
             return this;
         }
 
         public PublishResponse build() {
-            return new PublishResponse(listingId, botId, botVersionId, price, licenseType, active, botStatus);
+            return new PublishResponse(listingId, botId, botVersionId, price, licenseType, active, isOfficial, botStatus);
         }
     }
 
@@ -127,6 +135,14 @@ public class PublishResponse {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
     }
 
     public BotStatus getBotStatus() {

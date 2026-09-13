@@ -30,6 +30,9 @@ public class Listing {
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
+    @Column(name = "is_official", nullable = false)
+    private boolean official = false;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -37,12 +40,13 @@ public class Listing {
     public Listing() {
     }
 
-    public Listing(UUID id, BotVersion botVersion, BigDecimal price, LicenseType licenseType, boolean active, Instant createdAt) {
+    public Listing(UUID id, BotVersion botVersion, BigDecimal price, LicenseType licenseType, boolean active, boolean official, Instant createdAt) {
         this.id = id;
         this.botVersion = botVersion;
         this.price = price != null ? price : BigDecimal.ZERO;
         this.licenseType = licenseType;
         this.active = active;
+        this.official = official;
         this.createdAt = createdAt;
     }
 
@@ -56,6 +60,7 @@ public class Listing {
         private BigDecimal price = BigDecimal.ZERO;
         private LicenseType licenseType;
         private boolean active = true;
+        private boolean official = false;
         private Instant createdAt;
 
         public ListingBuilder id(UUID id) {
@@ -83,13 +88,18 @@ public class Listing {
             return this;
         }
 
+        public ListingBuilder official(boolean official) {
+            this.official = official;
+            return this;
+        }
+
         public ListingBuilder createdAt(Instant createdAt) {
             this.createdAt = createdAt;
             return this;
         }
 
         public Listing build() {
-            return new Listing(id, botVersion, price, licenseType, active, createdAt);
+            return new Listing(id, botVersion, price, licenseType, active, official, createdAt);
         }
     }
 
@@ -131,6 +141,14 @@ public class Listing {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isOfficial() {
+        return official;
+    }
+
+    public void setOfficial(boolean official) {
+        this.official = official;
     }
 
     public Instant getCreatedAt() {

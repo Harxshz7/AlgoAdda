@@ -9,6 +9,7 @@ import com.algoadda.core.listing.Listing;
 import com.algoadda.core.listing.ListingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,9 @@ import java.util.UUID;
 public class BotService {
 
     private static final Logger log = LoggerFactory.getLogger(BotService.class);
+
+    @Value("${algoadda.official-seller-email:official@algoadda.com}")
+    private String officialSellerEmail;
 
     private final BotRepository botRepository;
     private final BotVersionRepository botVersionRepository;
@@ -195,10 +199,15 @@ public class BotService {
             throw new IllegalArgumentException("Listing price is required to publish a bot version");
         }
 
+        boolean isOfficial = bot.getSeller() != null
+            && bot.getSeller().getEmail() != null
+            && bot.getSeller().getEmail().equalsIgnoreCase(officialSellerEmail);
+
         Listing listing = Listing.builder()
             .botVersion(version)
             .price(request.getPrice())
             .licenseType(request.getLicenseType() != null ? request.getLicenseType() : LicenseType.ONE_TIME)
+            .official(isOfficial)
             .active(true)
             .build();
 
@@ -214,6 +223,7 @@ public class BotService {
             .price(savedListing.getPrice())
             .licenseType(savedListing.getLicenseType())
             .active(savedListing.isActive())
+            .isOfficial(savedListing.isOfficial())
             .botStatus(bot.getStatus())
             .build();
     }

@@ -21,6 +21,7 @@ public class ListingSummaryResponse {
     private Double winRate;
     private Double maxDrawdown;
     private Double sharpeRatio;
+    private boolean isOfficial;
     private Instant createdAt;
 
     public ListingSummaryResponse() {
@@ -40,6 +41,7 @@ public class ListingSummaryResponse {
         Double winRate,
         Double maxDrawdown,
         Double sharpeRatio,
+        boolean isOfficial,
         Instant createdAt
     ) {
         this.listingId = listingId;
@@ -55,6 +57,7 @@ public class ListingSummaryResponse {
         this.winRate = winRate;
         this.maxDrawdown = maxDrawdown;
         this.sharpeRatio = sharpeRatio;
+        this.isOfficial = isOfficial;
         this.createdAt = createdAt;
     }
 
@@ -76,6 +79,7 @@ public class ListingSummaryResponse {
         private Double winRate;
         private Double maxDrawdown;
         private Double sharpeRatio;
+        private boolean isOfficial;
         private Instant createdAt;
 
         public ListingSummaryResponseBuilder listingId(UUID listingId) {
@@ -143,6 +147,11 @@ public class ListingSummaryResponse {
             return this;
         }
 
+        public ListingSummaryResponseBuilder isOfficial(boolean isOfficial) {
+            this.isOfficial = isOfficial;
+            return this;
+        }
+
         public ListingSummaryResponseBuilder createdAt(Instant createdAt) {
             this.createdAt = createdAt;
             return this;
@@ -152,7 +161,7 @@ public class ListingSummaryResponse {
             return new ListingSummaryResponse(
                 listingId, botId, botVersionId, name, description, strategyType,
                 price, licenseType, sellerId, sellerDisplayName, winRate, maxDrawdown,
-                sharpeRatio, createdAt
+                sharpeRatio, isOfficial, createdAt
             );
         }
     }
@@ -259,6 +268,14 @@ public class ListingSummaryResponse {
 
     public void setSharpeRatio(Double sharpeRatio) {
         this.sharpeRatio = sharpeRatio;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
     }
 
     public Instant getCreatedAt() {
