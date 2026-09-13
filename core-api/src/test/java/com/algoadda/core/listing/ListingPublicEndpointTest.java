@@ -2,8 +2,6 @@ package com.algoadda.core.listing;
 
 import com.algoadda.core.bot.*;
 import com.algoadda.core.compliance.ComplianceCheckRepository;
-import com.algoadda.core.compliance.ComplianceService;
-import com.algoadda.core.listing.dto.PageResponse;
 import com.algoadda.core.user.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,14 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.UUID;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -58,13 +56,12 @@ class ListingPublicEndpointTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private ComplianceService complianceService;
-
     private User seller;
+    private Listing listingMomentum;
+    private Listing listingScalper;
+    private Listing listingArbitrage;
+    private Listing listingTrend;
+    private Listing listingDraft;
 
     @BeforeEach
     void setUp() {
@@ -88,13 +85,9 @@ class ListingPublicEndpointTest {
             .bio("Institutional-grade algorithmic trading systems.")
             .kycStatus(KycStatus.VERIFIED)
             .build());
-    }
 
-    @Test
-    @DisplayName("Public Listings: Returns active published listings without auth header, supports filter & search")
-    void testPublicListingsEndpoint() throws Exception {
-        // 1. Seed published Bot A (Momentum, price $99.99)
-        Bot botA = botRepository.save(Bot.builder()
+        // 1. Seed Bot 1: Momentum ($99.99, Win rate: 68.5%)
+        Bot bot1 = botRepository.save(Bot.builder()
             .seller(seller)
             .name("Nifty Momentum Alpha")
             .description("High frequency momentum strategy on Nifty 50 futures")
@@ -102,29 +95,27 @@ class ListingPublicEndpointTest {
             .strategyType("MOMENTUM")
             .status(BotStatus.PUBLISHED)
             .build());
-
-        BotVersion vA = botVersionRepository.save(BotVersion.builder()
-            .bot(botA)
+        BotVersion v1 = botVersionRepository.save(BotVersion.builder()
+            .bot(bot1)
             .versionNumber("1.0.0")
-            .disclosedLogic("EMA 20/50 Crossover")
-            .fileStorageKey("bots/secret/path/strategy_a.py")
+            .disclosedLogic("EMA 20/50 Crossover with RSI filter")
+            .fileStorageKey("bots/secret/strategy_a.py")
             .backtestStatus(BacktestStatus.COMPLETED)
             .build());
-
         backtestResultRepository.save(BacktestResult.builder()
-            .botVersion(vA)
-            .metrics("{\"win_rate\": 68.5, \"max_drawdown\": 6.2, \"sharpe_ratio\": 2.1}")
+            .botVersion(v1)
+            .metrics("{\"win_rate\": 68.5, \"max_drawdown\": 6.2, \"sharpe_ratio\": 2.10}")
+            .createdAt(java.time.Instant.now())
             .build());
-
-        Listing listingA = listingRepository.save(Listing.builder()
-            .botVersion(vA)
+        listingMomentum = listingRepository.save(Listing.builder()
+            .botVersion(v1)
             .price(new BigDecimal("99.99"))
             .licenseType(LicenseType.ONE_TIME)
             .active(true)
             .build());
 
-        // 2. Seed published Bot B (Scalping, price $249.00)
-        Bot botB = botRepository.save(Bot.builder()
+        // 2. Seed Bot 2: Scalping ($249.00, Win rate: 54.0%)
+        Bot bot2 = botRepository.save(Bot.builder()
             .seller(seller)
             .name("BankNifty Scalper Pro")
             .description("Intraday scalping strategy on Bank Nifty index")
@@ -132,108 +123,216 @@ class ListingPublicEndpointTest {
             .strategyType("SCALPING")
             .status(BotStatus.PUBLISHED)
             .build());
-
-        BotVersion vB = botVersionRepository.save(BotVersion.builder()
-            .bot(botB)
+        BotVersion v2 = botVersionRepository.save(BotVersion.builder()
+            .bot(bot2)
             .versionNumber("1.0.0")
             .disclosedLogic("Bollinger Bands Mean Reversion")
-            .fileStorageKey("bots/secret/path/strategy_b.py")
+            .fileStorageKey("bots/secret/strategy_b.py")
             .backtestStatus(BacktestStatus.COMPLETED)
             .build());
-
         backtestResultRepository.save(BacktestResult.builder()
-            .botVersion(vB)
+            .botVersion(v2)
             .metrics("{\"win_rate\": 54.0, \"max_drawdown\": 12.5, \"sharpe_ratio\": 1.45}")
+            .createdAt(java.time.Instant.now())
             .build());
-
-        listingRepository.save(Listing.builder()
-            .botVersion(vB)
+        listingScalper = listingRepository.save(Listing.builder()
+            .botVersion(v2)
             .price(new BigDecimal("249.00"))
             .licenseType(LicenseType.ONE_TIME)
             .active(true)
             .build());
 
-        // 3. Seed Draft Bot C (Unpublished - must NOT appear)
-        Bot botC = botRepository.save(Bot.builder()
+        // 3. Seed Bot 3: Arbitrage ($149.50, Win rate: 81.2%)
+        Bot bot3 = botRepository.save(Bot.builder()
             .seller(seller)
-            .name("Draft Strategy C")
-            .description("Internal test bot")
+            .name("Options Delta Neutral")
+            .description("Statistical arbitrage and options delta neutral strategy")
+            .riskDisclaimer("Options trading carries substantial risk.")
+            .strategyType("ARBITRAGE")
+            .status(BotStatus.PUBLISHED)
+            .build());
+        BotVersion v3 = botVersionRepository.save(BotVersion.builder()
+            .bot(bot3)
+            .versionNumber("1.0.0")
+            .disclosedLogic("Delta Neutral Straddle Hedging")
+            .fileStorageKey("bots/secret/strategy_c.py")
+            .backtestStatus(BacktestStatus.COMPLETED)
+            .build());
+        backtestResultRepository.save(BacktestResult.builder()
+            .botVersion(v3)
+            .metrics("{\"win_rate\": 81.2, \"max_drawdown\": 3.8, \"sharpe_ratio\": 3.05}")
+            .createdAt(java.time.Instant.now())
+            .build());
+        listingArbitrage = listingRepository.save(Listing.builder()
+            .botVersion(v3)
+            .price(new BigDecimal("149.50"))
+            .licenseType(LicenseType.ONE_TIME)
+            .active(true)
+            .build());
+
+        // 4. Seed Bot 4: Trend ($49.99, Win rate: 45.0%)
+        Bot bot4 = botRepository.save(Bot.builder()
+            .seller(seller)
+            .name("Trend Following Master")
+            .description("Multi-asset trend follower for positional traders")
+            .riskDisclaimer("Past performance does not guarantee future results.")
+            .strategyType("TREND")
+            .status(BotStatus.PUBLISHED)
+            .build());
+        BotVersion v4 = botVersionRepository.save(BotVersion.builder()
+            .bot(bot4)
+            .versionNumber("1.0.0")
+            .disclosedLogic("Donchian Channel Breakout")
+            .fileStorageKey("bots/secret/strategy_d.py")
+            .backtestStatus(BacktestStatus.COMPLETED)
+            .build());
+        backtestResultRepository.save(BacktestResult.builder()
+            .botVersion(v4)
+            .metrics("{\"win_rate\": 45.0, \"max_drawdown\": 18.0, \"sharpe_ratio\": 1.10}")
+            .createdAt(java.time.Instant.now())
+            .build());
+        listingTrend = listingRepository.save(Listing.builder()
+            .botVersion(v4)
+            .price(new BigDecimal("49.99"))
+            .licenseType(LicenseType.ONE_TIME)
+            .active(true)
+            .build());
+
+        // 5. Seed Bot 5: DRAFT (Unpublished - MUST be excluded from all public endpoints)
+        Bot bot5 = botRepository.save(Bot.builder()
+            .seller(seller)
+            .name("Draft Experimental Bot")
+            .description("Unpublished internal strategy in development")
             .strategyType("MOMENTUM")
             .status(BotStatus.DRAFT)
             .build());
-
-        BotVersion vC = botVersionRepository.save(BotVersion.builder()
-            .bot(botC)
-            .versionNumber("1.0.0")
-            .disclosedLogic("Test logic")
+        BotVersion v5 = botVersionRepository.save(BotVersion.builder()
+            .bot(bot5)
+            .versionNumber("0.1.0")
+            .disclosedLogic("Draft logic")
             .build());
-
-        listingRepository.save(Listing.builder()
-            .botVersion(vC)
+        listingDraft = listingRepository.save(Listing.builder()
+            .botVersion(v5)
             .price(new BigDecimal("10.00"))
             .licenseType(LicenseType.ONE_TIME)
             .active(false)
             .build());
+    }
 
-        // Test 1: Fetch all public listings without auth header
+    @Test
+    @DisplayName("1. Public Listings List: Excludes draft bots, omits disclosedLogic & file reference")
+    void testPublicListingsListEndpoint() throws Exception {
         mockMvc.perform(get("/api/listings"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.totalElements").value(2))
-            .andExpect(jsonPath("$.content[0].sellerDisplayName").value("Alpha Quant Capital"));
+            .andExpect(jsonPath("$.totalElements").value(4))
+            .andExpect(jsonPath("$.content.length()").value(4))
+            .andExpect(jsonPath("$.content[*].name", not(hasItem("Draft Experimental Bot"))))
+            .andExpect(jsonPath("$.content[0].disclosedLogic").doesNotExist())
+            .andExpect(jsonPath("$.content[0].fileStorageKey").doesNotExist());
+    }
 
-        // Test 2: Filter by strategyType=MOMENTUM
-        mockMvc.perform(get("/api/listings").param("strategyType", "MOMENTUM"))
+    @Test
+    @DisplayName("1b. Public Listings Filters & Sorting: strategyType, minPrice/maxPrice, sortBy")
+    void testFiltersAndSorting() throws Exception {
+        // StrategyType filter
+        mockMvc.perform(get("/api/listings").param("strategyType", "SCALPING"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.totalElements").value(1))
-            .andExpect(jsonPath("$.content[0].name").value("Nifty Momentum Alpha"));
+            .andExpect(jsonPath("$.content[0].name").value("BankNifty Scalper Pro"));
 
-        // Test 3: Search query q=Scalper
+        // MinPrice & MaxPrice filter ($100 to $200)
+        mockMvc.perform(get("/api/listings")
+                .param("minPrice", "100.00")
+                .param("maxPrice", "200.00"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.totalElements").value(1))
+            .andExpect(jsonPath("$.content[0].name").value("Options Delta Neutral"));
+
+        // Sort by price (asc)
+        mockMvc.perform(get("/api/listings").param("sortBy", "price"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].price").value(49.99))
+            .andExpect(jsonPath("$.content[3].price").value(249.00));
+
+        // Sort by winRate (desc)
+        mockMvc.perform(get("/api/listings").param("sortBy", "winRate"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].name").value("Options Delta Neutral"))
+            .andExpect(jsonPath("$.content[0].winRate").value(81.2));
+    }
+
+    @Test
+    @DisplayName("1c. Public Listings Pagination: page 1 vs page 2 return different items")
+    void testPagination() throws Exception {
+        // Page 0 (size 2)
+        mockMvc.perform(get("/api/listings").param("page", "0").param("size", "2"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.totalElements").value(4))
+            .andExpect(jsonPath("$.totalPages").value(2))
+            .andExpect(jsonPath("$.content.length()").value(2));
+
+        // Page 1 (size 2)
+        mockMvc.perform(get("/api/listings").param("page", "1").param("size", "2"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.totalElements").value(4))
+            .andExpect(jsonPath("$.totalPages").value(2))
+            .andExpect(jsonPath("$.content.length()").value(2));
+    }
+
+    @Test
+    @DisplayName("2. Search: term match, nonsense empty result, combined query + filter")
+    void testSearchEndpoint() throws Exception {
+        // Search term match
         mockMvc.perform(get("/api/listings").param("q", "Scalper"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.totalElements").value(1))
             .andExpect(jsonPath("$.content[0].name").value("BankNifty Scalper Pro"));
 
-        // Test 4: Detail endpoint for Listing A — verifies full disclosed logic & disclaimer, hides fileStorageKey
-        mockMvc.perform(get("/api/listings/" + listingA.getId()))
+        // Nonsense search
+        mockMvc.perform(get("/api/listings").param("q", "xyz999nonsense"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("Nifty Momentum Alpha"))
-            .andExpect(jsonPath("$.disclosedLogic").value("EMA 20/50 Crossover"))
-            .andExpect(jsonPath("$.riskDisclaimer").value("Capital at risk."))
-            .andExpect(jsonPath("$.sellerBio").value("Institutional-grade algorithmic trading systems."))
-            .andExpect(jsonPath("$.fileStorageKey").doesNotExist());
+            .andExpect(jsonPath("$.totalElements").value(0))
+            .andExpect(jsonPath("$.content").isEmpty());
+
+        // Combined q + strategyType
+        mockMvc.perform(get("/api/listings")
+                .param("q", "Alpha")
+                .param("strategyType", "MOMENTUM"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.totalElements").value(1))
+            .andExpect(jsonPath("$.content[0].name").value("Nifty Momentum Alpha"));
     }
 
     @Test
-    @DisplayName("Public Seller Profile: Returns public seller info and active listings without PII")
-    void testPublicSellerProfileEndpoint() throws Exception {
-        Bot bot = botRepository.save(Bot.builder()
-            .seller(seller)
-            .name("Alpha Mean Reversion")
-            .description("Mean reversion strategy")
-            .strategyType("MEAN_REVERSION")
-            .status(BotStatus.PUBLISHED)
-            .build());
+    @DisplayName("3. Listing Detail: Published includes disclosedLogic/sellerInfo, Unpublished is blocked")
+    void testListingDetailEndpoint() throws Exception {
+        // Published detail
+        mockMvc.perform(get("/api/listings/" + listingMomentum.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Nifty Momentum Alpha"))
+            .andExpect(jsonPath("$.disclosedLogic").value("EMA 20/50 Crossover with RSI filter"))
+            .andExpect(jsonPath("$.riskDisclaimer").value("Capital at risk."))
+            .andExpect(jsonPath("$.sellerDisplayName").value("Alpha Quant Capital"))
+            .andExpect(jsonPath("$.sellerBio").value("Institutional-grade algorithmic trading systems."))
+            .andExpect(jsonPath("$.fileStorageKey").doesNotExist())
+            .andExpect(jsonPath("$.email").doesNotExist());
 
-        BotVersion version = botVersionRepository.save(BotVersion.builder()
-            .bot(bot)
-            .versionNumber("1.0.0")
-            .disclosedLogic("RSI 14 mean reversion")
-            .backtestStatus(BacktestStatus.COMPLETED)
-            .build());
+        // Unpublished / draft listing ID
+        mockMvc.perform(get("/api/listings/" + listingDraft.getId()))
+            .andExpect(status().is4xxClientError());
+    }
 
-        listingRepository.save(Listing.builder()
-            .botVersion(version)
-            .price(new BigDecimal("129.99"))
-            .licenseType(LicenseType.ONE_TIME)
-            .active(true)
-            .build());
-
+    @Test
+    @DisplayName("4. Seller Profile: Public fields only, active listings linkable, unpublished excluded")
+    void testSellerProfileEndpoint() throws Exception {
         mockMvc.perform(get("/api/sellers/" + seller.getId()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.displayName").value("Alpha Quant Capital"))
             .andExpect(jsonPath("$.bio").value("Institutional-grade algorithmic trading systems."))
-            .andExpect(jsonPath("$.activeListings[0].name").value("Alpha Mean Reversion"))
+            .andExpect(jsonPath("$.activeListings.length()").value(4))
+            .andExpect(jsonPath("$.activeListings[*].name", not(hasItem("Draft Experimental Bot"))))
             .andExpect(jsonPath("$.email").doesNotExist())
             .andExpect(jsonPath("$.passwordHash").doesNotExist());
     }
 }
+

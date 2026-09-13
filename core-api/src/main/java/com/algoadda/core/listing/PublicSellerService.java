@@ -79,6 +79,9 @@ public class PublicSellerService {
             if (backtest != null && backtest.getMetrics() != null) {
                 try {
                     JsonNode metricsNode = objectMapper.readTree(backtest.getMetrics());
+                    if (metricsNode.isTextual()) {
+                        metricsNode = objectMapper.readTree(metricsNode.asText());
+                    }
                     if (metricsNode.has("win_rate")) winRate = metricsNode.get("win_rate").asDouble();
                     if (metricsNode.has("max_drawdown")) maxDrawdown = metricsNode.get("max_drawdown").asDouble();
                     if (metricsNode.has("sharpe_ratio")) sharpeRatio = metricsNode.get("sharpe_ratio").asDouble();
