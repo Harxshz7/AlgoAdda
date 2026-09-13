@@ -52,6 +52,9 @@ class StoreEndpointTest {
     private ComplianceCheckRepository complianceCheckRepository;
 
     @Autowired
+    private BacktestResultRepository backtestResultRepository;
+
+    @Autowired
     private ListingRepository listingRepository;
 
     @Autowired
@@ -70,6 +73,7 @@ class StoreEndpointTest {
     void setUp() {
         listingRepository.deleteAll();
         complianceCheckRepository.deleteAll();
+        backtestResultRepository.deleteAll();
         botVersionRepository.deleteAll();
         botRepository.deleteAll();
         sellerProfileRepository.deleteAll();
