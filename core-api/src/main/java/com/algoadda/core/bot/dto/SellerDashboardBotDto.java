@@ -2,6 +2,7 @@ package com.algoadda.core.bot.dto;
 
 import com.algoadda.core.bot.BacktestStatus;
 import com.algoadda.core.bot.BotStatus;
+import com.algoadda.core.compliance.dto.ComplianceCheckResponse;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -16,11 +17,12 @@ public class SellerDashboardBotDto {
     private String latestVersionNumber;
     private BacktestStatus backtestStatus;
     private Instant createdAt;
+    private ComplianceCheckResponse latestComplianceCheck;
 
     public SellerDashboardBotDto() {
     }
 
-    public SellerDashboardBotDto(UUID botId, String name, String strategyType, BotStatus status, UUID latestVersionId, String latestVersionNumber, BacktestStatus backtestStatus, Instant createdAt) {
+    public SellerDashboardBotDto(UUID botId, String name, String strategyType, BotStatus status, UUID latestVersionId, String latestVersionNumber, BacktestStatus backtestStatus, Instant createdAt, ComplianceCheckResponse latestComplianceCheck) {
         this.botId = botId;
         this.name = name;
         this.strategyType = strategyType;
@@ -29,6 +31,7 @@ public class SellerDashboardBotDto {
         this.latestVersionNumber = latestVersionNumber;
         this.backtestStatus = backtestStatus;
         this.createdAt = createdAt;
+        this.latestComplianceCheck = latestComplianceCheck;
     }
 
     public static SellerDashboardBotDtoBuilder builder() {
@@ -44,6 +47,7 @@ public class SellerDashboardBotDto {
         private String latestVersionNumber;
         private BacktestStatus backtestStatus;
         private Instant createdAt;
+        private ComplianceCheckResponse latestComplianceCheck;
 
         public SellerDashboardBotDtoBuilder botId(UUID botId) {
             this.botId = botId;
@@ -85,8 +89,13 @@ public class SellerDashboardBotDto {
             return this;
         }
 
+        public SellerDashboardBotDtoBuilder latestComplianceCheck(ComplianceCheckResponse latestComplianceCheck) {
+            this.latestComplianceCheck = latestComplianceCheck;
+            return this;
+        }
+
         public SellerDashboardBotDto build() {
-            return new SellerDashboardBotDto(botId, name, strategyType, status, latestVersionId, latestVersionNumber, backtestStatus, createdAt);
+            return new SellerDashboardBotDto(botId, name, strategyType, status, latestVersionId, latestVersionNumber, backtestStatus, createdAt, latestComplianceCheck);
         }
     }
 
@@ -152,5 +161,13 @@ public class SellerDashboardBotDto {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public ComplianceCheckResponse getLatestComplianceCheck() {
+        return latestComplianceCheck;
+    }
+
+    public void setLatestComplianceCheck(ComplianceCheckResponse latestComplianceCheck) {
+        this.latestComplianceCheck = latestComplianceCheck;
     }
 }

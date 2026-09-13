@@ -225,6 +225,10 @@ public class BotService {
 
         for (Bot bot : bots) {
             BotVersion latestVersion = botVersionRepository.findFirstByBotIdOrderByCreatedAtDesc(bot.getId()).orElse(null);
+            ComplianceCheckResponse latestCheck = latestVersion != null 
+                ? complianceService.getLatestComplianceCheck(latestVersion.getId()).orElse(null) 
+                : null;
+
             result.add(SellerDashboardBotDto.builder()
                 .botId(bot.getId())
                 .name(bot.getName())
@@ -233,11 +237,20 @@ public class BotService {
                 .latestVersionId(latestVersion != null ? latestVersion.getId() : null)
                 .latestVersionNumber(latestVersion != null ? latestVersion.getVersionNumber() : null)
                 .backtestStatus(latestVersion != null ? latestVersion.getBacktestStatus() : null)
+                .latestComplianceCheck(latestCheck)
                 .createdAt(bot.getCreatedAt())
                 .build());
         }
 
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public BotResponse getBot(UUID botId) {
+        Bot bot = botRepository.findById(botId)
+            .orElseThrow(() -> new IllegalArgumentException("Bot not found with id: " + botId));
+        BotVersion latestVersion = botVersionRepository.findFirstByBotIdOrderByCreatedAtDesc(botId).orElse(null);
+        return mapToBotResponse(bot, latestVersion);
     }
 
     @Transactional(readOnly = true)
