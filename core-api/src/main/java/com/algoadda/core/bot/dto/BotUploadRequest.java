@@ -6,6 +6,7 @@ public class BotUploadRequest {
 
     private String name;
     private String description;
+    private String riskDisclaimer;
     private String strategyType;
     private String disclosedLogic;
     private String strategyConfig;
@@ -15,9 +16,10 @@ public class BotUploadRequest {
     public BotUploadRequest() {
     }
 
-    public BotUploadRequest(String name, String description, String strategyType, String disclosedLogic, String strategyConfig, Instant dateRangeStart, Instant dateRangeEnd) {
+    public BotUploadRequest(String name, String description, String riskDisclaimer, String strategyType, String disclosedLogic, String strategyConfig, Instant dateRangeStart, Instant dateRangeEnd) {
         this.name = name;
         this.description = description;
+        this.riskDisclaimer = riskDisclaimer;
         this.strategyType = strategyType;
         this.disclosedLogic = disclosedLogic;
         this.strategyConfig = strategyConfig;
@@ -32,6 +34,7 @@ public class BotUploadRequest {
     public static class BotUploadRequestBuilder {
         private String name;
         private String description;
+        private String riskDisclaimer;
         private String strategyType;
         private String disclosedLogic;
         private String strategyConfig;
@@ -45,6 +48,11 @@ public class BotUploadRequest {
 
         public BotUploadRequestBuilder description(String description) {
             this.description = description;
+            return this;
+        }
+
+        public BotUploadRequestBuilder riskDisclaimer(String riskDisclaimer) {
+            this.riskDisclaimer = riskDisclaimer;
             return this;
         }
 
@@ -74,7 +82,7 @@ public class BotUploadRequest {
         }
 
         public BotUploadRequest build() {
-            return new BotUploadRequest(name, description, strategyType, disclosedLogic, strategyConfig, dateRangeStart, dateRangeEnd);
+            return new BotUploadRequest(name, description, riskDisclaimer, strategyType, disclosedLogic, strategyConfig, dateRangeStart, dateRangeEnd);
         }
     }
 
@@ -92,6 +100,14 @@ public class BotUploadRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getRiskDisclaimer() {
+        return riskDisclaimer;
+    }
+
+    public void setRiskDisclaimer(String riskDisclaimer) {
+        this.riskDisclaimer = riskDisclaimer;
     }
 
     public String getStrategyType() {

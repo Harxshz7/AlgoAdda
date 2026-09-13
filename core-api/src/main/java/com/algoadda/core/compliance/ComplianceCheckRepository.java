@@ -4,9 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface ComplianceCheckRepository extends JpaRepository<ComplianceCheck, UUID> {
     List<ComplianceCheck> findByBotVersionId(UUID botVersionId);
+    Optional<ComplianceCheck> findFirstByBotVersionIdOrderByReviewedAtDesc(UUID botVersionId);
+    List<ComplianceCheck> findByPassedFalseOrderByReviewedAtDesc();
 }

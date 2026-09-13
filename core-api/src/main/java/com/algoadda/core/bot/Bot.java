@@ -25,6 +25,9 @@ public class Bot {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "risk_disclaimer", columnDefinition = "TEXT")
+    private String riskDisclaimer;
+
     @Column(name = "strategy_type", nullable = false, length = 100)
     private String strategyType;
 
@@ -39,11 +42,12 @@ public class Bot {
     public Bot() {
     }
 
-    public Bot(UUID id, User seller, String name, String description, String strategyType, BotStatus status, Instant createdAt) {
+    public Bot(UUID id, User seller, String name, String description, String riskDisclaimer, String strategyType, BotStatus status, Instant createdAt) {
         this.id = id;
         this.seller = seller;
         this.name = name;
         this.description = description;
+        this.riskDisclaimer = riskDisclaimer;
         this.strategyType = strategyType;
         this.status = status != null ? status : BotStatus.DRAFT;
         this.createdAt = createdAt;
@@ -58,6 +62,7 @@ public class Bot {
         private User seller;
         private String name;
         private String description;
+        private String riskDisclaimer;
         private String strategyType;
         private BotStatus status = BotStatus.DRAFT;
         private Instant createdAt;
@@ -82,6 +87,11 @@ public class Bot {
             return this;
         }
 
+        public BotBuilder riskDisclaimer(String riskDisclaimer) {
+            this.riskDisclaimer = riskDisclaimer;
+            return this;
+        }
+
         public BotBuilder strategyType(String strategyType) {
             this.strategyType = strategyType;
             return this;
@@ -98,7 +108,7 @@ public class Bot {
         }
 
         public Bot build() {
-            return new Bot(id, seller, name, description, strategyType, status, createdAt);
+            return new Bot(id, seller, name, description, riskDisclaimer, strategyType, status, createdAt);
         }
     }
 
@@ -132,6 +142,14 @@ public class Bot {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getRiskDisclaimer() {
+        return riskDisclaimer;
+    }
+
+    public void setRiskDisclaimer(String riskDisclaimer) {
+        this.riskDisclaimer = riskDisclaimer;
     }
 
     public String getStrategyType() {

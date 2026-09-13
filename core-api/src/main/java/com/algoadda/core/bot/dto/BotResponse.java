@@ -11,6 +11,7 @@ public class BotResponse {
     private UUID sellerId;
     private String name;
     private String description;
+    private String riskDisclaimer;
     private String strategyType;
     private BotStatus status;
     private Instant createdAt;
@@ -19,11 +20,12 @@ public class BotResponse {
     public BotResponse() {
     }
 
-    public BotResponse(UUID id, UUID sellerId, String name, String description, String strategyType, BotStatus status, Instant createdAt, BotVersionResponse latestVersion) {
+    public BotResponse(UUID id, UUID sellerId, String name, String description, String riskDisclaimer, String strategyType, BotStatus status, Instant createdAt, BotVersionResponse latestVersion) {
         this.id = id;
         this.sellerId = sellerId;
         this.name = name;
         this.description = description;
+        this.riskDisclaimer = riskDisclaimer;
         this.strategyType = strategyType;
         this.status = status;
         this.createdAt = createdAt;
@@ -39,6 +41,7 @@ public class BotResponse {
         private UUID sellerId;
         private String name;
         private String description;
+        private String riskDisclaimer;
         private String strategyType;
         private BotStatus status;
         private Instant createdAt;
@@ -64,6 +67,11 @@ public class BotResponse {
             return this;
         }
 
+        public BotResponseBuilder riskDisclaimer(String riskDisclaimer) {
+            this.riskDisclaimer = riskDisclaimer;
+            return this;
+        }
+
         public BotResponseBuilder strategyType(String strategyType) {
             this.strategyType = strategyType;
             return this;
@@ -85,7 +93,7 @@ public class BotResponse {
         }
 
         public BotResponse build() {
-            return new BotResponse(id, sellerId, name, description, strategyType, status, createdAt, latestVersion);
+            return new BotResponse(id, sellerId, name, description, riskDisclaimer, strategyType, status, createdAt, latestVersion);
         }
     }
 
@@ -119,6 +127,14 @@ public class BotResponse {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getRiskDisclaimer() {
+        return riskDisclaimer;
+    }
+
+    public void setRiskDisclaimer(String riskDisclaimer) {
+        this.riskDisclaimer = riskDisclaimer;
     }
 
     public String getStrategyType() {
