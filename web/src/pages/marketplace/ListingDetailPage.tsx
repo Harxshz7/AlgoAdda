@@ -199,9 +199,8 @@ export const ListingDetailPage: React.FC = () => {
                 </div>
               </>
             )}
-          </div>
         </div>
-      </div>v>
+      </div>
 
       {/* Main Grid: Overview & Metrics */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
