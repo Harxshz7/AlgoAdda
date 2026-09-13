@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { Button } from '../ui'
-import { Leaf, Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag } from 'lucide-react'
+import { Leaf, Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag, Sparkles } from 'lucide-react'
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth()
@@ -41,6 +41,17 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
 
             {/* Navigation */}
             <nav className="flex items-center gap-2">
+              <Link to="/store">
+                <Button
+                  variant={isActive('/store') ? 'primary' : 'ghost'}
+                  size="sm"
+                  className="gap-1.5"
+                >
+                  <Sparkles className="w-4 h-4 text-[#C18C5D]" />
+                  <span>Store</span>
+                </Button>
+              </Link>
+
               <Link to="/marketplace">
                 <Button
                   variant={isActive('/marketplace') ? 'primary' : 'ghost'}

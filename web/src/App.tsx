@@ -12,6 +12,8 @@ import { BotUploadPage } from './pages/seller/BotUploadPage'
 import { BotDetailPage } from './pages/seller/BotDetailPage'
 import { MarketplacePage } from './pages/marketplace/MarketplacePage'
 import { ListingDetailPage } from './pages/marketplace/ListingDetailPage'
+import { StorePage } from './pages/store/StorePage'
+import { StoreListingDetailPage } from './pages/store/StoreListingDetailPage'
 import { PublicSellerProfilePage } from './pages/seller/PublicSellerProfilePage'
 import { BuyerDashboardPage } from './pages/buyer/BuyerDashboardPage'
 
@@ -23,6 +25,24 @@ export const App: React.FC = () => {
           {/* Public Auth Routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+
+          {/* Public Official Store Routes */}
+          <Route
+            path="/store"
+            element={
+              <PublicLayout>
+                <StorePage />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/store/:listingId"
+            element={
+              <PublicLayout>
+                <StoreListingDetailPage />
+              </PublicLayout>
+            }
+          />
 
           {/* Public Marketplace Routes */}
           <Route
