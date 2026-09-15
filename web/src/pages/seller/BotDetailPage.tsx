@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { BacktestResultResponse, BacktestMetrics, EquityPoint, SellerDashboardBot } from '../../lib/api'
-import { Button, Card, MetricGauge } from '../../components/ui'
+import { Button, Card, MetricGauge, EquityCurveChart } from '../../components/ui'
 import {
   ArrowLeft,
   ShieldCheck,
@@ -12,15 +12,6 @@ import {
   RefreshCw,
   Sparkles,
 } from 'lucide-react'
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from 'recharts'
 
 export const BotDetailPage: React.FC = () => {
   const { botId } = useParams<{ botId: string }>()
@@ -234,60 +225,8 @@ export const BotDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Industrial Chart Section: Equity Curve */}
-      <Card className="p-6 flex flex-col gap-6">
-        <div className="flex items-center justify-between border-b border-black/5 pb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#2ed573]/20 flex items-center justify-center text-[#2ed573]">
-              <TrendingUp className="w-4 h-4" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-bold font-technical text-[#2d3436] uppercase tracking-wider">
-                SIMULATED EQUITY GROWTH TRAJECTORY
-              </span>
-              <span className="text-[10px] font-technical text-[#718096]">
-                STARTING CAPITAL: ₹10,000.00 • COMPOUNDED PORTFOLIO VALUE
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-technical text-[#718096] uppercase">ENGINE:</span>
-            <span className="text-[10px] font-bold font-technical px-2 py-0.5 rounded bg-[#2ed573]/10 text-[#2ed573] border border-[#2ed573]/30">
-              VECTORBT v0.26
-            </span>
-          </div>
-        </div>
-
-        {/* Recharts Area Chart with Industrial Palette */}
-        <div className="w-full h-72 rounded-xl bg-[#14181f] p-4 shadow-[inset_2px_2px_8px_rgba(0,0,0,0.8)] relative overflow-hidden">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={equityCurve} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="equityGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2ed573" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="#2ed573" stopOpacity={0.0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2d3436" opacity={0.4} />
-              <XAxis dataKey="timestamp" stroke="#718096" fontSize={10} fontFamily="JetBrains Mono, monospace" tickLine={false} />
-              <YAxis stroke="#718096" fontSize={10} fontFamily="JetBrains Mono, monospace" domain={['dataMin - 500', 'dataMax + 500']} tickLine={false} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#1e242d',
-                  border: '1px solid #2ed573',
-                  borderRadius: '8px',
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '11px',
-                  color: '#ffffff',
-                }}
-                formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, 'Portfolio Equity']}
-              />
-              <Area type="monotone" dataKey="equity" stroke="#2ed573" strokeWidth={2.5} fillOpacity={1} fill="url(#equityGradient)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
+      {/* Chart Section: Equity Curve vs Invested Baseline */}
+      <EquityCurveChart equityCurve={equityCurve} metrics={metrics} />
     </div>
   )
 }
