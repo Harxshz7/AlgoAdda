@@ -228,7 +228,7 @@ export const MarketplacePage: React.FC = () => {
                       <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#5D7052]/10 text-[#5D7052] tracking-wide">
                         {listing.strategyType || 'MOMENTUM'}
                       </span>
-                      {(listing.official || listing.is_official) && <OfficialBadge />}
+                      {(listing.official || listing.isOfficial) && <OfficialBadge />}
                     </div>
                     <div className="flex items-center gap-1 font-heading font-extrabold text-lg text-[#2C2C24]">
                       <span>₹{listing.price.toLocaleString()}</span>

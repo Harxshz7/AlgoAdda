@@ -120,7 +120,7 @@ export const ListingDetailPage: React.FC = () => {
               <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#5D7052]/10 text-[#5D7052]">
                 {listing.strategyType}
               </span>
-              {(listing.official || listing.is_official) && <OfficialBadge size="md" />}
+              {(listing.official || listing.isOfficial) && <OfficialBadge size="md" />}
             </div>
             <span className="text-xs text-[#78786C]">
               Published by{' '}
