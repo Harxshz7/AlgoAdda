@@ -7,54 +7,54 @@ import { ShieldCheck, FileCode, BarChart3, AlertCircle, ArrowRight, Lock, Sparkl
 const PipelineIllustration: React.FC = () => {
   return (
     <svg
-      viewBox="0 0 800 220"
+      viewBox="0 0 820 200"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="w-full h-auto max-h-64"
+      className="w-full h-auto min-w-[680px]"
     >
       {/* Connecting Flow Lines */}
-      <path d="M 180 110 L 260 110" stroke="#DED8CF" strokeWidth="3" strokeDasharray="6 6" />
-      <path d="M 380 110 L 460 110" stroke="#DED8CF" strokeWidth="3" strokeDasharray="6 6" />
-      <path d="M 580 110 L 660 110" stroke="#5D7052" strokeWidth="3" strokeDasharray="6 6" />
+      <path d="M 190 105 L 230 105" stroke="#DED8CF" strokeWidth="3" strokeDasharray="6 6" />
+      <path d="M 390 105 L 430 105" stroke="#DED8CF" strokeWidth="3" strokeDasharray="6 6" />
+      <path d="M 590 105 L 630 105" stroke="#5D7052" strokeWidth="3" strokeDasharray="6 6" />
 
       {/* Node 1: Disclosed Strategy Logic */}
-      <g transform="translate(40, 40)">
-        <rect width="140" height="140" rx="16" fill="#FDFCF8" stroke="#DED8CF" strokeWidth="2" />
-        <rect x="20" y="20" width="36" height="36" rx="8" fill="#5D7052" opacity="0.12" />
-        <path d="M 32 32 L 44 32 M 32 38 L 44 38 M 32 44 L 40 44" stroke="#5D7052" strokeWidth="2" strokeLinecap="round" />
-        <text x="20" y="82" fill="#2C2C24" fontSize="13" fontWeight="700" fontFamily="Nunito, sans-serif">1. Disclosed Logic</text>
-        <text x="20" y="100" fill="#78786C" fontSize="11" fontFamily="Nunito, sans-serif">Full source &amp; params</text>
-        <text x="20" y="116" fill="#78786C" fontSize="11" fontFamily="Nunito, sans-serif">no black boxes</text>
+      <g transform="translate(30, 35)">
+        <rect width="160" height="140" rx="16" fill="#FDFCF8" stroke="#DED8CF" strokeWidth="2" />
+        <rect x="62" y="18" width="36" height="36" rx="8" fill="#5D7052" opacity="0.12" />
+        <path d="M 74 30 L 86 30 M 74 36 L 86 36 M 74 42 L 82 42" stroke="#5D7052" strokeWidth="2" strokeLinecap="round" />
+        <text x="80" y="80" fill="#2C2C24" fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="Nunito, sans-serif">1. Disclosed Logic</text>
+        <text x="80" y="98" fill="#78786C" fontSize="10.5" textAnchor="middle" fontFamily="Nunito, sans-serif">Full source &amp; params</text>
+        <text x="80" y="114" fill="#78786C" fontSize="10.5" textAnchor="middle" fontFamily="Nunito, sans-serif">Zero black boxes</text>
       </g>
 
       {/* Node 2: VectorBT Engine */}
-      <g transform="translate(240, 40)">
-        <rect width="140" height="140" rx="16" fill="#FDFCF8" stroke="#DED8CF" strokeWidth="2" />
-        <rect x="20" y="20" width="36" height="36" rx="8" fill="#2C2C24" opacity="0.1" />
-        <path d="M 30 46 L 36 34 L 42 40 L 48 28" stroke="#2C2C24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <text x="20" y="82" fill="#2C2C24" fontSize="13" fontWeight="700" fontFamily="Nunito, sans-serif">2. VectorBT Backtest</text>
-        <text x="20" y="100" fill="#78786C" fontSize="11" fontFamily="Nunito, sans-serif">Automated quantitative</text>
-        <text x="20" y="116" fill="#78786C" fontSize="11" fontFamily="Nunito, sans-serif">drawdown calculation</text>
+      <g transform="translate(230, 35)">
+        <rect width="160" height="140" rx="16" fill="#FDFCF8" stroke="#DED8CF" strokeWidth="2" />
+        <rect x="62" y="18" width="36" height="36" rx="8" fill="#2C2C24" opacity="0.1" />
+        <path d="M 72 44 L 78 32 L 84 38 L 90 26" stroke="#2C2C24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <text x="80" y="80" fill="#2C2C24" fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="Nunito, sans-serif">2. VectorBT Backtest</text>
+        <text x="80" y="98" fill="#78786C" fontSize="10.5" textAnchor="middle" fontFamily="Nunito, sans-serif">Automated quant audit</text>
+        <text x="80" y="114" fill="#78786C" fontSize="10.5" textAnchor="middle" fontFamily="Nunito, sans-serif">Verified drawdown</text>
       </g>
 
       {/* Node 3: Compliance Gate */}
-      <g transform="translate(440, 40)">
-        <rect width="140" height="140" rx="16" fill="#FDFCF8" stroke="#C18C5D" strokeWidth="2" />
-        <rect x="20" y="20" width="36" height="36" rx="8" fill="#C18C5D" opacity="0.15" />
-        <path d="M 38 28 L 46 32 V 40 C 46 45 42 49 38 50 C 34 49 30 45 30 40 V 32 L 38 28 Z" stroke="#C18C5D" strokeWidth="2" fill="none" />
-        <text x="20" y="82" fill="#2C2C24" fontSize="13" fontWeight="700" fontFamily="Nunito, sans-serif">3. Compliance Gate</text>
-        <text x="20" y="100" fill="#78786C" fontSize="11" fontFamily="Nunito, sans-serif">White box rule check</text>
-        <text x="20" y="116" fill="#78786C" fontSize="11" fontFamily="Nunito, sans-serif">no claims policy</text>
+      <g transform="translate(430, 35)">
+        <rect width="160" height="140" rx="16" fill="#FDFCF8" stroke="#C18C5D" strokeWidth="2" />
+        <rect x="62" y="18" width="36" height="36" rx="8" fill="#C18C5D" opacity="0.15" />
+        <path d="M 80 26 L 88 30 V 38 C 88 43 84 47 80 48 C 76 47 72 43 72 38 V 30 L 80 26 Z" stroke="#C18C5D" strokeWidth="2" fill="none" />
+        <text x="80" y="80" fill="#2C2C24" fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="Nunito, sans-serif">3. Compliance Gate</text>
+        <text x="80" y="98" fill="#78786C" fontSize="10.5" textAnchor="middle" fontFamily="Nunito, sans-serif">White-box audit check</text>
+        <text x="80" y="114" fill="#78786C" fontSize="10.5" textAnchor="middle" fontFamily="Nunito, sans-serif">No claims policy</text>
       </g>
 
       {/* Node 4: Verified Marketplace Listing */}
-      <g transform="translate(640, 40)">
-        <rect width="140" height="140" rx="16" fill="#5D7052" opacity="0.06" stroke="#5D7052" strokeWidth="2" />
-        <rect x="20" y="20" width="36" height="36" rx="8" fill="#5D7052" />
-        <path d="M 31 38 L 36 43 L 45 33" stroke="#FDFCF8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        <text x="20" y="82" fill="#2C2C24" fontSize="13" fontWeight="700" fontFamily="Nunito, sans-serif">4. Verified Listing</text>
-        <text x="20" y="100" fill="#5D7052" fontSize="11" fontWeight="600" fontFamily="Nunito, sans-serif">SEBI-aligned store</text>
-        <text x="20" y="116" fill="#78786C" fontSize="11" fontFamily="Nunito, sans-serif">one-click deployment</text>
+      <g transform="translate(630, 35)">
+        <rect width="160" height="140" rx="16" fill="#5D7052" opacity="0.06" stroke="#5D7052" strokeWidth="2" />
+        <rect x="62" y="18" width="36" height="36" rx="8" fill="#5D7052" />
+        <path d="M 73 36 L 78 41 L 87 31" stroke="#FDFCF8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <text x="80" y="80" fill="#2C2C24" fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="Nunito, sans-serif">4. Verified Listing</text>
+        <text x="80" y="98" fill="#5D7052" fontSize="10.5" fontWeight="600" textAnchor="middle" fontFamily="Nunito, sans-serif">SEBI-aligned store</text>
+        <text x="80" y="114" fill="#78786C" fontSize="10.5" textAnchor="middle" fontFamily="Nunito, sans-serif">1-click deployment</text>
       </g>
     </svg>
   )
