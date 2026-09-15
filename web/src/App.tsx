@@ -16,6 +16,7 @@ import { StorePage } from './pages/store/StorePage'
 import { StoreListingDetailPage } from './pages/store/StoreListingDetailPage'
 import { PublicSellerProfilePage } from './pages/seller/PublicSellerProfilePage'
 import { BuyerDashboardPage } from './pages/buyer/BuyerDashboardPage'
+import { AboutPage } from './pages/about/AboutPage'
 
 export const App: React.FC = () => {
   return (
@@ -25,6 +26,16 @@ export const App: React.FC = () => {
           {/* Public Auth Routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+
+          {/* Public About Route */}
+          <Route
+            path="/about"
+            element={
+              <PublicLayout>
+                <AboutPage />
+              </PublicLayout>
+            }
+          />
 
           {/* Public Official Store Routes */}
           <Route

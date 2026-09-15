@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { Button, LogoIcon } from '../ui'
-import { Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag, Sparkles } from 'lucide-react'
+import { Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag, Sparkles, Info } from 'lucide-react'
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth()
@@ -14,7 +14,7 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
     navigate('/login')
   }
 
-  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/')
+  const isActive = (path: string) => location.pathname === path || (path !== '/' && location.pathname.startsWith(path))
 
   return (
     <div className="min-h-screen bg-[#FDFCF8] text-[#2C2C24] flex flex-col selection:bg-[#5D7052]/20 selection:text-[#5D7052]">
@@ -58,6 +58,17 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
                 >
                   <Store className="w-4 h-4" />
                   <span>Marketplace</span>
+                </Button>
+              </Link>
+
+              <Link to="/about">
+                <Button
+                  variant={isActive('/about') ? 'primary' : 'ghost'}
+                  size="sm"
+                  className="gap-1.5"
+                >
+                  <Info className="w-4 h-4" />
+                  <span>About</span>
                 </Button>
               </Link>
 
@@ -141,11 +152,15 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
       {/* Organic Footer */}
       <footer className="mt-auto border-t border-[#DED8CF]/50 py-5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div className="flex items-center gap-3 text-xs font-body text-[#78786C]">
+            <span>AlgoAdda · Transparent White-Box Strategy Marketplace</span>
+            <span>·</span>
+            <Link to="/about" className="hover:text-[#5D7052] underline font-semibold transition-colors">
+              About &amp; Compliance
+            </Link>
+          </div>
           <span className="text-xs font-body text-[#78786C]">
-            AlgoAdda · Transparent White-Box Strategy Marketplace
-          </span>
-          <span className="text-xs font-body text-[#78786C]">
-            Verified Backtests & Disclosed Strategy Logic
+            Verified Backtests &amp; Disclosed Strategy Logic
           </span>
         </div>
       </footer>
