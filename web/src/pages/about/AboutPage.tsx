@@ -77,22 +77,97 @@ export const AboutPage: React.FC = () => {
         </p>
       </div>
 
-      {/* 2. Visual Pipeline Illustration Card */}
-      <Card className="p-6 sm:p-8 flex flex-col gap-6">
+      {/* 2. How White Box Verification Works (4 Native Cards + Responsive Diagram) */}
+      <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <span className="text-xs font-semibold uppercase tracking-wider text-[#C18C5D]">
             Verification Process
           </span>
-          <h2 className="text-xl font-heading font-bold text-[#2C2C24]">
+          <h2 className="text-2xl font-heading font-bold text-[#2C2C24]">
             How White Box Verification Works
           </h2>
+          <p className="text-sm text-[#78786C]">
+            Every strategy undergoes an automated 4-stage compliance &amp; quantitative verification lifecycle before listing.
+          </p>
         </div>
-        
-        {/* SVG Diagram */}
-        <div className="p-4 rounded-2xl bg-[#FDFCF8] border border-[#DED8CF]/60 overflow-x-auto">
-          <PipelineIllustration />
+
+        {/* 4 Step Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="p-5 flex flex-col justify-between gap-4 border-t-4 border-t-[#5D7052]">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="w-7 h-7 rounded-full bg-[#5D7052]/10 text-[#5D7052] font-bold text-xs flex items-center justify-center">1</span>
+                <FileCode className="w-4 h-4 text-[#5D7052]" />
+              </div>
+              <h3 className="font-heading font-bold text-base text-[#2C2C24]">1. Disclosed Logic</h3>
+              <p className="text-xs font-body text-[#78786C] leading-relaxed">
+                Sellers upload complete source code, indicators, and risk parameters. No hidden black boxes.
+              </p>
+            </div>
+            <span className="text-[11px] font-semibold text-[#5D7052] bg-[#5D7052]/10 px-2 py-0.5 rounded self-start">
+              Source Disclosed
+            </span>
+          </Card>
+
+          <Card className="p-5 flex flex-col justify-between gap-4 border-t-4 border-t-[#2C2C24]">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="w-7 h-7 rounded-full bg-[#2C2C24]/10 text-[#2C2C24] font-bold text-xs flex items-center justify-center">2</span>
+                <BarChart3 className="w-4 h-4 text-[#2C2C24]" />
+              </div>
+              <h3 className="font-heading font-bold text-base text-[#2C2C24]">2. VectorBT Backtest</h3>
+              <p className="text-xs font-body text-[#78786C] leading-relaxed">
+                Automated quantitative execution calculates win rate, max drawdown, and equity trajectory.
+              </p>
+            </div>
+            <span className="text-[11px] font-semibold text-[#2C2C24] bg-[#2C2C24]/10 px-2 py-0.5 rounded self-start">
+              Quantitative Audit
+            </span>
+          </Card>
+
+          <Card className="p-5 flex flex-col justify-between gap-4 border-t-4 border-t-[#C18C5D]">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="w-7 h-7 rounded-full bg-[#C18C5D]/15 text-[#C18C5D] font-bold text-xs flex items-center justify-center">3</span>
+                <ShieldCheck className="w-4 h-4 text-[#C18C5D]" />
+              </div>
+              <h3 className="font-heading font-bold text-base text-[#2C2C24]">3. Compliance Gate</h3>
+              <p className="text-xs font-body text-[#78786C] leading-relaxed">
+                White box checklist audit to enforce risk disclosures and prohibit guaranteed claims.
+              </p>
+            </div>
+            <span className="text-[11px] font-semibold text-[#C18C5D] bg-[#C18C5D]/15 px-2 py-0.5 rounded self-start">
+              SEBI Alignment
+            </span>
+          </Card>
+
+          <Card className="p-5 flex flex-col justify-between gap-4 border-t-4 border-t-[#5D7052]">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="w-7 h-7 rounded-full bg-[#5D7052] text-white font-bold text-xs flex items-center justify-center">4</span>
+                <Sparkles className="w-4 h-4 text-[#5D7052]" />
+              </div>
+              <h3 className="font-heading font-bold text-base text-[#2C2C24]">4. Verified Listing</h3>
+              <p className="text-xs font-body text-[#78786C] leading-relaxed">
+                Published on official store or marketplace with transparent metrics and one-click licensing.
+              </p>
+            </div>
+            <span className="text-[11px] font-semibold text-[#5D7052] bg-[#5D7052]/10 px-2 py-0.5 rounded self-start">
+              Live &amp; Verified
+            </span>
+          </Card>
         </div>
-      </Card>
+
+        {/* Scalable SVG Flow Diagram Card */}
+        <Card className="p-6 flex flex-col gap-3 overflow-hidden">
+          <span className="text-xs font-semibold text-[#78786C] uppercase tracking-wider">
+            Verification Pipeline Diagram
+          </span>
+          <div className="w-full overflow-x-auto p-2 bg-[#FDFCF8] rounded-xl border border-[#DED8CF]/50">
+            <PipelineIllustration />
+          </div>
+        </Card>
+      </div>
 
       {/* 3. Why White Box Matters */}
       <div className="flex flex-col gap-6">
@@ -146,63 +221,6 @@ export const AboutPage: React.FC = () => {
           </Card>
         </div>
       </div>
-
-      {/* 4. How It Works (Step by Step) */}
-      <Card className="p-6 sm:p-8 flex flex-col gap-6">
-        <h2 className="text-xl font-heading font-bold text-[#2C2C24]">
-          Platform Architecture &amp; Lifecycle
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="flex gap-4">
-            <div className="w-8 h-8 rounded-full bg-[#5D7052] text-white flex items-center justify-center shrink-0 font-bold text-sm">
-              1
-            </div>
-            <div className="flex flex-col gap-1">
-              <h4 className="font-heading font-bold text-base text-[#2C2C24]">Strategy Submission &amp; Disclosure</h4>
-              <p className="text-xs text-[#78786C] leading-relaxed">
-                Quantitative sellers submit algorithm code, disclose indicators, and configure parameters via the Seller Portal.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <div className="w-8 h-8 rounded-full bg-[#5D7052] text-white flex items-center justify-center shrink-0 font-bold text-sm">
-              2
-            </div>
-            <div className="flex flex-col gap-1">
-              <h4 className="font-heading font-bold text-base text-[#2C2C24]">Automated VectorBT Execution</h4>
-              <p className="text-xs text-[#78786C] leading-relaxed">
-                The backtest service runs vectorized simulations to generate win rate, Sharpe ratio, and initial capital equity curves.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <div className="w-8 h-8 rounded-full bg-[#5D7052] text-white flex items-center justify-center shrink-0 font-bold text-sm">
-              3
-            </div>
-            <div className="flex flex-col gap-1">
-              <h4 className="font-heading font-bold text-base text-[#2C2C24]">Compliance Audit Gate</h4>
-              <p className="text-xs text-[#78786C] leading-relaxed">
-                Checklist audit validates strategy disclosures and rejects listings containing non-compliant language.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <div className="w-8 h-8 rounded-full bg-[#5D7052] text-white flex items-center justify-center shrink-0 font-bold text-sm">
-              4
-            </div>
-            <div className="flex flex-col gap-1">
-              <h4 className="font-heading font-bold text-base text-[#2C2C24]">Marketplace Publishing</h4>
-              <p className="text-xs text-[#78786C] leading-relaxed">
-                Verified listings go live on the Marketplace and Official Store for buyer discovery and licensing.
-              </p>
-            </div>
-          </div>
-        </div>
-      </Card>
 
       {/* 5. Platform Regulatory Disclaimer */}
       <div className="p-6 rounded-2xl bg-[#5D7052]/5 border border-[#5D7052]/20 flex flex-col sm:flex-row items-start gap-4">
