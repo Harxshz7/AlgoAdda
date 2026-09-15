@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { Button } from '../ui'
-import { Leaf, Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag, Sparkles } from 'lucide-react'
+import { Button, LogoIcon } from '../ui'
+import { Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag, Sparkles } from 'lucide-react'
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth()
@@ -31,9 +31,7 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
           >
             {/* Logo */}
             <Link to="/marketplace" className="flex items-center gap-3 group">
-              <div className="w-9 h-9 rounded-full bg-[#5D7052] flex items-center justify-center group-hover:scale-105 transition-all duration-300">
-                <Leaf className="w-4 h-4 text-white" />
-              </div>
+              <LogoIcon className="w-9 h-9 group-hover:scale-105 transition-all duration-300" />
               <span className="font-heading font-bold text-lg text-[#2C2C24] tracking-tight">
                 AlgoAdda
               </span>
