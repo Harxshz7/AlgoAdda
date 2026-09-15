@@ -5,8 +5,6 @@ import type { ListingSummary, PageResponse } from '../../lib/api'
 import { Card, Button, Input, Select } from '../../components/ui'
 import {
   Search,
-  Filter,
-  ShieldCheck,
   User,
   SlidersHorizontal,
   ChevronLeft,
