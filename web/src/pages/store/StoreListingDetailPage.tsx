@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingDetail, BacktestMetrics, EquityPoint } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
-import { Button, Card, MetricGauge, EquityCurveChart } from '../../components/ui'
+import { Button, Card, MetricGauge, EquityCurveChart, OfficialBadge } from '../../components/ui'
 import {
   ArrowLeft,
   ShieldCheck,
@@ -121,6 +121,7 @@ export const StoreListingDetailPage: React.FC = () => {
                 <Sparkles className="w-3 h-3" />
                 <span>OFFICIAL</span>
               </span>
+              <OfficialBadge size="md" />
             </div>
             <span className="text-xs text-[#78786C]">
               Official strategy by{' '}

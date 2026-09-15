@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingSummary, PageResponse } from '../../lib/api'
-import { Card, Button, Input, Select } from '../../components/ui'
+import { Card, Button, Input, Select, OfficialBadge } from '../../components/ui'
 import {
   Search,
   Filter,
@@ -224,9 +224,12 @@ export const MarketplacePage: React.FC = () => {
                 <div className="flex flex-col gap-4">
                   {/* Card Header: Strategy Badge + Price */}
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#5D7052]/10 text-[#5D7052] tracking-wide">
-                      {listing.strategyType || 'MOMENTUM'}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#5D7052]/10 text-[#5D7052] tracking-wide">
+                        {listing.strategyType || 'MOMENTUM'}
+                      </span>
+                      {(listing.official || listing.is_official) && <OfficialBadge />}
+                    </div>
                     <div className="flex items-center gap-1 font-heading font-extrabold text-lg text-[#2C2C24]">
                       <span>₹{listing.price.toLocaleString()}</span>
                       <span className="text-[11px] font-normal text-[#78786C]">

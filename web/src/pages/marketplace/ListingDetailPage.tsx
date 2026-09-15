@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingDetail, BacktestMetrics, EquityPoint } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
-import { Button, Card, MetricGauge, EquityCurveChart } from '../../components/ui'
+import { Button, Card, MetricGauge, EquityCurveChart, OfficialBadge } from '../../components/ui'
 import {
   ArrowLeft,
   ShieldCheck,
@@ -120,6 +120,7 @@ export const ListingDetailPage: React.FC = () => {
               <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#5D7052]/10 text-[#5D7052]">
                 {listing.strategyType}
               </span>
+              {(listing.official || listing.is_official) && <OfficialBadge size="md" />}
             </div>
             <span className="text-xs text-[#78786C]">
               Published by{' '}

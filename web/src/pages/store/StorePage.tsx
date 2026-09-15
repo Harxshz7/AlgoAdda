@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingSummary, PageResponse } from '../../lib/api'
-import { Card, Button, Input, Select } from '../../components/ui'
+import { Card, Button, Input, Select, OfficialBadge } from '../../components/ui'
 import {
   Search,
   User,
@@ -223,12 +223,15 @@ export const StorePage: React.FC = () => {
             {listingsPage.content.map((listing) => (
               <Card key={listing.listingId} interactive className="p-6 flex flex-col justify-between gap-6 border-l-4 border-l-[#C18C5D]">
                 <div className="flex flex-col gap-4">
-                  {/* Card Header: Strategy Badge + Price */}
+                  {/* Card Header: Strategy Badge + Official Badge + Price */}
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#C18C5D]/10 text-[#C18C5D] tracking-wide flex items-center gap-1">
-                      <Sparkles className="w-3 h-3" />
-                      <span>{listing.strategyType || 'OFFICIAL'}</span>
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#C18C5D]/10 text-[#C18C5D] tracking-wide flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" />
+                        <span>{listing.strategyType || 'OFFICIAL'}</span>
+                      </span>
+                      <OfficialBadge />
+                    </div>
                     <div className="flex items-center gap-1 font-heading font-extrabold text-lg text-[#2C2C24]">
                       <span>₹{listing.price.toLocaleString()}</span>
                       <span className="text-[11px] font-normal text-[#78786C]">
@@ -245,7 +248,6 @@ export const StorePage: React.FC = () => {
                     <div className="inline-flex items-center gap-1 text-xs text-[#78786C]">
                       <User className="w-3.5 h-3.5" />
                       <span>by <strong className="text-[#2C2C24]">{listing.sellerDisplayName}</strong></span>
-                      <span className="ml-1 px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#5D7052]/10 text-[#5D7052]">OFFICIAL</span>
                     </div>
                   </div>
 
