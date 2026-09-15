@@ -3,11 +3,10 @@ import { useParams, Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingDetail, BacktestMetrics, EquityPoint } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
-import { Button, Card, MetricGauge } from '../../components/ui'
+import { Button, Card, MetricGauge, EquityCurveChart } from '../../components/ui'
 import {
   ArrowLeft,
   ShieldCheck,
-  TrendingUp,
   AlertTriangle,
   FileCode,
   ShoppingCart,
@@ -18,15 +17,6 @@ import {
   LogIn,
   Sparkles,
 } from 'lucide-react'
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from 'recharts'
 
 export const StoreListingDetailPage: React.FC = () => {
   const { listingId } = useParams<{ listingId: string }>()
@@ -351,53 +341,8 @@ export const StoreListingDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Simulated Equity Growth Trajectory Chart */}
-      <Card className="p-6 flex flex-col gap-6">
-        <div className="flex items-center justify-between border-b border-[#DED8CF]/40 pb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#5D7052]/10 flex items-center justify-center text-[#5D7052]">
-              <TrendingUp className="w-4 h-4" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-bold text-[#2C2C24] uppercase tracking-wider">
-                Simulated Equity Growth Trajectory
-              </span>
-              <span className="text-xs text-[#78786C]">
-                STARTING CAPITAL: ₹10,000.00 • COMPOUNDED PORTFOLIO VALUE
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Recharts Area Chart with Dark Chassis Palette */}
-        <div className="w-full h-72 rounded-xl bg-[#14181f] p-4 shadow-[inset_2px_2px_8px_rgba(0,0,0,0.8)] relative overflow-hidden">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={equityCurve} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="equityGradientStore" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#C18C5D" stopOpacity={0.5} />
-                  <stop offset="95%" stopColor="#C18C5D" stopOpacity={0.0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2d3436" opacity={0.4} />
-              <XAxis dataKey="timestamp" stroke="#718096" fontSize={10} fontFamily="JetBrains Mono, monospace" tickLine={false} />
-              <YAxis stroke="#718096" fontSize={10} fontFamily="JetBrains Mono, monospace" domain={['dataMin - 500', 'dataMax + 500']} tickLine={false} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#1e242d',
-                  border: '1px solid #C18C5D',
-                  borderRadius: '8px',
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '11px',
-                  color: '#ffffff',
-                }}
-                formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, 'Portfolio Equity']}
-              />
-              <Area type="monotone" dataKey="equity" stroke="#C18C5D" strokeWidth={2.5} fillOpacity={1} fill="url(#equityGradientStore)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
+      {/* Chart Section: Equity Curve vs Invested Baseline */}
+      <EquityCurveChart equityCurve={equityCurve} metrics={metrics} />
     </div>
   )
 }

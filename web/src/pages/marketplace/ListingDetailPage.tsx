@@ -7,7 +7,6 @@ import { Button, Card, MetricGauge, EquityCurveChart } from '../../components/ui
 import {
   ArrowLeft,
   ShieldCheck,
-  TrendingUp,
   AlertTriangle,
   FileCode,
   ShoppingCart,
