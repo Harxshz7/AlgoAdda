@@ -7,7 +7,6 @@ import com.algoadda.core.bot.dto.PublishResponse;
 import com.algoadda.core.bot.service.BotService;
 import com.algoadda.core.compliance.ComplianceService;
 import com.algoadda.core.listing.LicenseType;
-import com.algoadda.core.listing.ListingRepository;
 import com.algoadda.core.user.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -30,6 +29,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("null")
 @Component
 @Profile("seed-demo")
 public class DemoDataSeeder implements CommandLineRunner {
@@ -41,7 +41,6 @@ public class DemoDataSeeder implements CommandLineRunner {
     private final BotRepository botRepository;
     private final BotVersionRepository botVersionRepository;
     private final BacktestResultRepository backtestResultRepository;
-    private final ListingRepository listingRepository;
     private final BotService botService;
     private final ComplianceService complianceService;
     private final PasswordEncoder passwordEncoder;
@@ -56,7 +55,6 @@ public class DemoDataSeeder implements CommandLineRunner {
         BotRepository botRepository,
         BotVersionRepository botVersionRepository,
         BacktestResultRepository backtestResultRepository,
-        ListingRepository listingRepository,
         BotService botService,
         ComplianceService complianceService,
         PasswordEncoder passwordEncoder,
@@ -67,7 +65,6 @@ public class DemoDataSeeder implements CommandLineRunner {
         this.botRepository = botRepository;
         this.botVersionRepository = botVersionRepository;
         this.backtestResultRepository = backtestResultRepository;
-        this.listingRepository = listingRepository;
         this.botService = botService;
         this.complianceService = complianceService;
         this.passwordEncoder = passwordEncoder;
@@ -220,7 +217,6 @@ public class DemoDataSeeder implements CommandLineRunner {
         var botResponse = botService.createBot(seller.getId(), uploadReq, file);
         UUID botId = botResponse.getId();
 
-        Bot bot = botRepository.findById(botId).orElseThrow();
         BotVersion version = botVersionRepository.findByBotId(botId).get(0);
 
         // Ensure a completed BacktestResult exists with realistic metrics
@@ -302,7 +298,9 @@ public class DemoDataSeeder implements CommandLineRunner {
         @Override public InputStream getInputStream() { return new ByteArrayInputStream(content); }
         @Override
         public void transferTo(File dest) throws IOException, IllegalStateException {
-            Files.write(dest.toPath(), content);
+            if (dest != null) {
+                Files.write(dest.toPath(), content);
+            }
         }
     }
 }
