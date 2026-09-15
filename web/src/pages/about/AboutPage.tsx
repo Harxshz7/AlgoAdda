@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Card, Button, OfficialBadge } from '../../components/ui'
-import { ShieldCheck, FileCode, BarChart3, CheckCircle2, AlertCircle, ArrowRight, Lock, Sparkles } from 'lucide-react'
+import { Card, Button } from '../../components/ui'
+import { ShieldCheck, FileCode, BarChart3, AlertCircle, ArrowRight, Lock, Sparkles } from 'lucide-react'
 
 // White Box Verification Pipeline SVG Illustration
 const PipelineIllustration: React.FC = () => {
