@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingDetail, BacktestMetrics, EquityPoint } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
@@ -21,12 +21,14 @@ import {
 export const StoreListingDetailPage: React.FC = () => {
   const { listingId } = useParams<{ listingId: string }>()
   const { user } = useAuth()
+  const navigate = useNavigate()
 
   const [listing, setListing] = useState<ListingDetail | null>(null)
   const [metrics, setMetrics] = useState<BacktestMetrics | null>(null)
   const [equityCurve, setEquityCurve] = useState<EquityPoint[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isPurchasing, setIsPurchasing] = useState(false)
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -74,6 +76,60 @@ export const StoreListingDetailPage: React.FC = () => {
       setEquityCurve(points)
     }
   }, [metrics])
+
+  const handleBuy = async () => {
+    if (!listing) return
+    setIsPurchasing(true)
+    try {
+      const orderRes = await api.createOrder(listing.listingId)
+
+      const loadSDK = (): Promise<boolean> => {
+        return new Promise((resolve) => {
+          if ((window as any).Razorpay) {
+            resolve(true)
+            return
+          }
+          const script = document.createElement('script')
+          script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+          script.onload = () => resolve(true)
+          script.onerror = () => resolve(false)
+          document.body.appendChild(script)
+        })
+      }
+
+      const loaded = await loadSDK()
+      if (!loaded) {
+        alert('Failed to load Razorpay checkout SDK. Please check your network connection.')
+        setIsPurchasing(false)
+        return
+      }
+
+      const options = {
+        key: orderRes.razorpayKeyId,
+        amount: orderRes.amountInPaise,
+        currency: orderRes.currency,
+        name: 'AlgoAdda Official Store',
+        description: `License purchase for ${listing.name}`,
+        order_id: orderRes.razorpayOrderId,
+        handler: async function () {
+          navigate('/buyer/dashboard')
+        },
+        prefill: {
+          email: user?.email || '',
+        },
+        theme: {
+          color: '#5D7052',
+        },
+      }
+
+      const rzp = new (window as any).Razorpay(options)
+      rzp.open()
+    } catch (err: any) {
+      alert(`Order creation failed: ${err.message || 'Please try again'}`)
+    } finally {
+      setIsPurchasing(false)
+    }
+  }
 
   if (isLoading) {
     return (
@@ -132,7 +188,7 @@ export const StoreListingDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Pricing & Phase 5 Disabled Buy CTA */}
+        {/* Pricing & Buy CTA */}
         <div className="flex items-center gap-4">
           <div className="flex flex-col items-end leading-tight">
             <span className="text-2xl font-heading font-black text-[#2C2C24]">
@@ -143,7 +199,6 @@ export const StoreListingDetailPage: React.FC = () => {
             </span>
           </div>
 
-          {/* Buy Button - Contextual Tooltip */}
           <div className="relative group">
             {!user ? (
               <Link to="/login">
@@ -172,24 +227,20 @@ export const StoreListingDetailPage: React.FC = () => {
                 </div>
               </>
             ) : (
-              <>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  disabled
-                  className="gap-2 opacity-60 cursor-not-allowed shadow-none"
-                >
+              <Button
+                variant="primary"
+                size="lg"
+                disabled={isPurchasing}
+                onClick={handleBuy}
+                className="gap-2"
+              >
+                {isPurchasing ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
                   <ShoppingCart className="w-5 h-5" />
-                  <span>Buy Algorithm</span>
-                </Button>
-                <div className="absolute right-0 bottom-full mb-2 hidden group-hover:block w-64 p-3 rounded-xl bg-[#2C2C24] text-white text-xs font-body shadow-xl z-50">
-                  <div className="flex items-center gap-1.5 font-semibold text-[#5D7052] mb-1">
-                    <Lock className="w-3.5 h-3.5" />
-                    <span>Phase 5 Upcoming</span>
-                  </div>
-                  Checkout &amp; purchasing flow coming soon in Phase 5.
-                </div>
-              </>
+                )}
+                <span>{isPurchasing ? 'Processing Order...' : 'Buy Algorithm'}</span>
+              </Button>
             )}
           </div>
         </div>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Card, Button } from '../ui'
-import { ShoppingBag, ArrowRight, ShieldCheck, Sparkles, Download, CheckCircle2, AlertTriangle, FileCode } from 'lucide-react'
-import { api, BuyerLicense } from '../../lib/api'
+import { ShoppingBag, ArrowRight, ShieldCheck, Sparkles, Download, CheckCircle2, AlertTriangle } from 'lucide-react'
+import { api, type BuyerLicense } from '../../lib/api'
 
 export const PurchasedBotsList: React.FC = () => {
   const [licenses, setLicenses] = useState<BuyerLicense[]>([])
