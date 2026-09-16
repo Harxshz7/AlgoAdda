@@ -6,7 +6,6 @@ import com.algoadda.core.bot.service.S3StorageService;
 import com.algoadda.core.order.dto.DownloadLicenseResponse;
 import com.algoadda.core.user.SellerProfileRepository;
 import com.algoadda.core.user.User;
-import com.algoadda.core.user.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

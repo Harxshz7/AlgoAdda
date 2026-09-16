@@ -4,8 +4,8 @@ import com.algoadda.core.bot.Bot;
 import com.algoadda.core.bot.BotVersion;
 import com.algoadda.core.listing.LicenseType;
 import com.algoadda.core.listing.Listing;
+import com.algoadda.core.user.Role;
 import com.algoadda.core.user.User;
-import com.algoadda.core.user.UserRole;
 import com.algoadda.core.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,7 +55,7 @@ public class PaymentWebhookTest {
         buyer = new User();
         buyer.setId(UUID.randomUUID());
         buyer.setEmail("buyer@example.com");
-        buyer.setRole(UserRole.BUYER);
+        buyer.setRole(Role.BUYER);
 
         Bot bot = new Bot();
         bot.setId(UUID.randomUUID());

@@ -7,8 +7,8 @@ import com.algoadda.core.listing.Listing;
 import com.algoadda.core.listing.ListingRepository;
 import com.algoadda.core.order.dto.CreateOrderRequest;
 import com.algoadda.core.order.dto.OrderResponse;
+import com.algoadda.core.user.Role;
 import com.algoadda.core.user.User;
-import com.algoadda.core.user.UserRole;
 import com.algoadda.core.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,7 +62,7 @@ public class OrderServiceTest {
         buyer = new User();
         buyer.setId(buyerId);
         buyer.setEmail("buyer@example.com");
-        buyer.setRole(UserRole.BUYER);
+        buyer.setRole(Role.BUYER);
 
         Bot bot = new Bot();
         bot.setId(UUID.randomUUID());
