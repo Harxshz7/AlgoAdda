@@ -1,11 +1,13 @@
 import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useCart } from '../../context/CartContext'
 import { Button, LogoIcon } from '../ui'
-import { Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag, Sparkles, Info } from 'lucide-react'
+import { Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag, Sparkles, Info, ShoppingCart } from 'lucide-react'
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth()
+  const { cartCount } = useCart()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -86,16 +88,35 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
               )}
 
               {user?.role === 'BUYER' && (
-                <Link to="/buyer/dashboard">
-                  <Button
-                    variant={isActive('/buyer') ? 'primary' : 'ghost'}
-                    size="sm"
-                    className="gap-1.5"
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                    <span>My Purchased Bots</span>
-                  </Button>
-                </Link>
+                <>
+                  <Link to="/buyer/dashboard">
+                    <Button
+                      variant={isActive('/buyer/dashboard') ? 'primary' : 'ghost'}
+                      size="sm"
+                      className="gap-1.5"
+                    >
+                      <ShoppingBag className="w-4 h-4" />
+                      <span>My Purchased Bots</span>
+                    </Button>
+                  </Link>
+
+                  <Link to="/cart">
+                    <Button
+                      variant={isActive('/cart') ? 'primary' : 'ghost'}
+                      size="sm"
+                      className="gap-1.5 relative"
+                      title="Shopping Cart"
+                    >
+                      <ShoppingCart className="w-4 h-4" />
+                      <span>Cart</span>
+                      {cartCount > 0 && (
+                        <span className="ml-1 bg-[#5D7052] text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+                          {cartCount}
+                        </span>
+                      )}
+                    </Button>
+                  </Link>
+                </>
               )}
             </nav>
 

@@ -1,15 +1,18 @@
-package com.algoadda.core.order.dto;
+package com.algoadda.core.cart.dto;
+
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public class CreateOrderRequest {
+public class AddToCartRequest {
 
+    @NotNull(message = "listingId is required")
     private UUID listingId;
 
-    public CreateOrderRequest() {
+    public AddToCartRequest() {
     }
 
-    public CreateOrderRequest(UUID listingId) {
+    public AddToCartRequest(UUID listingId) {
         this.listingId = listingId;
     }
 

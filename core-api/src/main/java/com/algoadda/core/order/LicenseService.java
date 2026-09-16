@@ -25,15 +25,18 @@ public class LicenseService {
     private static final Logger log = LoggerFactory.getLogger(LicenseService.class);
 
     private final LicenseRepository licenseRepository;
+    private final OrderItemRepository orderItemRepository;
     private final SellerProfileRepository sellerProfileRepository;
     private final S3StorageService s3StorageService;
 
     public LicenseService(
         LicenseRepository licenseRepository,
+        OrderItemRepository orderItemRepository,
         SellerProfileRepository sellerProfileRepository,
         S3StorageService s3StorageService
     ) {
         this.licenseRepository = licenseRepository;
+        this.orderItemRepository = orderItemRepository;
         this.sellerProfileRepository = sellerProfileRepository;
         this.s3StorageService = s3StorageService;
     }
@@ -50,9 +53,16 @@ public class LicenseService {
                 .map((SellerProfile profile) -> profile.getDisplayName())
                 .orElse(botVersion.getBot().getSeller().getEmail());
 
-            boolean isOfficial = license.getOrder() != null &&
-                license.getOrder().getListing() != null &&
-                license.getOrder().getListing().isOfficial();
+            boolean isOfficial = false;
+            if (license.getOrder() != null) {
+                List<OrderItem> items = orderItemRepository.findByOrderId(license.getOrder().getId());
+                boolean officialInItems = items.stream().anyMatch(item -> item.getListing() != null && item.getListing().isOfficial());
+                if (officialInItems) {
+                    isOfficial = true;
+                } else if (license.getOrder().getListing() != null) {
+                    isOfficial = license.getOrder().getListing().isOfficial();
+                }
+            }
 
             return new BuyerLicenseResponse(
                 license.getId(),

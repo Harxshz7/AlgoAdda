@@ -1,6 +1,7 @@
 package com.algoadda.core.order;
 
 import com.algoadda.core.bot.BotVersion;
+import com.algoadda.core.cart.CartService;
 import com.algoadda.core.listing.Listing;
 import com.algoadda.core.order.dto.RefundResponse;
 import com.algoadda.core.user.User;
@@ -29,7 +30,13 @@ public class AdminRefundTest {
     private OrderRepository orderRepository;
 
     @Mock
+    private OrderItemRepository orderItemRepository;
+
+    @Mock
     private LicenseRepository licenseRepository;
+
+    @Mock
+    private CartService cartService;
 
     @Mock
     private RazorpayService razorpayService;

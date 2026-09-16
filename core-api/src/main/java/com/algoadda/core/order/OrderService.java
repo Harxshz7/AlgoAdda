@@ -1,5 +1,8 @@
 package com.algoadda.core.order;
 
+import com.algoadda.core.cart.Cart;
+import com.algoadda.core.cart.CartItem;
+import com.algoadda.core.cart.CartService;
 import com.algoadda.core.listing.Listing;
 import com.algoadda.core.listing.ListingRepository;
 import com.algoadda.core.order.dto.CreateOrderRequest;
@@ -15,9 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings("null")
@@ -26,60 +31,101 @@ public class OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
     private final LicenseRepository licenseRepository;
     private final ListingRepository listingRepository;
     private final UserRepository userRepository;
+    private final CartService cartService;
     private final RazorpayService razorpayService;
 
     public OrderService(
         OrderRepository orderRepository,
+        OrderItemRepository orderItemRepository,
         LicenseRepository licenseRepository,
         ListingRepository listingRepository,
         UserRepository userRepository,
+        CartService cartService,
         RazorpayService razorpayService
     ) {
         this.orderRepository = orderRepository;
+        this.orderItemRepository = orderItemRepository;
         this.licenseRepository = licenseRepository;
         this.listingRepository = listingRepository;
         this.userRepository = userRepository;
+        this.cartService = cartService;
         this.razorpayService = razorpayService;
     }
 
     @Transactional
     public OrderResponse createOrder(UUID buyerId, CreateOrderRequest request) {
         Objects.requireNonNull(buyerId, "buyerId must not be null");
-        Objects.requireNonNull(request, "request must not be null");
-        Objects.requireNonNull(request.getListingId(), "listingId must not be null");
 
         User buyer = userRepository.findById(buyerId)
             .orElseThrow(() -> new IllegalArgumentException("Buyer not found"));
 
-        Listing listing = listingRepository.findById(request.getListingId())
-            .orElseThrow(() -> new IllegalArgumentException("Listing not found"));
-
-        if (!listing.isActive()) {
-            throw new IllegalArgumentException("Listing is not active or available for purchase");
+        // If request includes a specific listingId, add it to cart first
+        if (request != null && request.getListingId() != null) {
+            com.algoadda.core.cart.dto.AddToCartRequest addToCartRequest = new com.algoadda.core.cart.dto.AddToCartRequest(request.getListingId());
+            cartService.addItemToCart(buyerId, addToCartRequest);
         }
 
+        Cart cart = cartService.getOrCreateCartEntity(buyerId);
+
+        if (cart.getItems() == null || cart.getItems().isEmpty()) {
+            throw new IllegalArgumentException("Cart is empty. Add items to cart before checkout.");
+        }
+
+        // Validate all cart items are active/published
+        List<String> inactiveListings = cart.getItems().stream()
+            .filter(item -> item.getListing() == null || !item.getListing().isActive())
+            .map(item -> item.getListing() != null && item.getListing().getBotVersion() != null && item.getListing().getBotVersion().getBot() != null
+                ? item.getListing().getBotVersion().getBot().getName()
+                : "Unknown Strategy")
+            .collect(Collectors.toList());
+
+        if (!inactiveListings.isEmpty()) {
+            throw new IllegalArgumentException("The following items in your cart are no longer active: " + String.join(", ", inactiveListings));
+        }
+
+        // Compute total amount
+        BigDecimal totalAmount = cart.getItems().stream()
+            .map(item -> item.getListing().getPrice())
+            .filter(Objects::nonNull)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Create single Order
         Order order = Order.builder()
             .buyer(buyer)
-            .listing(listing)
             .status(OrderStatus.PENDING)
             .build();
-
         order = orderRepository.save(order);
 
-        String razorpayOrderId = razorpayService.createOrder(listing.getPrice(), order.getId().toString());
+        // Create OrderItems
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (CartItem cartItem : cart.getItems()) {
+            Listing listing = cartItem.getListing();
+            OrderItem orderItem = OrderItem.builder()
+                .order(order)
+                .listing(listing)
+                .botVersion(listing.getBotVersion())
+                .priceAtPurchase(listing.getPrice() != null ? listing.getPrice() : BigDecimal.ZERO)
+                .build();
+            orderItems.add(orderItem);
+        }
+        orderItemRepository.saveAll(orderItems);
+        order.setItems(orderItems);
+
+        // Create Razorpay order for sum total
+        String razorpayOrderId = razorpayService.createOrder(totalAmount, order.getId().toString());
         order.setPaymentReference(razorpayOrderId);
         orderRepository.save(order);
 
-        BigDecimal price = listing.getPrice() != null ? listing.getPrice() : BigDecimal.ZERO;
-        long amountInPaise = price.multiply(new BigDecimal(100)).longValue();
+        long amountInPaise = totalAmount.multiply(new BigDecimal(100)).longValue();
 
         return new OrderResponse(
             order.getId(),
             razorpayOrderId,
-            price,
+            totalAmount,
             amountInPaise,
             "INR",
             razorpayService.getKeyId(),
@@ -136,27 +182,48 @@ public class OrderService {
         }
 
         if ("payment.captured".equalsIgnoreCase(event) || "order.paid".equalsIgnoreCase(event)) {
-            log.info("Payment successful for Order ID {}. Updating status to PAID and issuing License.", order.getId());
+            log.info("Payment successful for Order ID {}. Updating status to PAID and issuing Licenses.", order.getId());
             order.setStatus(OrderStatus.PAID);
             orderRepository.save(order);
 
-            // Issue license tied to exact BotVersion purchased
+            List<OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
             List<License> existingLicenses = licenseRepository.findByOrderId(order.getId());
-            if (existingLicenses.isEmpty()) {
-                License license = License.builder()
-                    .order(order)
-                    .botVersion(order.getListing().getBotVersion())
-                    .buyer(order.getBuyer())
-                    .issuedAt(Instant.now())
-                    .expiresAt(null) // ONE_TIME / perpetual
-                    .revoked(false)
-                    .build();
 
-                licenseRepository.save(license);
-                log.info("Issued License ID {} for Buyer {} and Bot Version {}", license.getId(), order.getBuyer().getId(), order.getListing().getBotVersion().getVersionNumber());
+            if (orderItems.isEmpty() && order.getListing() != null) {
+                // Fallback for legacy single-item orders
+                if (existingLicenses.isEmpty()) {
+                    License license = License.builder()
+                        .order(order)
+                        .botVersion(order.getListing().getBotVersion())
+                        .buyer(order.getBuyer())
+                        .issuedAt(Instant.now())
+                        .expiresAt(null)
+                        .revoked(false)
+                        .build();
+                    licenseRepository.save(license);
+                    log.info("Issued legacy License ID {} for Buyer {} and Bot Version {}", license.getId(), order.getBuyer().getId(), order.getListing().getBotVersion().getVersionNumber());
+                }
             } else {
-                log.info("License already exists for Order {}", order.getId());
+                for (OrderItem item : orderItems) {
+                    boolean licenseExists = existingLicenses.stream()
+                        .anyMatch(l -> l.getBotVersion().getId().equals(item.getBotVersion().getId()));
+                    if (!licenseExists) {
+                        License license = License.builder()
+                            .order(order)
+                            .botVersion(item.getBotVersion())
+                            .buyer(order.getBuyer())
+                            .issuedAt(Instant.now())
+                            .expiresAt(null)
+                            .revoked(false)
+                            .build();
+                        licenseRepository.save(license);
+                        log.info("Issued License ID {} for Buyer {} and Bot Version {}", license.getId(), order.getBuyer().getId(), item.getBotVersion().getVersionNumber());
+                    }
+                }
             }
+
+            // Clear buyer's cart on successful payment
+            cartService.clearCart(order.getBuyer().getId());
 
         } else if ("payment.failed".equalsIgnoreCase(event)) {
             log.info("Payment failed for Order ID {}. Updating status to FAILED.", order.getId());
@@ -176,7 +243,17 @@ public class OrderService {
             throw new IllegalStateException("Only PAID orders can be refunded. Current status: " + order.getStatus());
         }
 
-        String refundId = razorpayService.refundPayment(order.getPaymentReference(), order.getListing().getPrice());
+        List<OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
+        BigDecimal totalRefund = orderItems.stream()
+            .map(OrderItem::getPriceAtPurchase)
+            .filter(Objects::nonNull)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (totalRefund.compareTo(BigDecimal.ZERO) == 0 && order.getListing() != null) {
+            totalRefund = order.getListing().getPrice();
+        }
+
+        String refundId = razorpayService.refundPayment(order.getPaymentReference(), totalRefund);
         order.setStatus(OrderStatus.REFUNDED);
         orderRepository.save(order);
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import { CartProvider } from './context/CartContext'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
 import { SellerLayout } from './components/layout/SellerLayout'
 import { PublicLayout } from './components/layout/PublicLayout'
@@ -16,132 +17,146 @@ import { StorePage } from './pages/store/StorePage'
 import { StoreListingDetailPage } from './pages/store/StoreListingDetailPage'
 import { PublicSellerProfilePage } from './pages/seller/PublicSellerProfilePage'
 import { BuyerDashboardPage } from './pages/buyer/BuyerDashboardPage'
+import { CartPage } from './pages/buyer/CartPage'
 import { AboutPage } from './pages/about/AboutPage'
 
 export const App: React.FC = () => {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Public Auth Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+      <CartProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Auth Routes */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-          {/* Public About Route */}
-          <Route
-            path="/about"
-            element={
-              <PublicLayout>
-                <AboutPage />
-              </PublicLayout>
-            }
-          />
-
-          {/* Public Official Store Routes */}
-          <Route
-            path="/store"
-            element={
-              <PublicLayout>
-                <StorePage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/store/:listingId"
-            element={
-              <PublicLayout>
-                <StoreListingDetailPage />
-              </PublicLayout>
-            }
-          />
-
-          {/* Public Marketplace Routes */}
-          <Route
-            path="/marketplace"
-            element={
-              <PublicLayout>
-                <MarketplacePage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/marketplace/:listingId"
-            element={
-              <PublicLayout>
-                <ListingDetailPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/sellers/:sellerId"
-            element={
-              <PublicLayout>
-                <PublicSellerProfilePage />
-              </PublicLayout>
-            }
-          />
-
-          {/* Buyer Authenticated Route */}
-          <Route
-            path="/buyer/dashboard"
-            element={
-              <ProtectedRoute requiredRole="BUYER">
+            {/* Public About Route */}
+            <Route
+              path="/about"
+              element={
                 <PublicLayout>
-                  <BuyerDashboardPage />
+                  <AboutPage />
                 </PublicLayout>
-              </ProtectedRoute>
-            }
-          />
+              }
+            />
 
-          {/* Seller Onboarding Route */}
-          <Route
-            path="/seller/onboard"
-            element={
-              <ProtectedRoute requiredRole="SELLER">
-                <SellerOnboardPage />
-              </ProtectedRoute>
-            }
-          />
+            {/* Public Official Store Routes */}
+            <Route
+              path="/store"
+              element={
+                <PublicLayout>
+                  <StorePage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/store/:listingId"
+              element={
+                <PublicLayout>
+                  <StoreListingDetailPage />
+                </PublicLayout>
+              }
+            />
 
-          {/* Seller Portal Authenticated Routes */}
-          <Route
-            path="/seller/dashboard"
-            element={
-              <ProtectedRoute requiredRole="SELLER">
-                <SellerLayout>
-                  <SellerDashboardPage />
-                </SellerLayout>
-              </ProtectedRoute>
-            }
-          />
+            {/* Public Marketplace Routes */}
+            <Route
+              path="/marketplace"
+              element={
+                <PublicLayout>
+                  <MarketplacePage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/marketplace/:listingId"
+              element={
+                <PublicLayout>
+                  <ListingDetailPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/sellers/:sellerId"
+              element={
+                <PublicLayout>
+                  <PublicSellerProfilePage />
+                </PublicLayout>
+              }
+            />
 
-          <Route
-            path="/seller/bots/new"
-            element={
-              <ProtectedRoute requiredRole="SELLER">
-                <SellerLayout>
-                  <BotUploadPage />
-                </SellerLayout>
-              </ProtectedRoute>
-            }
-          />
+            {/* Buyer Authenticated Routes */}
+            <Route
+              path="/buyer/dashboard"
+              element={
+                <ProtectedRoute requiredRole="BUYER">
+                  <PublicLayout>
+                    <BuyerDashboardPage />
+                  </PublicLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/seller/bots/:botId"
-            element={
-              <ProtectedRoute requiredRole="SELLER">
-                <SellerLayout>
-                  <BotDetailPage />
-                </SellerLayout>
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute requiredRole="BUYER">
+                  <PublicLayout>
+                    <CartPage />
+                  </PublicLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Fallback Route */}
-          <Route path="/" element={<Navigate to="/marketplace" replace />} />
-          <Route path="*" element={<Navigate to="/marketplace" replace />} />
-        </Routes>
-      </BrowserRouter>
+            {/* Seller Onboarding Route */}
+            <Route
+              path="/seller/onboard"
+              element={
+                <ProtectedRoute requiredRole="SELLER">
+                  <SellerOnboardPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Seller Portal Authenticated Routes */}
+            <Route
+              path="/seller/dashboard"
+              element={
+                <ProtectedRoute requiredRole="SELLER">
+                  <SellerLayout>
+                    <SellerDashboardPage />
+                  </SellerLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/seller/bots/new"
+              element={
+                <ProtectedRoute requiredRole="SELLER">
+                  <SellerLayout>
+                    <BotUploadPage />
+                  </SellerLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/seller/bots/:botId"
+              element={
+                <ProtectedRoute requiredRole="SELLER">
+                  <SellerLayout>
+                    <BotDetailPage />
+                  </SellerLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Fallback Route */}
+            <Route path="/" element={<Navigate to="/marketplace" replace />} />
+            <Route path="*" element={<Navigate to="/marketplace" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </CartProvider>
     </AuthProvider>
   )
 }

@@ -2,6 +2,7 @@ package com.algoadda.core.order;
 
 import com.algoadda.core.bot.Bot;
 import com.algoadda.core.bot.BotVersion;
+import com.algoadda.core.cart.CartService;
 import com.algoadda.core.listing.LicenseType;
 import com.algoadda.core.listing.Listing;
 import com.algoadda.core.user.Role;
@@ -32,10 +33,16 @@ public class PaymentWebhookTest {
     private OrderRepository orderRepository;
 
     @Mock
+    private OrderItemRepository orderItemRepository;
+
+    @Mock
     private LicenseRepository licenseRepository;
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private CartService cartService;
 
     @Mock
     private RazorpayService razorpayService;
