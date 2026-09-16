@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,7 @@ public class LicenseService {
             BotVersion botVersion = license.getBotVersion();
             UUID sellerId = botVersion.getBot().getSeller().getId();
             String sellerName = sellerProfileRepository.findByUserId(sellerId)
-                .map(SellerProfile::getDisplayName)
+                .map((SellerProfile profile) -> profile.getDisplayName())
                 .orElse(botVersion.getBot().getSeller().getEmail());
 
             boolean isOfficial = license.getOrder() != null &&
@@ -74,10 +75,11 @@ public class LicenseService {
     public DownloadLicenseResponse generateDownloadUrl(UUID buyerId, UUID licenseId) {
         log.info("Generating strategy download URL for buyer ID {} and license ID {}", buyerId, licenseId);
 
+        Objects.requireNonNull(licenseId, "licenseId must not be null");
         License license = licenseRepository.findById(licenseId)
             .orElseThrow(() -> new IllegalArgumentException("License not found"));
 
-        if (!license.getBuyer().getId().equals(buyerId)) {
+        if (license.getBuyer() == null || license.getBuyer().getId() == null || !license.getBuyer().getId().equals(buyerId)) {
             throw new AccessDeniedException("Buyer does not own this license");
         }
 

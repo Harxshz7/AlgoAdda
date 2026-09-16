@@ -16,9 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@SuppressWarnings("null")
 public class OrderService {
 
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
@@ -45,6 +47,10 @@ public class OrderService {
 
     @Transactional
     public OrderResponse createOrder(UUID buyerId, CreateOrderRequest request) {
+        Objects.requireNonNull(buyerId, "buyerId must not be null");
+        Objects.requireNonNull(request, "request must not be null");
+        Objects.requireNonNull(request.getListingId(), "listingId must not be null");
+
         User buyer = userRepository.findById(buyerId)
             .orElseThrow(() -> new IllegalArgumentException("Buyer not found"));
 
@@ -161,6 +167,8 @@ public class OrderService {
 
     @Transactional
     public RefundResponse refundOrder(UUID orderId) {
+        Objects.requireNonNull(orderId, "orderId must not be null");
+
         Order order = orderRepository.findById(orderId)
             .orElseThrow(() -> new IllegalArgumentException("Order not found"));
 
