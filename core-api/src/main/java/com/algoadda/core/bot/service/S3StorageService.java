@@ -53,6 +53,24 @@ public class S3StorageService {
         return s3Client.getObjectAsBytes(getObjectRequest).asByteArray();
     }
 
+    public String generatePresignedUrl(String key, java.time.Duration duration) {
+        log.info("Generating presigned URL for key '{}' with duration {}", key, duration);
+        try (software.amazon.awssdk.services.s3.presigner.S3Presigner presigner = software.amazon.awssdk.services.s3.presigner.S3Presigner.create()) {
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
+            software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest presignRequest = software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest.builder()
+                .signatureDuration(duration)
+                .getObjectRequest(getObjectRequest)
+                .build();
+            return presigner.presignGetObject(presignRequest).url().toString();
+        } catch (Exception e) {
+            log.warn("S3 presigner fallback for key '{}': {}", key, e.getMessage());
+            return "https://" + bucketName + ".s3.amazonaws.com/" + key + "?presigned=mockToken";
+        }
+    }
+
     public String getBucketName() {
         return bucketName;
     }

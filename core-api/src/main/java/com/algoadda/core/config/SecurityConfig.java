@@ -52,7 +52,7 @@ public class SecurityConfig {
                 })
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/health", "/api/auth/**", "/api/listings/**", "/api/store/**", "/api/sellers/*").permitAll()
+                .requestMatchers("/api/health", "/api/auth/**", "/api/listings/**", "/api/store/**", "/api/sellers/*", "/api/payments/webhook").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

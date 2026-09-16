@@ -41,6 +41,10 @@ algoadda:
     read-timeout-ms: 30000
     max-retries: 2
   official-seller-email: ${OFFICIAL_SELLER_EMAIL:official@algoadda.com}
+  razorpay:
+    key-id: ${RAZORPAY_KEY_ID:rzp_test_dummyKeyId}
+    key-secret: ${RAZORPAY_KEY_SECRET:dummyKeySecret}
+    webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:dummyWebhookSecret}
 
 logging:
   level:

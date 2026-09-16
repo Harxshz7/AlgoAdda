@@ -35,16 +35,20 @@ public class License {
     @Column(name = "expires_at")
     private Instant expiresAt;
 
+    @Column(name = "revoked", nullable = false)
+    private boolean revoked = false;
+
     public License() {
     }
 
-    public License(UUID id, Order order, BotVersion botVersion, User buyer, Instant issuedAt, Instant expiresAt) {
+    public License(UUID id, Order order, BotVersion botVersion, User buyer, Instant issuedAt, Instant expiresAt, boolean revoked) {
         this.id = id;
         this.order = order;
         this.botVersion = botVersion;
         this.buyer = buyer;
         this.issuedAt = issuedAt;
         this.expiresAt = expiresAt;
+        this.revoked = revoked;
     }
 
     public static LicenseBuilder builder() {
@@ -58,6 +62,7 @@ public class License {
         private User buyer;
         private Instant issuedAt;
         private Instant expiresAt;
+        private boolean revoked = false;
 
         public LicenseBuilder id(UUID id) {
             this.id = id;
@@ -89,8 +94,13 @@ public class License {
             return this;
         }
 
+        public LicenseBuilder revoked(boolean revoked) {
+            this.revoked = revoked;
+            return this;
+        }
+
         public License build() {
-            return new License(id, order, botVersion, buyer, issuedAt, expiresAt);
+            return new License(id, order, botVersion, buyer, issuedAt, expiresAt, revoked);
         }
     }
 
@@ -99,7 +109,15 @@ public class License {
     }
 
     public boolean isActive() {
-        return isPerpetual() || Instant.now().isBefore(this.expiresAt);
+        return !revoked && (isPerpetual() || Instant.now().isBefore(this.expiresAt));
+    }
+
+    public boolean isRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(boolean revoked) {
+        this.revoked = revoked;
     }
 
     public UUID getId() {
