@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingDetail, BacktestMetrics, EquityPoint } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
@@ -11,7 +11,6 @@ import {
   FileCode,
   ShoppingCart,
   Calendar,
-  AlertCircle,
   FileText,
   Lock,
   LogIn,
@@ -20,12 +19,14 @@ import {
 export const ListingDetailPage: React.FC = () => {
   const { listingId } = useParams<{ listingId: string }>()
   const { user } = useAuth()
+  const navigate = useNavigate()
 
   const [listing, setListing] = useState<ListingDetail | null>(null)
   const [metrics, setMetrics] = useState<BacktestMetrics | null>(null)
   const [equityCurve, setEquityCurve] = useState<EquityPoint[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isPurchasing, setIsPurchasing] = useState(false)
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -58,80 +59,137 @@ export const ListingDetailPage: React.FC = () => {
   // Synthetic or parsed equity curve based on backtest metrics
   useEffect(() => {
     if (metrics) {
-      const points: EquityPoint[] = []
-      const start = metrics.starting_capital || 10000
-      const end = metrics.ending_capital || (start * (1 + (metrics.win_rate || 50) / 100))
-      const steps = 30
-      const diff = (end - start) / steps
+      const startingCapital = metrics.starting_capital || metrics.initial_capital || 100000
+      const endingCapital = metrics.ending_capital || startingCapital * (1 + (metrics.win_rate ? metrics.win_rate / 100 : 0.2))
+      const pointsCount = 12
 
-      for (let i = 0; i <= steps; i++) {
-        const noise = Math.sin(i / 2) * (start * 0.02)
-        points.push({
-          timestamp: `Day ${i + 1}`,
-          equity: Math.round(start + diff * i + noise),
-        })
+      const generatedPoints: EquityPoint[] = []
+      const step = (endingCapital - startingCapital) / pointsCount
+
+      for (let i = 0; i <= pointsCount; i++) {
+        const date = new Date(2025, i, 1).toISOString().split('T')[0]
+        const noise = (Math.random() - 0.4) * (step * 0.5)
+        const equity = Math.round(startingCapital + step * i + noise)
+        generatedPoints.push({ timestamp: date, equity })
       }
-      setEquityCurve(points)
+      setEquityCurve(generatedPoints)
     }
   }, [metrics])
 
+  const handleBuy = async () => {
+    if (!listing) return
+    setIsPurchasing(true)
+    try {
+      const orderRes = await api.createOrder(listing.listingId)
+
+      const loadSDK = (): Promise<boolean> => {
+        return new Promise((resolve) => {
+          if ((window as any).Razorpay) {
+            resolve(true)
+            return
+          }
+          const script = document.createElement('script')
+          script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+          script.onload = () => resolve(true)
+          script.onerror = () => resolve(false)
+          document.body.appendChild(script)
+        })
+      }
+
+      const loaded = await loadSDK()
+      if (!loaded) {
+        alert('Failed to load Razorpay checkout SDK. Please check your network connection.')
+        setIsPurchasing(false)
+        return
+      }
+
+      const options = {
+        key: orderRes.razorpayKeyId,
+        amount: orderRes.amountInPaise,
+        currency: orderRes.currency,
+        name: 'AlgoAdda Marketplace',
+        description: `License purchase for ${listing.name}`,
+        order_id: orderRes.razorpayOrderId,
+        handler: async function () {
+          navigate('/buyer/dashboard')
+        },
+        prefill: {
+          email: user?.email || '',
+        },
+        theme: {
+          color: '#5D7052',
+        },
+      }
+
+      const rzp = new (window as any).Razorpay(options)
+      rzp.open()
+    } catch (err: any) {
+      alert(`Order creation failed: ${err.message || 'Please try again'}`)
+    } finally {
+      setIsPurchasing(false)
+    }
+  }
+
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-6 animate-pulse">
-        <div className="h-8 bg-[#DED8CF]/40 rounded-md w-1/3" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="h-64 bg-[#DED8CF]/30 rounded-2xl" />
-          <div className="lg:col-span-2 h-64 bg-[#DED8CF]/30 rounded-2xl" />
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-3">
+        <div className="w-8 h-8 border-3 border-[#5D7052] border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-sm text-[#78786C]">Loading marketplace listing details...</p>
       </div>
     )
   }
 
   if (error || !listing) {
     return (
-      <div className="p-8 rounded-2xl bg-[#A85448]/10 border border-[#A85448]/30 flex flex-col items-center text-center gap-4">
-        <AlertCircle className="w-10 h-10 text-[#A85448]" />
-        <h2 className="font-heading font-bold text-xl text-[#2C2C24]">Listing Not Found</h2>
-        <p className="text-sm font-body text-[#78786C]">{error || 'The requested listing could not be retrieved.'}</p>
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        <AlertTriangle className="w-12 h-12 text-[#A85448]" />
+        <h2 className="text-xl font-heading font-bold text-[#2C2C24]">Listing Not Found</h2>
+        <p className="text-sm text-[#78786C] max-w-md text-center">{error || 'The requested listing does not exist.'}</p>
         <Link to="/marketplace">
-          <Button variant="primary" size="md">Back to Marketplace</Button>
+          <Button variant="secondary" size="md">
+            Back to Marketplace
+          </Button>
         </Link>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* Top Header Navigation */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#DED8CF]/50">
-        <div className="flex items-center gap-4">
-          <Link to="/marketplace">
-            <Button variant="ghost" size="sm" className="gap-2 text-[#78786C]">
-              <ArrowLeft className="w-4 h-4" />
-              <span>MARKETPLACE</span>
-            </Button>
-          </Link>
-          <div className="h-6 w-px bg-[#DED8CF]" />
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-heading font-extrabold text-[#2C2C24]">
-                {listing.name}
-              </h1>
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#5D7052]/10 text-[#5D7052]">
-                {listing.strategyType}
-              </span>
-              {(listing.official || listing.isOfficial) && <OfficialBadge size="md" />}
-            </div>
-            <span className="text-xs text-[#78786C]">
-              Published by{' '}
-              <Link to={`/sellers/${listing.sellerId}`} className="font-semibold text-[#2C2C24] hover:underline">
-                {listing.sellerDisplayName}
-              </Link>
+    <div className="flex flex-col gap-8 max-w-6xl mx-auto">
+      {/* Back Navigation Bar */}
+      <div className="flex items-center justify-between">
+        <Link
+          to="/marketplace"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-[#78786C] hover:text-[#2C2C24] transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Marketplace</span>
+        </Link>
+      </div>
+
+      {/* Hero Header Banner */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 sm:p-8 rounded-2xl bg-[#FDFCF8] border border-[#DED8CF]">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-semibold px-2.5 py-0.5 rounded bg-[#5D7052]/10 text-[#5D7052] tracking-wide uppercase">
+              {listing.strategyType}
+            </span>
+            {(listing.official || listing.isOfficial) && <OfficialBadge />}
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-[#2C2C24]">
+            {listing.name}
+          </h1>
+          <div className="flex items-center gap-3 text-xs text-[#78786C]">
+            <span>Listed by <strong className="text-[#2C2C24]">{listing.sellerDisplayName}</strong></span>
+            <span>•</span>
+            <span className="flex items-center gap-1">
+              <Calendar className="w-3.5 h-3.5" />
+              {new Date(listing.createdAt).toLocaleDateString()}
             </span>
           </div>
         </div>
 
-        {/* Pricing & Phase 5 Disabled Buy CTA */}
+        {/* Pricing & Checkout Button */}
         <div className="flex items-center gap-4">
           <div className="flex flex-col items-end leading-tight">
             <span className="text-2xl font-heading font-black text-[#2C2C24]">
@@ -142,7 +200,6 @@ export const ListingDetailPage: React.FC = () => {
             </span>
           </div>
 
-          {/* Buy Button - Contextual Tooltip */}
           <div className="relative group">
             {!user ? (
               <Link to="/login">
@@ -171,24 +228,20 @@ export const ListingDetailPage: React.FC = () => {
                 </div>
               </>
             ) : (
-              <>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  disabled
-                  className="gap-2 opacity-60 cursor-not-allowed shadow-none"
-                >
+              <Button
+                variant="primary"
+                size="lg"
+                disabled={isPurchasing}
+                onClick={handleBuy}
+                className="gap-2"
+              >
+                {isPurchasing ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
                   <ShoppingCart className="w-5 h-5" />
-                  <span>Buy Algorithm</span>
-                </Button>
-                <div className="absolute right-0 bottom-full mb-2 hidden group-hover:block w-64 p-3 rounded-xl bg-[#2C2C24] text-white text-xs font-body shadow-xl z-50">
-                  <div className="flex items-center gap-1.5 font-semibold text-[#5D7052] mb-1">
-                    <Lock className="w-3.5 h-3.5" />
-                    <span>Phase 5 Upcoming</span>
-                  </div>
-                  Checkout &amp; purchasing flow coming soon in Phase 5.
-                </div>
-              </>
+                )}
+                <span>{isPurchasing ? 'Processing Order...' : 'Buy Algorithm'}</span>
+              </Button>
             )}
           </div>
         </div>
@@ -280,10 +333,10 @@ export const ListingDetailPage: React.FC = () => {
 
           <MetricGauge
             label="SHARPE RATIO"
-            value={metrics ? metrics.sharpe_ratio : 'N/A'}
-            sublabel="Risk-adjusted annual alpha"
+            value={metrics ? `${metrics.sharpe_ratio}` : 'N/A'}
+            sublabel="Risk-adjusted return ratio"
             trend="positive"
-            badge="QUALITY"
+            badge="EFFICIENCY"
           />
 
           <MetricGauge
