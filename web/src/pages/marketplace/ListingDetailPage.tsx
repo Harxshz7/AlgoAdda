@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingDetail, BacktestMetrics, EquityPoint } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
+import { useCart } from '../../context/CartContext'
 import { Button, Card, MetricGauge, EquityCurveChart, OfficialBadge } from '../../components/ui'
 import {
   ArrowLeft,
@@ -14,11 +15,13 @@ import {
   FileText,
   Lock,
   LogIn,
+  Zap,
 } from 'lucide-react'
 
 export const ListingDetailPage: React.FC = () => {
   const { listingId } = useParams<{ listingId: string }>()
   const { user } = useAuth()
+  const { addToCart } = useCart()
   const navigate = useNavigate()
 
   const [listing, setListing] = useState<ListingDetail | null>(null)
@@ -27,6 +30,7 @@ export const ListingDetailPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isPurchasing, setIsPurchasing] = useState(false)
+  const [isAddingToCart, setIsAddingToCart] = useState(false)
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -228,20 +232,43 @@ export const ListingDetailPage: React.FC = () => {
                 </div>
               </>
             ) : (
-              <Button
-                variant="primary"
-                size="lg"
-                disabled={isPurchasing}
-                onClick={handleBuy}
-                className="gap-2"
-              >
-                {isPurchasing ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <ShoppingCart className="w-5 h-5" />
-                )}
-                <span>{isPurchasing ? 'Processing Order...' : 'Buy Algorithm'}</span>
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  disabled={isAddingToCart || isPurchasing}
+                  onClick={async () => {
+                    try {
+                      setIsAddingToCart(true)
+                      await addToCart(listing.listingId)
+                      navigate('/cart')
+                    } catch (err: any) {
+                      alert(err.message || 'Failed to add item to cart')
+                    } finally {
+                      setIsAddingToCart(false)
+                    }
+                  }}
+                  className="gap-2"
+                >
+                  <ShoppingCart className="w-5 h-5 text-[#5D7052]" />
+                  <span>{isAddingToCart ? 'Adding...' : 'Add to Cart'}</span>
+                </Button>
+
+                <Button
+                  variant="primary"
+                  size="lg"
+                  disabled={isPurchasing || isAddingToCart}
+                  onClick={handleBuy}
+                  className="gap-2"
+                >
+                  {isPurchasing ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <Zap className="w-5 h-5" />
+                  )}
+                  <span>{isPurchasing ? 'Processing Order...' : 'Buy Now'}</span>
+                </Button>
+              </div>
             )}
           </div>
         </div>

@@ -125,7 +125,7 @@ export const CartPage: React.FC = () => {
               </Button>
             </Link>
             <Link to="/store">
-              <Button variant="outline" size="sm">
+              <Button variant="secondary" size="sm">
                 Browse AlgoAdda Store
               </Button>
             </Link>
