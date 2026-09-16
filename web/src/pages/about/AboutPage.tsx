@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Card, Button } from '../../components/ui'
-import { ShieldCheck, FileCode, BarChart3, AlertCircle, ArrowRight, Lock, Sparkles } from 'lucide-react'
+import { ShieldCheck, FileCode, BarChart3, AlertCircle, ArrowRight, Sparkles, Check, X } from 'lucide-react'
 
 // White Box Verification Pipeline SVG Illustration
 const PipelineIllustration: React.FC = () => {
@@ -169,57 +169,105 @@ export const AboutPage: React.FC = () => {
         </Card>
       </div>
 
-      {/* 3. Why White Box Matters */}
+      {/* 3. White Box vs. Black Box Comparison */}
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <span className="text-xs font-semibold uppercase tracking-wider text-[#5D7052]">
-            Core Principles
+            Model Comparison
           </span>
           <h2 className="text-2xl font-heading font-bold text-[#2C2C24]">
-            Why White Box Matters
+            White Box vs. Black Box Strategies
           </h2>
           <p className="text-sm text-[#78786C]">
-            Traditional bot marketplaces operate on black-box promises. AlgoAdda enforces four non-negotiable trust standards.
+            Understanding the structural and regulatory distinctions between disclosed algorithms and black-box strategies.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6 flex flex-col gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#5D7052]/10 flex items-center justify-center text-[#5D7052]">
-              <FileCode className="w-5 h-5" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* White Box Card */}
+          <Card className="p-6 flex flex-col justify-between gap-6 border-t-4 border-t-[#5D7052]">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#5D7052]/10 flex items-center justify-center text-[#5D7052]">
+                    <Check className="w-4 h-4" />
+                  </div>
+                  <h3 className="font-heading font-bold text-lg text-[#2C2C24]">
+                    White Box Strategy
+                  </h3>
+                </div>
+                <span className="text-xs font-semibold text-[#5D7052] bg-[#5D7052]/10 px-2.5 py-1 rounded-full border border-[#5D7052]/20">
+                  Listed on AlgoAdda
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-3.5 text-sm font-body text-[#78786C]">
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold text-[#2C2C24]">Strategy Logic</span>
+                  <p className="leading-relaxed">
+                    Strategy logic is disclosed and visible to the buyer before purchase. Buyers can inspect entry/exit rules, technical indicators used, and risk parameters.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold text-[#2C2C24]">Verification</span>
+                  <p className="leading-relaxed">
+                    Verifiable and independently backtested using standardized quantitative engines over historical market data.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold text-[#2C2C24]">Regulatory &amp; Scope</span>
+                  <p className="leading-relaxed">
+                    Operates as transparent software tools under standard licensing. This is what AlgoAdda lists across all marketplace tiers.
+                  </p>
+                </div>
+              </div>
             </div>
-            <h3 className="font-heading font-bold text-lg text-[#2C2C24]">
-              Disclosed Strategy Logic
-            </h3>
-            <p className="text-sm text-[#78786C] leading-relaxed">
-              Sellers disclose the underlying indicators, entry/exit rules, and risk management parameters. Buyers know exactly how the algorithm makes decisions before deploying capital.
-            </p>
           </Card>
 
-          <Card className="p-6 flex flex-col gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#2C2C24]/10 flex items-center justify-center text-[#2C2C24]">
-              <BarChart3 className="w-5 h-5" />
-            </div>
-            <h3 className="font-heading font-bold text-lg text-[#2C2C24]">
-              Verifiable VectorBT Metrics
-            </h3>
-            <p className="text-sm text-[#78786C] leading-relaxed">
-              Backtests are generated using VectorBT quantitative engines over historical market data with fixed initial capital benchmarks — eliminating cherry-picked timeframe claims.
-            </p>
-          </Card>
+          {/* Black Box Card */}
+          <Card className="p-6 flex flex-col justify-between gap-6 border-t-4 border-t-[#78786C]">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#2C2C24]/10 flex items-center justify-center text-[#78786C]">
+                    <X className="w-4 h-4" />
+                  </div>
+                  <h3 className="font-heading font-bold text-lg text-[#2C2C24]">
+                    Black Box Strategy
+                  </h3>
+                </div>
+                <span className="text-xs font-semibold text-[#78786C] bg-[#2C2C24]/5 px-2.5 py-1 rounded-full border border-[#2C2C24]/10">
+                  Not Offered on AlgoAdda
+                </span>
+              </div>
 
-          <Card className="p-6 flex flex-col gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#C18C5D]/15 flex items-center justify-center text-[#C18C5D]">
-              <Lock className="w-5 h-5" />
+              <div className="flex flex-col gap-3.5 text-sm font-body text-[#78786C]">
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold text-[#2C2C24]">Strategy Logic</span>
+                  <p className="leading-relaxed">
+                    Strategy logic is hidden. The buyer trusts claimed performance without seeing internal trading rules or parameters.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold text-[#2C2C24]">Verification</span>
+                  <p className="leading-relaxed">
+                    Unverifiable internal logic; relies on seller-reported track records without independent rule inspection.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold text-[#2C2C24]">Regulatory &amp; Scope</span>
+                  <p className="leading-relaxed">
+                    Higher regulatory burden (SEBI Research Analyst registration required for providers due to advisory nature). Not offered on AlgoAdda in this phase.
+                  </p>
+                </div>
+              </div>
             </div>
-            <h3 className="font-heading font-bold text-lg text-[#2C2C24]">
-              No Guaranteed Return Claims
-            </h3>
-            <p className="text-sm text-[#78786C] leading-relaxed">
-              We strictly forbid fixed-return marketing or false profitability guarantees. Every listing highlights maximum historical drawdown and risk disclaimers.
-            </p>
           </Card>
         </div>
+
+        <p className="text-sm font-body text-[#78786C] italic">
+          AlgoAdda only lists White Box strategies for this reason — trust through disclosure, not trust through branding.
+        </p>
       </div>
 
       {/* 5. Platform Regulatory Disclaimer */}
