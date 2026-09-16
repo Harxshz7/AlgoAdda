@@ -99,12 +99,16 @@ Open **`http://localhost:5173`** in your browser.
 
 Run backend unit and integration tests:
 ```powershell
+# From project root (AlgoAdda)
 cd core-api
 .\mvnw.cmd test
+cd ..
 ```
 
 Run frontend type check & production build:
 ```powershell
+# From project root (AlgoAdda)
 cd web
 npm run build
+cd ..
 ```
