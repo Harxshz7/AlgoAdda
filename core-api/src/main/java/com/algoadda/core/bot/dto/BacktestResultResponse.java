@@ -1,5 +1,7 @@
 package com.algoadda.core.bot.dto;
 
+import com.algoadda.core.bot.RiskLabel;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -11,19 +13,21 @@ public class BacktestResultResponse {
     private Instant dateRangeEnd;
     private String methodologyNotes;
     private String metrics;
+    private RiskLabel riskLabel;
     private String reportFileKey;
     private Instant createdAt;
 
     public BacktestResultResponse() {
     }
 
-    public BacktestResultResponse(UUID id, UUID botVersionId, Instant dateRangeStart, Instant dateRangeEnd, String methodologyNotes, String metrics, String reportFileKey, Instant createdAt) {
+    public BacktestResultResponse(UUID id, UUID botVersionId, Instant dateRangeStart, Instant dateRangeEnd, String methodologyNotes, String metrics, RiskLabel riskLabel, String reportFileKey, Instant createdAt) {
         this.id = id;
         this.botVersionId = botVersionId;
         this.dateRangeStart = dateRangeStart;
         this.dateRangeEnd = dateRangeEnd;
         this.methodologyNotes = methodologyNotes;
         this.metrics = metrics;
+        this.riskLabel = riskLabel;
         this.reportFileKey = reportFileKey;
         this.createdAt = createdAt;
     }
@@ -39,6 +43,7 @@ public class BacktestResultResponse {
         private Instant dateRangeEnd;
         private String methodologyNotes;
         private String metrics;
+        private RiskLabel riskLabel;
         private String reportFileKey;
         private Instant createdAt;
 
@@ -72,6 +77,11 @@ public class BacktestResultResponse {
             return this;
         }
 
+        public BacktestResultResponseBuilder riskLabel(RiskLabel riskLabel) {
+            this.riskLabel = riskLabel;
+            return this;
+        }
+
         public BacktestResultResponseBuilder reportFileKey(String reportFileKey) {
             this.reportFileKey = reportFileKey;
             return this;
@@ -83,7 +93,7 @@ public class BacktestResultResponse {
         }
 
         public BacktestResultResponse build() {
-            return new BacktestResultResponse(id, botVersionId, dateRangeStart, dateRangeEnd, methodologyNotes, metrics, reportFileKey, createdAt);
+            return new BacktestResultResponse(id, botVersionId, dateRangeStart, dateRangeEnd, methodologyNotes, metrics, riskLabel, reportFileKey, createdAt);
         }
     }
 
@@ -133,6 +143,14 @@ public class BacktestResultResponse {
 
     public void setMetrics(String metrics) {
         this.metrics = metrics;
+    }
+
+    public RiskLabel getRiskLabel() {
+        return riskLabel;
+    }
+
+    public void setRiskLabel(RiskLabel riskLabel) {
+        this.riskLabel = riskLabel;
     }
 
     public String getReportFileKey() {

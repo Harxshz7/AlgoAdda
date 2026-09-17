@@ -33,6 +33,10 @@ public class BacktestResult {
     @Column(name = "metrics")
     private String metrics;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "risk_label", length = 50)
+    private RiskLabel riskLabel;
+
     @Column(name = "report_file_key", length = 500)
     private String reportFileKey;
 
@@ -43,13 +47,14 @@ public class BacktestResult {
     public BacktestResult() {
     }
 
-    public BacktestResult(UUID id, BotVersion botVersion, Instant dateRangeStart, Instant dateRangeEnd, String methodologyNotes, String metrics, String reportFileKey, Instant createdAt) {
+    public BacktestResult(UUID id, BotVersion botVersion, Instant dateRangeStart, Instant dateRangeEnd, String methodologyNotes, String metrics, RiskLabel riskLabel, String reportFileKey, Instant createdAt) {
         this.id = id;
         this.botVersion = botVersion;
         this.dateRangeStart = dateRangeStart;
         this.dateRangeEnd = dateRangeEnd;
         this.methodologyNotes = methodologyNotes;
         this.metrics = metrics;
+        this.riskLabel = riskLabel;
         this.reportFileKey = reportFileKey;
         this.createdAt = createdAt;
     }
@@ -65,6 +70,7 @@ public class BacktestResult {
         private Instant dateRangeEnd;
         private String methodologyNotes;
         private String metrics;
+        private RiskLabel riskLabel;
         private String reportFileKey;
         private Instant createdAt;
 
@@ -98,6 +104,11 @@ public class BacktestResult {
             return this;
         }
 
+        public BacktestResultBuilder riskLabel(RiskLabel riskLabel) {
+            this.riskLabel = riskLabel;
+            return this;
+        }
+
         public BacktestResultBuilder reportFileKey(String reportFileKey) {
             this.reportFileKey = reportFileKey;
             return this;
@@ -109,7 +120,7 @@ public class BacktestResult {
         }
 
         public BacktestResult build() {
-            return new BacktestResult(id, botVersion, dateRangeStart, dateRangeEnd, methodologyNotes, metrics, reportFileKey, createdAt);
+            return new BacktestResult(id, botVersion, dateRangeStart, dateRangeEnd, methodologyNotes, metrics, riskLabel, reportFileKey, createdAt);
         }
     }
 
@@ -159,6 +170,14 @@ public class BacktestResult {
 
     public void setMetrics(String metrics) {
         this.metrics = metrics;
+    }
+
+    public RiskLabel getRiskLabel() {
+        return riskLabel;
+    }
+
+    public void setRiskLabel(RiskLabel riskLabel) {
+        this.riskLabel = riskLabel;
     }
 
     public String getReportFileKey() {

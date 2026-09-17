@@ -227,6 +227,7 @@ public class DemoDataSeeder implements CommandLineRunner {
                 .dateRangeEnd(Instant.now())
                 .methodologyNotes("Verified 1-year historical backtest executed via AlgoAdda Engine.")
                 .metrics(metricsJson)
+                .riskLabel(com.algoadda.core.bot.service.RiskClassifier.classify(metricsJson))
                 .build();
             backtestResultRepository.save(backtestResult);
 

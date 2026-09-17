@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingSummary, PageResponse } from '../../lib/api'
-import { Card, Button, Input, Select, OfficialBadge } from '../../components/ui'
+import { Card, Button, Input, Select, OfficialBadge, RiskBadge } from '../../components/ui'
 import {
   Search,
   Filter,
@@ -229,6 +229,7 @@ export const MarketplacePage: React.FC = () => {
                         {listing.strategyType || 'MOMENTUM'}
                       </span>
                       {(listing.official || listing.isOfficial) && <OfficialBadge />}
+                      {listing.riskLabel && <RiskBadge riskLabel={listing.riskLabel} />}
                     </div>
                     <div className="flex items-center gap-1 font-heading font-extrabold text-lg text-[#2C2C24]">
                       <span>₹{listing.price.toLocaleString()}</span>

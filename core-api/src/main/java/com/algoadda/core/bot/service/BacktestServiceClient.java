@@ -116,6 +116,7 @@ public class BacktestServiceClient {
                         .dateRangeEnd(rangeEnd)
                         .methodologyNotes("Vectorbt backtest executed via Backtest Service: " + summary)
                         .metrics(metricsJson)
+                        .riskLabel(RiskClassifier.classify(metricsJson))
                         .build();
 
                     backtestResultRepository.save(backtestResult);

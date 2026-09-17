@@ -275,6 +275,10 @@ public class BotService {
         BacktestResult backtestResult = backtestResultRepository.findFirstByBotVersionIdOrderByCreatedAtDesc(versionId)
             .orElseThrow(() -> new IllegalArgumentException("No backtest results found for version: " + versionId));
 
+        RiskLabel riskLabel = backtestResult.getRiskLabel() != null
+            ? backtestResult.getRiskLabel()
+            : RiskClassifier.classify(backtestResult.getMetrics());
+
         return BacktestResultResponse.builder()
             .id(backtestResult.getId())
             .botVersionId(versionId)
@@ -282,6 +286,7 @@ public class BotService {
             .dateRangeEnd(backtestResult.getDateRangeEnd())
             .methodologyNotes(backtestResult.getMethodologyNotes())
             .metrics(backtestResult.getMetrics())
+            .riskLabel(riskLabel)
             .reportFileKey(backtestResult.getReportFileKey())
             .createdAt(backtestResult.getCreatedAt())
             .build();

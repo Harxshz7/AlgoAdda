@@ -1,5 +1,6 @@
 package com.algoadda.core.listing.dto;
 
+import com.algoadda.core.bot.RiskLabel;
 import com.algoadda.core.listing.LicenseType;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ public class ListingDetailResponse {
     private Instant sellerCreatedAt;
     private String methodologyNotes;
     private String metrics;
+    private RiskLabel riskLabel;
     private String reportFileKey;
     private boolean isOfficial;
     private Instant createdAt;
@@ -48,6 +50,7 @@ public class ListingDetailResponse {
         Instant sellerCreatedAt,
         String methodologyNotes,
         String metrics,
+        RiskLabel riskLabel,
         String reportFileKey,
         boolean isOfficial,
         Instant createdAt
@@ -68,6 +71,7 @@ public class ListingDetailResponse {
         this.sellerCreatedAt = sellerCreatedAt;
         this.methodologyNotes = methodologyNotes;
         this.metrics = metrics;
+        this.riskLabel = riskLabel;
         this.reportFileKey = reportFileKey;
         this.isOfficial = isOfficial;
         this.createdAt = createdAt;
@@ -94,6 +98,7 @@ public class ListingDetailResponse {
         private Instant sellerCreatedAt;
         private String methodologyNotes;
         private String metrics;
+        private RiskLabel riskLabel;
         private String reportFileKey;
         private boolean isOfficial;
         private Instant createdAt;
@@ -178,6 +183,11 @@ public class ListingDetailResponse {
             return this;
         }
 
+        public ListingDetailResponseBuilder riskLabel(RiskLabel riskLabel) {
+            this.riskLabel = riskLabel;
+            return this;
+        }
+
         public ListingDetailResponseBuilder reportFileKey(String reportFileKey) {
             this.reportFileKey = reportFileKey;
             return this;
@@ -197,7 +207,7 @@ public class ListingDetailResponse {
             return new ListingDetailResponse(
                 listingId, botId, botVersionId, name, description, strategyType,
                 price, licenseType, disclosedLogic, riskDisclaimer, sellerId, sellerDisplayName,
-                sellerBio, sellerCreatedAt, methodologyNotes, metrics, reportFileKey, isOfficial, createdAt
+                sellerBio, sellerCreatedAt, methodologyNotes, metrics, riskLabel, reportFileKey, isOfficial, createdAt
             );
         }
     }
@@ -328,6 +338,14 @@ public class ListingDetailResponse {
 
     public void setMetrics(String metrics) {
         this.metrics = metrics;
+    }
+
+    public RiskLabel getRiskLabel() {
+        return riskLabel;
+    }
+
+    public void setRiskLabel(RiskLabel riskLabel) {
+        this.riskLabel = riskLabel;
     }
 
     public String getReportFileKey() {

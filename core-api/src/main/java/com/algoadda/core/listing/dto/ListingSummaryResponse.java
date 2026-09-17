@@ -1,5 +1,6 @@
 package com.algoadda.core.listing.dto;
 
+import com.algoadda.core.bot.RiskLabel;
 import com.algoadda.core.listing.LicenseType;
 
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ public class ListingSummaryResponse {
     private Double winRate;
     private Double maxDrawdown;
     private Double sharpeRatio;
+    private RiskLabel riskLabel;
     private boolean isOfficial;
     private Instant createdAt;
 
@@ -41,6 +43,7 @@ public class ListingSummaryResponse {
         Double winRate,
         Double maxDrawdown,
         Double sharpeRatio,
+        RiskLabel riskLabel,
         boolean isOfficial,
         Instant createdAt
     ) {
@@ -57,6 +60,7 @@ public class ListingSummaryResponse {
         this.winRate = winRate;
         this.maxDrawdown = maxDrawdown;
         this.sharpeRatio = sharpeRatio;
+        this.riskLabel = riskLabel;
         this.isOfficial = isOfficial;
         this.createdAt = createdAt;
     }
@@ -79,6 +83,7 @@ public class ListingSummaryResponse {
         private Double winRate;
         private Double maxDrawdown;
         private Double sharpeRatio;
+        private RiskLabel riskLabel;
         private boolean isOfficial;
         private Instant createdAt;
 
@@ -147,6 +152,11 @@ public class ListingSummaryResponse {
             return this;
         }
 
+        public ListingSummaryResponseBuilder riskLabel(RiskLabel riskLabel) {
+            this.riskLabel = riskLabel;
+            return this;
+        }
+
         public ListingSummaryResponseBuilder isOfficial(boolean isOfficial) {
             this.isOfficial = isOfficial;
             return this;
@@ -161,7 +171,7 @@ public class ListingSummaryResponse {
             return new ListingSummaryResponse(
                 listingId, botId, botVersionId, name, description, strategyType,
                 price, licenseType, sellerId, sellerDisplayName, winRate, maxDrawdown,
-                sharpeRatio, isOfficial, createdAt
+                sharpeRatio, riskLabel, isOfficial, createdAt
             );
         }
     }
@@ -268,6 +278,14 @@ public class ListingSummaryResponse {
 
     public void setSharpeRatio(Double sharpeRatio) {
         this.sharpeRatio = sharpeRatio;
+    }
+
+    public RiskLabel getRiskLabel() {
+        return riskLabel;
+    }
+
+    public void setRiskLabel(RiskLabel riskLabel) {
+        this.riskLabel = riskLabel;
     }
 
     public boolean isOfficial() {

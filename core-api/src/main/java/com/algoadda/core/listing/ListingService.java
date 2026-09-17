@@ -131,6 +131,10 @@ public class ListingService {
             SellerProfile sellerProfile = sellerProfileRepository.findByUserId(bot.getSeller().getId()).orElse(null);
             String sellerDisplayName = sellerProfile != null ? sellerProfile.getDisplayName() : bot.getSeller().getEmail();
 
+            RiskLabel riskLabel = backtest != null && backtest.getRiskLabel() != null
+                ? backtest.getRiskLabel()
+                : (backtest != null ? RiskClassifier.classify(backtest.getMetrics()) : null);
+
             summaries.add(ListingSummaryResponse.builder()
                 .listingId(listing.getId())
                 .botId(bot.getId())
@@ -145,6 +149,7 @@ public class ListingService {
                 .winRate(winRate)
                 .maxDrawdown(maxDrawdown)
                 .sharpeRatio(sharpeRatio)
+                .riskLabel(riskLabel)
                 .isOfficial(listing.isOfficial())
                 .createdAt(listing.getCreatedAt())
                 .build());
@@ -225,6 +230,10 @@ public class ListingService {
         // Fetch Seller Profile
         SellerProfile sellerProfile = sellerProfileRepository.findByUserId(bot.getSeller().getId()).orElse(null);
 
+        RiskLabel riskLabel = backtest != null && backtest.getRiskLabel() != null
+            ? backtest.getRiskLabel()
+            : (backtest != null ? RiskClassifier.classify(backtest.getMetrics()) : null);
+
         return ListingDetailResponse.builder()
             .listingId(listing.getId())
             .botId(bot.getId())
@@ -242,6 +251,7 @@ public class ListingService {
             .sellerCreatedAt(sellerProfile != null ? sellerProfile.getCreatedAt() : bot.getSeller().getCreatedAt())
             .methodologyNotes(backtest != null ? backtest.getMethodologyNotes() : null)
             .metrics(backtest != null ? backtest.getMetrics() : null)
+            .riskLabel(riskLabel)
             .reportFileKey(backtest != null ? backtest.getReportFileKey() : null)
             .isOfficial(listing.isOfficial())
             .createdAt(listing.getCreatedAt())

@@ -2,6 +2,7 @@ package com.algoadda.core.listing;
 
 import com.algoadda.core.bot.Bot;
 import com.algoadda.core.bot.BotStatus;
+import com.algoadda.core.bot.RiskLabel;
 import com.algoadda.core.bot.BotVersion;
 import com.algoadda.core.bot.BacktestResult;
 import com.algoadda.core.bot.BacktestResultRepository;
@@ -93,6 +94,10 @@ public class PublicSellerService {
                 }
             }
 
+            RiskLabel riskLabel = backtest != null && backtest.getRiskLabel() != null
+                ? backtest.getRiskLabel()
+                : (backtest != null ? com.algoadda.core.bot.service.RiskClassifier.classify(backtest.getMetrics()) : null);
+
             sellerListings.add(ListingSummaryResponse.builder()
                 .listingId(listing.getId())
                 .botId(bot.getId())
@@ -107,6 +112,7 @@ public class PublicSellerService {
                 .winRate(winRate)
                 .maxDrawdown(maxDrawdown)
                 .sharpeRatio(sharpeRatio)
+                .riskLabel(riskLabel)
                 .createdAt(listing.getCreatedAt())
                 .build());
         }

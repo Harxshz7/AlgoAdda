@@ -4,7 +4,7 @@ import { api } from '../../lib/api'
 import type { ListingDetail, BacktestMetrics, EquityPoint, ReportReason } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
-import { Button, Card, MetricGauge, EquityCurveChart, OfficialBadge } from '../../components/ui'
+import { Button, Card, MetricGauge, EquityCurveChart, OfficialBadge, RiskBadge } from '../../components/ui'
 import {
   ArrowLeft,
   ShieldCheck,
@@ -210,6 +210,7 @@ export const StoreListingDetailPage: React.FC = () => {
                 <span>OFFICIAL</span>
               </span>
               <OfficialBadge size="md" />
+              {listing.riskLabel && <RiskBadge riskLabel={listing.riskLabel} size="md" />}
             </div>
             <span className="text-xs text-[#78786C]">
               Official strategy by{' '}
