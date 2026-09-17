@@ -68,6 +68,9 @@ public class PublicSellerService {
             if (bot == null || bot.getStatus() != BotStatus.PUBLISHED) continue;
             if (!bot.getSeller().getId().equals(sellerId)) continue;
 
+            // Skip if seller is suspended
+            if (bot.getSeller() != null && bot.getSeller().isSuspended()) continue;
+
             BacktestResult backtest = backtestResultRepository
                 .findFirstByBotVersionIdOrderByCreatedAtDesc(version.getId())
                 .orElse(null);

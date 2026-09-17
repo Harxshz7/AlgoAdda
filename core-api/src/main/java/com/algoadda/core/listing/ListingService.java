@@ -76,6 +76,9 @@ public class ListingService {
             Bot bot = version.getBot();
             if (bot == null || bot.getStatus() != BotStatus.PUBLISHED) continue;
 
+            // Skip listings from suspended sellers
+            if (bot.getSeller() != null && bot.getSeller().isSuspended()) continue;
+
             // Filter strategyType
             if (strategyType != null && !strategyType.isBlank()) {
                 if (!bot.getStrategyType().equalsIgnoreCase(strategyType.trim())) {
@@ -205,6 +208,11 @@ public class ListingService {
         BotVersion version = listing.getBotVersion();
         if (version == null || version.getBot() == null || version.getBot().getStatus() != BotStatus.PUBLISHED) {
             throw new IllegalArgumentException("Listing belongs to an unpublished or invalid bot");
+        }
+
+        // Reject listings from suspended sellers
+        if (version.getBot().getSeller() != null && version.getBot().getSeller().isSuspended()) {
+            throw new IllegalArgumentException("This listing is currently unavailable");
         }
 
         Bot bot = version.getBot();

@@ -24,6 +24,9 @@ public class User {
     @Column(nullable = false, length = 50)
     private Role role;
 
+    @Column(nullable = false)
+    private boolean suspended = false;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -31,11 +34,12 @@ public class User {
     public User() {
     }
 
-    public User(UUID id, String email, String passwordHash, Role role, Instant createdAt) {
+    public User(UUID id, String email, String passwordHash, Role role, boolean suspended, Instant createdAt) {
         this.id = id;
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
+        this.suspended = suspended;
         this.createdAt = createdAt;
     }
 
@@ -48,6 +52,7 @@ public class User {
         private String email;
         private String passwordHash;
         private Role role;
+        private boolean suspended = false;
         private Instant createdAt;
 
         public UserBuilder id(UUID id) {
@@ -70,13 +75,18 @@ public class User {
             return this;
         }
 
+        public UserBuilder suspended(boolean suspended) {
+            this.suspended = suspended;
+            return this;
+        }
+
         public UserBuilder createdAt(Instant createdAt) {
             this.createdAt = createdAt;
             return this;
         }
 
         public User build() {
-            return new User(id, email, passwordHash, role, createdAt);
+            return new User(id, email, passwordHash, role, suspended, createdAt);
         }
     }
 
@@ -110,6 +120,14 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public boolean isSuspended() {
+        return suspended;
+    }
+
+    public void setSuspended(boolean suspended) {
+        this.suspended = suspended;
     }
 
     public Instant getCreatedAt() {
