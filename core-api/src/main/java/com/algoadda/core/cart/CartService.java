@@ -11,8 +11,7 @@ import com.algoadda.core.user.SellerProfile;
 import com.algoadda.core.user.SellerProfileRepository;
 import com.algoadda.core.user.User;
 import com.algoadda.core.user.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 @SuppressWarnings("null")
 public class CartService {
 
-    private static final Logger log = LoggerFactory.getLogger(CartService.class);
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;

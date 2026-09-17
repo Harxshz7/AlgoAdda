@@ -4,7 +4,7 @@ import com.algoadda.core.cart.Cart;
 import com.algoadda.core.cart.CartItem;
 import com.algoadda.core.cart.CartService;
 import com.algoadda.core.listing.Listing;
-import com.algoadda.core.listing.ListingRepository;
+
 import com.algoadda.core.order.dto.CreateOrderRequest;
 import com.algoadda.core.order.dto.OrderResponse;
 import com.algoadda.core.order.dto.RefundResponse;
@@ -33,7 +33,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final LicenseRepository licenseRepository;
-    private final ListingRepository listingRepository;
+
     private final UserRepository userRepository;
     private final CartService cartService;
     private final RazorpayService razorpayService;
@@ -42,7 +42,6 @@ public class OrderService {
         OrderRepository orderRepository,
         OrderItemRepository orderItemRepository,
         LicenseRepository licenseRepository,
-        ListingRepository listingRepository,
         UserRepository userRepository,
         CartService cartService,
         RazorpayService razorpayService
@@ -50,7 +49,6 @@ public class OrderService {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.licenseRepository = licenseRepository;
-        this.listingRepository = listingRepository;
         this.userRepository = userRepository;
         this.cartService = cartService;
         this.razorpayService = razorpayService;

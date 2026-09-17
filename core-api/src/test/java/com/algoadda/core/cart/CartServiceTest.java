@@ -74,7 +74,7 @@ public class CartServiceTest {
         buyer.setEmail("buyer@example.com");
         buyer.setRole(Role.BUYER);
 
-        Bot seller = new Bot();
+
         User sellerUser = new User();
         sellerUser.setId(UUID.randomUUID());
         sellerUser.setEmail("seller@example.com");
