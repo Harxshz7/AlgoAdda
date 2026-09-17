@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { api } from '../../lib/api'
-import type { ListingDetail, BacktestMetrics, EquityPoint } from '../../lib/api'
+import type { ListingDetail, BacktestMetrics, EquityPoint, ReportReason } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import { Button, Card, MetricGauge, EquityCurveChart, OfficialBadge } from '../../components/ui'
@@ -18,6 +18,7 @@ import {
   LogIn,
   Sparkles,
   Zap,
+  Flag,
 } from 'lucide-react'
 
 export const StoreListingDetailPage: React.FC = () => {
@@ -33,6 +34,33 @@ export const StoreListingDetailPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const [isPurchasing, setIsPurchasing] = useState(false)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
+
+  // Report state
+  const [showReportForm, setShowReportForm] = useState(false)
+  const [reportReason, setReportReason] = useState<ReportReason>('MISLEADING_CLAIMS')
+  const [reportComment, setReportComment] = useState('')
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false)
+  const [reportError, setReportError] = useState<string | null>(null)
+  const [reportSuccess, setReportSuccess] = useState(false)
+
+  const handleReportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!listingId) return
+    setIsSubmittingReport(true)
+    setReportError(null)
+    try {
+      await api.reportListing(listingId, {
+        reason: reportReason,
+        comment: reportComment.trim() || undefined,
+      })
+      setReportSuccess(true)
+      setShowReportForm(false)
+    } catch (err: any) {
+      setReportError(err.message || 'Failed to submit report')
+    } finally {
+      setIsSubmittingReport(false)
+    }
+  }
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -190,6 +218,73 @@ export const StoreListingDetailPage: React.FC = () => {
               </span>
             </span>
           </div>
+
+          {user && (
+            <div className="relative ml-auto sm:ml-2">
+              {reportSuccess ? (
+                <span className="text-xs font-semibold text-[#5D7052]">Report submitted ✓</span>
+              ) : (
+                <button
+                  onClick={() => setShowReportForm(!showReportForm)}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#78786C] hover:text-[#A85448] transition-colors"
+                  title="Report this listing"
+                >
+                  <Flag className="w-3.5 h-3.5" />
+                  <span>Report</span>
+                </button>
+              )}
+
+              {showReportForm && !reportSuccess && (
+                <div className="absolute right-0 top-full mt-2 w-80 p-4 rounded-xl bg-white border border-[#DED8CF] shadow-lg z-50">
+                  <h4 className="text-sm font-heading font-bold text-[#2C2C24] mb-3">Report Listing</h4>
+
+                  <label className="block text-xs font-semibold text-[#78786C] mb-1">Reason</label>
+                  <select
+                    value={reportReason}
+                    onChange={(e) => setReportReason(e.target.value as ReportReason)}
+                    className="w-full px-3 py-1.5 mb-3 text-xs border border-[#DED8CF] rounded-lg bg-[#FDFCF8] text-[#2C2C24] focus:outline-none focus:border-[#5D7052]"
+                  >
+                    <option value="MISLEADING_CLAIMS">Misleading Claims</option>
+                    <option value="MALICIOUS_CODE">Malicious / Suspicious Code</option>
+                    <option value="COPYRIGHT_VIOLATION">Copyright / IP Violation</option>
+                    <option value="SPAM">Spam or Junk</option>
+                    <option value="OTHER">Other Issue</option>
+                  </select>
+
+                  <label className="block text-xs font-semibold text-[#78786C] mb-1">Additional details (optional)</label>
+                  <textarea
+                    value={reportComment}
+                    onChange={(e) => setReportComment(e.target.value)}
+                    placeholder="Describe the issue briefly..."
+                    rows={3}
+                    className="w-full px-3 py-1.5 mb-3 text-xs border border-[#DED8CF] rounded-lg bg-[#FDFCF8] text-[#2C2C24] focus:outline-none focus:border-[#5D7052]"
+                  />
+
+                  {reportError && (
+                    <p className="text-xs text-[#A85448] mb-2">{reportError}</p>
+                  )}
+
+                  <div className="flex items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowReportForm(false)}
+                      className="px-3 py-1 text-xs text-[#78786C] hover:text-[#2C2C24]"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleReportSubmit}
+                      disabled={isSubmittingReport}
+                      className="px-3 py-1 text-xs font-semibold bg-[#A85448] text-white rounded-lg hover:bg-[#8A3F35] disabled:opacity-50"
+                    >
+                      {isSubmittingReport ? 'Submitting...' : 'Submit Report'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Pricing & Buy CTA */}

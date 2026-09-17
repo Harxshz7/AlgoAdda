@@ -19,6 +19,7 @@ import { PublicSellerProfilePage } from './pages/seller/PublicSellerProfilePage'
 import { BuyerDashboardPage } from './pages/buyer/BuyerDashboardPage'
 import { CartPage } from './pages/buyer/CartPage'
 import { AboutPage } from './pages/about/AboutPage'
+import { AdminReportsPage } from './pages/admin/AdminReportsPage'
 
 export const App: React.FC = () => {
   return (
@@ -102,6 +103,18 @@ export const App: React.FC = () => {
                 <ProtectedRoute requiredRole="BUYER">
                   <PublicLayout>
                     <CartPage />
+                  </PublicLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin Authenticated Routes */}
+            <Route
+              path="/admin/reports"
+              element={
+                <ProtectedRoute requiredRole="ADMIN">
+                  <PublicLayout>
+                    <AdminReportsPage />
                   </PublicLayout>
                 </ProtectedRoute>
               }

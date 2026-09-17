@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import { Button, LogoIcon } from '../ui'
-import { Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag, Sparkles, Info, ShoppingCart } from 'lucide-react'
+import { Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag, Sparkles, Info, ShoppingCart, ShieldAlert } from 'lucide-react'
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth()
@@ -117,6 +117,19 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
                     </Button>
                   </Link>
                 </>
+              )}
+
+              {user?.role === 'ADMIN' && (
+                <Link to="/admin/reports">
+                  <Button
+                    variant={isActive('/admin') ? 'primary' : 'ghost'}
+                    size="sm"
+                    className="gap-1.5"
+                  >
+                    <ShieldAlert className="w-4 h-4 text-[#A85448]" />
+                    <span>Admin Moderation</span>
+                  </Button>
+                </Link>
               )}
             </nav>
 

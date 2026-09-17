@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { api } from '../../lib/api'
-import type { ListingDetail, BacktestMetrics, EquityPoint } from '../../lib/api'
+import type { ListingDetail, BacktestMetrics, EquityPoint, ReportReason } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import { Button, Card, MetricGauge, EquityCurveChart, OfficialBadge } from '../../components/ui'
@@ -16,6 +16,7 @@ import {
   Lock,
   LogIn,
   Zap,
+  Flag,
 } from 'lucide-react'
 
 export const ListingDetailPage: React.FC = () => {
@@ -31,6 +32,12 @@ export const ListingDetailPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const [isPurchasing, setIsPurchasing] = useState(false)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
+  const [showReportForm, setShowReportForm] = useState(false)
+  const [reportReason, setReportReason] = useState<ReportReason>('MISLEADING_CLAIMS')
+  const [reportComment, setReportComment] = useState('')
+  const [reportSubmitting, setReportSubmitting] = useState(false)
+  const [reportSuccess, setReportSuccess] = useState(false)
+  const [reportError, setReportError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -169,6 +176,87 @@ export const ListingDetailPage: React.FC = () => {
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Marketplace</span>
         </Link>
+
+        {user && (
+          <div className="relative">
+            {reportSuccess ? (
+              <span className="text-xs font-semibold text-[#5D7052]">Report submitted ✓</span>
+            ) : (
+              <button
+                onClick={() => setShowReportForm(!showReportForm)}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#78786C] hover:text-[#A85448] transition-colors"
+                title="Report this listing"
+              >
+                <Flag className="w-3.5 h-3.5" />
+                <span>Report</span>
+              </button>
+            )}
+
+            {showReportForm && !reportSuccess && (
+              <div className="absolute right-0 top-full mt-2 w-80 p-4 rounded-xl bg-white border border-[#DED8CF] shadow-lg z-50">
+                <h4 className="text-sm font-heading font-bold text-[#2C2C24] mb-3">Report Listing</h4>
+
+                <label className="block text-xs font-semibold text-[#78786C] mb-1">Reason</label>
+                <select
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value as ReportReason)}
+                  className="w-full mb-3 px-3 py-2 rounded-lg border border-[#DED8CF] bg-[#FDFCF8] text-sm text-[#2C2C24] focus:outline-none focus:ring-2 focus:ring-[#5D7052]/30"
+                >
+                  <option value="MISLEADING_CLAIMS">Misleading Claims</option>
+                  <option value="GUARANTEED_RETURN_LANGUAGE">Guaranteed Return Language</option>
+                  <option value="ABUSE">Abuse</option>
+                  <option value="OTHER">Other</option>
+                </select>
+
+                <label className="block text-xs font-semibold text-[#78786C] mb-1">Comment (optional)</label>
+                <textarea
+                  value={reportComment}
+                  onChange={(e) => setReportComment(e.target.value)}
+                  rows={2}
+                  className="w-full mb-3 px-3 py-2 rounded-lg border border-[#DED8CF] bg-[#FDFCF8] text-sm text-[#2C2C24] resize-none focus:outline-none focus:ring-2 focus:ring-[#5D7052]/30"
+                  placeholder="Describe the issue..."
+                />
+
+                {reportError && (
+                  <p className="text-xs text-[#A85448] mb-2">{reportError}</p>
+                )}
+
+                <div className="flex items-center gap-2 justify-end">
+                  <button
+                    onClick={() => { setShowReportForm(false); setReportError(null) }}
+                    className="text-xs font-semibold text-[#78786C] hover:text-[#2C2C24] transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    disabled={reportSubmitting}
+                    onClick={async () => {
+                      if (!listing) return
+                      setReportSubmitting(true)
+                      setReportError(null)
+                      try {
+                        await api.reportListing(listing.listingId, {
+                          reason: reportReason,
+                          comment: reportComment || undefined,
+                        })
+                        setReportSuccess(true)
+                        setShowReportForm(false)
+                      } catch (err: any) {
+                        setReportError(err.message || 'Failed to submit report')
+                      } finally {
+                        setReportSubmitting(false)
+                      }
+                    }}
+                  >
+                    {reportSubmitting ? 'Submitting...' : 'Submit Report'}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Hero Header Banner */}
