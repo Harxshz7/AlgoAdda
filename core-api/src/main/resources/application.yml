@@ -35,6 +35,10 @@ algoadda:
     s3:
       bucket-name: ${S3_BUCKET_NAME:algoadda-bot-artifacts}
       region: ${AWS_REGION:ap-south-1}
+    ses:
+      region: ${AWS_REGION:ap-south-1}
+      from-email: ${SES_FROM_EMAIL:noreply@algoadda.com}
+  app-url: ${APP_URL:http://localhost:3000}
   backtest-service:
     url: ${BACKTEST_SERVICE_URL:http://localhost:8000}
     connect-timeout-ms: 5000

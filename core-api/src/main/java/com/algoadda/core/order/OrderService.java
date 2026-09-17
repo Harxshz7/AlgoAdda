@@ -3,6 +3,7 @@ package com.algoadda.core.order;
 import com.algoadda.core.cart.Cart;
 import com.algoadda.core.cart.CartItem;
 import com.algoadda.core.cart.CartService;
+import com.algoadda.core.email.EmailService;
 import com.algoadda.core.listing.Listing;
 
 import com.algoadda.core.order.dto.CreateOrderRequest;
@@ -37,6 +38,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final CartService cartService;
     private final RazorpayService razorpayService;
+    private final EmailService emailService;
 
     public OrderService(
         OrderRepository orderRepository,
@@ -44,7 +46,8 @@ public class OrderService {
         LicenseRepository licenseRepository,
         UserRepository userRepository,
         CartService cartService,
-        RazorpayService razorpayService
+        RazorpayService razorpayService,
+        EmailService emailService
     ) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
@@ -52,6 +55,7 @@ public class OrderService {
         this.userRepository = userRepository;
         this.cartService = cartService;
         this.razorpayService = razorpayService;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -223,10 +227,17 @@ public class OrderService {
             // Clear buyer's cart on successful payment
             cartService.clearCart(order.getBuyer().getId());
 
+            // Trigger combined Purchase Confirmation & License Ready email to buyer (async)
+            List<License> currentLicenses = licenseRepository.findByOrderId(order.getId());
+            emailService.sendPurchaseConfirmationAndLicenseEmail(order, orderItems, currentLicenses);
+
         } else if ("payment.failed".equalsIgnoreCase(event)) {
             log.info("Payment failed for Order ID {}. Updating status to FAILED.", order.getId());
             order.setStatus(OrderStatus.FAILED);
             orderRepository.save(order);
+
+            // Trigger Order Failed notification email to buyer (async)
+            emailService.sendOrderFailedEmail(order);
         }
     }
 
@@ -263,6 +274,9 @@ public class OrderService {
             anyRevoked = true;
             log.info("Revoked License ID {} due to order refund", license.getId());
         }
+
+        // Trigger Order Refunded notification email to buyer (async)
+        emailService.sendOrderRefundedEmail(order, totalRefund);
 
         return new RefundResponse(order.getId(), order.getStatus(), refundId, anyRevoked);
     }

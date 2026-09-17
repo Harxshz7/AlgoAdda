@@ -1,6 +1,7 @@
 package com.algoadda.core.listing;
 
 import com.algoadda.core.bot.*;
+import com.algoadda.core.bot.service.RiskClassifier;
 import com.algoadda.core.listing.dto.*;
 import com.algoadda.core.user.SellerProfile;
 import com.algoadda.core.user.SellerProfileRepository;

@@ -7,13 +7,10 @@ import {
   ShieldAlert,
   AlertTriangle,
   CheckCircle2,
-  XCircle,
   UserX,
   UserCheck,
   ExternalLink,
   RefreshCw,
-  Search,
-  Filter,
 } from 'lucide-react'
 
 export const AdminReportsPage: React.FC = () => {

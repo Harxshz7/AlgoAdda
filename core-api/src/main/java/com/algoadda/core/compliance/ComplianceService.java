@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import com.algoadda.core.email.EmailService;
+
 @SuppressWarnings("null")
 @Service
 public class ComplianceService {
@@ -23,6 +25,7 @@ public class ComplianceService {
     private final BotRepository botRepository;
     private final BacktestResultRepository backtestResultRepository;
     private final ObjectMapper objectMapper;
+    private final EmailService emailService;
     private final List<String> blocklist;
 
     public ComplianceService(
@@ -31,6 +34,7 @@ public class ComplianceService {
         BotRepository botRepository,
         BacktestResultRepository backtestResultRepository,
         ObjectMapper objectMapper,
+        EmailService emailService,
         @Value("${algoadda.compliance.blocklist:guaranteed,assured returns,risk-free,no loss,100% profit,guaranteed profit,risk free,assured return}") List<String> blocklist
     ) {
         this.complianceCheckRepository = complianceCheckRepository;
@@ -38,6 +42,7 @@ public class ComplianceService {
         this.botRepository = botRepository;
         this.backtestResultRepository = backtestResultRepository;
         this.objectMapper = objectMapper;
+        this.emailService = emailService;
         this.blocklist = blocklist != null ? blocklist : Collections.emptyList();
     }
 
@@ -87,6 +92,9 @@ public class ComplianceService {
         ComplianceCheck savedCheck = complianceCheckRepository.save(check);
         log.info("Automated compliance check completed for botVersion {}. Passed = {}", botVersion.getId(), overallPassed);
 
+        // Trigger compliance status email to seller (async)
+        emailService.sendComplianceStatusUpdateEmail(savedCheck);
+
         return mapToResponse(savedCheck);
     }
 
@@ -128,6 +136,10 @@ public class ComplianceService {
             .build();
 
         ComplianceCheck savedCheck = complianceCheckRepository.save(manualCheck);
+
+        // Trigger compliance status email to seller (async)
+        emailService.sendComplianceStatusUpdateEmail(savedCheck);
+
         return mapToResponse(savedCheck);
     }
 
