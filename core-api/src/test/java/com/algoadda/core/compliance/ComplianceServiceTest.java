@@ -35,6 +35,9 @@ class ComplianceServiceTest {
     @Mock
     private BacktestResultRepository backtestResultRepository;
 
+    @Mock
+    private com.algoadda.core.email.EmailService emailService;
+
     private ObjectMapper objectMapper;
     private List<String> blocklist;
     private ComplianceService complianceService;
@@ -49,6 +52,7 @@ class ComplianceServiceTest {
             botRepository,
             backtestResultRepository,
             objectMapper,
+            emailService,
             blocklist
         );
     }

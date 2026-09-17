@@ -41,6 +41,9 @@ public class AdminRefundTest {
     @Mock
     private RazorpayService razorpayService;
 
+    @Mock
+    private com.algoadda.core.email.EmailService emailService;
+
     @InjectMocks
     private OrderService orderService;
 
