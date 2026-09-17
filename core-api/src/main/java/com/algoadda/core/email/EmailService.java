@@ -63,9 +63,12 @@ public class EmailService {
 
         if (items != null && !items.isEmpty()) {
             for (OrderItem item : items) {
-                String botName = item.getListing() != null && item.getListing().getBotVersion() != null
-                    ? item.getListing().getBotVersion().getBot().getName()
-                    : "Trading Algorithm";
+                String botName = "Trading Algorithm";
+                if (item.getBotVersion() != null && item.getBotVersion().getBot() != null && item.getBotVersion().getBot().getName() != null) {
+                    botName = item.getBotVersion().getBot().getName();
+                } else if (item.getListing() != null && item.getListing().getBotVersion() != null && item.getListing().getBotVersion().getBot() != null) {
+                    botName = item.getListing().getBotVersion().getBot().getName();
+                }
                 String ver = item.getBotVersion() != null ? item.getBotVersion().getVersionNumber() : "1.0.0";
                 BigDecimal price = item.getPriceAtPurchase() != null ? item.getPriceAtPurchase() : BigDecimal.ZERO;
 

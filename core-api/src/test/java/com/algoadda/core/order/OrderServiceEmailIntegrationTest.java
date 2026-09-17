@@ -88,7 +88,7 @@ class OrderServiceEmailIntegrationTest {
         when(orderRepository.findByStatus(OrderStatus.PENDING)).thenReturn(List.of(pendingOrder));
 
         // First webhook call (processes PENDING -> PAID)
-        orderService.handlePaymentWebhook(payload, sig);
+        orderService.processWebhook(payload, sig);
 
         // Verify email sent ONCE on first webhook
         verify(emailService, times(1)).sendPurchaseConfirmationAndLicenseEmail(any(), any(), any());
@@ -99,7 +99,7 @@ class OrderServiceEmailIntegrationTest {
         when(orderRepository.findByStatus(OrderStatus.PAID)).thenReturn(List.of(pendingOrder));
 
         // Duplicate retried webhook call
-        orderService.handlePaymentWebhook(payload, sig);
+        orderService.processWebhook(payload, sig);
 
         // Verify email service was still called ONLY ONCE (no duplicate email on retries)
         verify(emailService, times(1)).sendPurchaseConfirmationAndLicenseEmail(any(), any(), any());
