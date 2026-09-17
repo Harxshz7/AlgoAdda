@@ -223,15 +223,15 @@ export const MarketplacePage: React.FC = () => {
               <Card key={listing.listingId} interactive className="p-6 flex flex-col justify-between gap-6">
                 <div className="flex flex-col gap-4">
                   {/* Card Header: Strategy Badge + Price */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#5D7052]/10 text-[#5D7052] tracking-wide">
+                  <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5 min-w-0 max-w-full">
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#5D7052]/10 text-[#5D7052] tracking-wide shrink-0">
                         {listing.strategyType || 'MOMENTUM'}
                       </span>
                       {(listing.official || listing.isOfficial) && <OfficialBadge />}
                       {listing.riskLabel && <RiskBadge riskLabel={listing.riskLabel} />}
                     </div>
-                    <div className="flex items-center gap-1 font-heading font-extrabold text-lg text-[#2C2C24]">
+                    <div className="flex items-center gap-1 font-heading font-extrabold text-lg text-[#2C2C24] shrink-0 ml-auto">
                       <span>₹{listing.price.toLocaleString()}</span>
                       <span className="text-[11px] font-normal text-[#78786C]">
                         / {listing.licenseType === 'TIMED' ? 'mo' : 'one-time'}

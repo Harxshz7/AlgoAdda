@@ -25,8 +25,8 @@ export const BuyerDashboardPage: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-heading font-extrabold text-[#2C2C24]">
+            <div className="flex flex-wrap items-center gap-2 min-w-0">
+              <h1 className="text-2xl font-heading font-extrabold text-[#2C2C24] break-words">
                 Welcome, {user?.email.split('@')[0]}
               </h1>
               <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#5D7052]/10 text-[#5D7052]">

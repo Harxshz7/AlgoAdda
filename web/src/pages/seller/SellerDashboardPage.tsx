@@ -137,16 +137,18 @@ export const SellerDashboardPage: React.FC = () => {
             <Card key={bot.botId} interactive className="p-6 flex flex-col justify-between">
               <div className="flex flex-col gap-4">
                 {/* Status row */}
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-semibold font-body px-2.5 py-1 rounded-full bg-[#E6DCCD] text-[#4A4A40]">
+                <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
+                  <span className="text-xs font-semibold font-body px-2.5 py-1 rounded-full bg-[#E6DCCD] text-[#4A4A40] shrink-0">
                     {bot.strategyType}
                   </span>
-                  {getBotStatusBadge(bot.status)}
+                  <div className="shrink-0">
+                    {getBotStatusBadge(bot.status)}
+                  </div>
                 </div>
 
                 {/* Bot name & meta */}
-                <div className="flex flex-col gap-0.5">
-                  <h3 className="text-lg font-heading font-bold text-[#2C2C24] group-hover:text-[#5D7052] transition-colors">
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <h3 className="text-lg font-heading font-bold text-[#2C2C24] group-hover:text-[#5D7052] transition-colors truncate">
                     {bot.name}
                   </h3>
                   <span className="text-xs font-body text-[#78786C]">

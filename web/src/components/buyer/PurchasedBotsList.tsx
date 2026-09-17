@@ -73,37 +73,39 @@ export const PurchasedBotsList: React.FC = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {licenses.map((license) => (
-          <Card key={license.licenseId} className="p-6 flex flex-col justify-between gap-5 border-t-4 border-t-[#5D7052]">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-heading font-bold text-lg text-[#2C2C24]">
+          <Card key={license.licenseId} className="p-6 flex flex-col justify-between gap-5 border-t-4 border-t-[#5D7052] overflow-hidden min-w-0">
+            <div className="flex flex-col gap-3 min-w-0">
+              <div className="flex flex-wrap items-start justify-between gap-2 min-w-0">
+                <div className="flex flex-col gap-1 min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2 min-w-0">
+                    <h4 className="font-heading font-bold text-lg text-[#2C2C24] truncate min-w-0">
                       {license.botName}
                     </h4>
-                    <span className="text-[11px] font-semibold bg-[#5D7052]/10 text-[#5D7052] px-2 py-0.5 rounded">
+                    <span className="text-[11px] font-semibold bg-[#5D7052]/10 text-[#5D7052] px-2 py-0.5 rounded shrink-0">
                       v{license.versionNumber}
                     </span>
                   </div>
-                  <span className="text-xs text-[#78786C]">
+                  <span className="text-xs text-[#78786C] truncate min-w-0">
                     By {license.sellerName} {license.isOfficial ? '• Official Store' : ''}
                   </span>
                 </div>
 
-                {license.revoked ? (
-                  <span className="text-xs font-semibold text-red-600 bg-red-100 px-2.5 py-1 rounded-full shrink-0">
-                    Revoked
-                  </span>
-                ) : license.isActive ? (
-                  <span className="text-xs font-semibold text-[#5D7052] bg-[#5D7052]/10 px-2.5 py-1 rounded-full shrink-0 flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" />
-                    Active
-                  </span>
-                ) : (
-                  <span className="text-xs font-semibold text-amber-600 bg-amber-100 px-2.5 py-1 rounded-full shrink-0">
-                    Expired
-                  </span>
-                )}
+                <div className="shrink-0">
+                  {license.revoked ? (
+                    <span className="text-xs font-semibold text-red-600 bg-red-100 px-2.5 py-1 rounded-full shrink-0">
+                      Revoked
+                    </span>
+                  ) : license.isActive ? (
+                    <span className="text-xs font-semibold text-[#5D7052] bg-[#5D7052]/10 px-2.5 py-1 rounded-full shrink-0 flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" />
+                      Active
+                    </span>
+                  ) : (
+                    <span className="text-xs font-semibold text-amber-600 bg-amber-100 px-2.5 py-1 rounded-full shrink-0">
+                      Expired
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="flex flex-col gap-1 text-xs text-[#78786C] pt-2 border-t border-[#DED8CF]/40">

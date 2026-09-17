@@ -136,19 +136,19 @@ export const CartPage: React.FC = () => {
           {/* Cart Items List */}
           <div className="lg:col-span-2 space-y-3">
             {items.map((item) => (
-              <Card key={item.id} className="p-4 flex items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-heading font-bold text-base text-[#2C2C24]">
+              <Card key={item.id} className="p-4 flex items-center justify-between gap-4 overflow-hidden min-w-0">
+                <div className="space-y-1 min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2 min-w-0">
+                    <h3 className="font-heading font-bold text-base text-[#2C2C24] truncate min-w-0">
                       {item.botName}
                     </h3>
                     {item.official && (
-                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#C18C5D]/15 text-[#C18C5D]">
+                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#C18C5D]/15 text-[#C18C5D] shrink-0">
                         Official
                       </span>
                     )}
                   </div>
-                  <div className="text-xs text-[#78786C] font-body flex items-center gap-2">
+                  <div className="text-xs text-[#78786C] font-body flex flex-wrap items-center gap-2">
                     <span>{item.strategyType}</span>
                     <span>•</span>
                     <span>v{item.versionNumber}</span>
@@ -157,7 +157,7 @@ export const CartPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 shrink-0">
                   <span className="font-heading font-bold text-lg text-[#2C2C24]">
                     ₹{item.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </span>

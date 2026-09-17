@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { PublicSellerProfile } from '../../lib/api'
-import { Card, Button } from '../../components/ui'
+import { Card, Button, RiskBadge } from '../../components/ui'
 import {
   Calendar,
   Store,
@@ -87,7 +87,7 @@ export const PublicSellerProfilePage: React.FC = () => {
             {profile.displayName.substring(0, 2).toUpperCase()}
           </div>
           <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 min-w-0">
               <h1 className="text-2xl font-heading font-extrabold text-[#2C2C24]">
                 {profile.displayName}
               </h1>
@@ -133,11 +133,14 @@ export const PublicSellerProfilePage: React.FC = () => {
               <Card key={listing.listingId} interactive className="p-6 flex flex-col justify-between gap-6">
                 <div className="flex flex-col gap-4">
                   {/* Strategy Badge & Price */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#5D7052]/10 text-[#5D7052]">
-                      {listing.strategyType}
-                    </span>
-                    <span className="font-heading font-extrabold text-lg text-[#2C2C24]">
+                  <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5 min-w-0 max-w-full">
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#5D7052]/10 text-[#5D7052] shrink-0">
+                        {listing.strategyType}
+                      </span>
+                      {listing.riskLabel && <RiskBadge riskLabel={listing.riskLabel} />}
+                    </div>
+                    <span className="font-heading font-extrabold text-lg text-[#2C2C24] shrink-0 ml-auto">
                       ₹{listing.price.toLocaleString()}
                     </span>
                   </div>

@@ -224,16 +224,16 @@ export const StorePage: React.FC = () => {
               <Card key={listing.listingId} interactive className="p-6 flex flex-col justify-between gap-6 border-l-4 border-l-[#C18C5D]">
                 <div className="flex flex-col gap-4">
                   {/* Card Header: Strategy Badge + Official Badge + Price */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#C18C5D]/10 text-[#C18C5D] tracking-wide flex items-center gap-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5 min-w-0 max-w-full">
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#C18C5D]/10 text-[#C18C5D] tracking-wide flex items-center gap-1 shrink-0">
                         <Sparkles className="w-3 h-3" />
                         <span>{listing.strategyType || 'OFFICIAL'}</span>
                       </span>
                       <OfficialBadge />
                       {listing.riskLabel && <RiskBadge riskLabel={listing.riskLabel} />}
                     </div>
-                    <div className="flex items-center gap-1 font-heading font-extrabold text-lg text-[#2C2C24]">
+                    <div className="flex items-center gap-1 font-heading font-extrabold text-lg text-[#2C2C24] shrink-0 ml-auto">
                       <span>₹{listing.price.toLocaleString()}</span>
                       <span className="text-[11px] font-normal text-[#78786C]">
                         / {listing.licenseType === 'TIMED' ? 'mo' : 'one-time'}

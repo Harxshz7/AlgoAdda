@@ -31,7 +31,7 @@ export const MetricGauge: React.FC<MetricGaugeProps> = ({
         p-4 rounded-2xl bg-[#FEFEFA]
         border border-[#DED8CF]/50
         shadow-[0_4px_20px_-2px_rgba(93,112,82,0.12)]
-        flex flex-col gap-2
+        flex flex-col gap-2 overflow-hidden min-w-0
         ${className}
       `}
     >

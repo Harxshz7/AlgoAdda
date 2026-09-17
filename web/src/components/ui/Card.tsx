@@ -27,6 +27,7 @@ export const Card: React.FC<CardProps> = ({
         relative bg-[#FEFEFA] text-[#2C2C24]
         rounded-[2rem] p-6 md:p-8
         border border-[#DED8CF]/50
+        overflow-hidden max-w-full min-w-0
         ${shadowClass}
         ${hoverEffect}
         ${className}
