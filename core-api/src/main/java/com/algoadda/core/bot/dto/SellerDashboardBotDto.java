@@ -16,13 +16,14 @@ public class SellerDashboardBotDto {
     private UUID latestVersionId;
     private String latestVersionNumber;
     private BacktestStatus backtestStatus;
+    private String errorMessage;
     private Instant createdAt;
     private ComplianceCheckResponse latestComplianceCheck;
 
     public SellerDashboardBotDto() {
     }
 
-    public SellerDashboardBotDto(UUID botId, String name, String strategyType, BotStatus status, UUID latestVersionId, String latestVersionNumber, BacktestStatus backtestStatus, Instant createdAt, ComplianceCheckResponse latestComplianceCheck) {
+    public SellerDashboardBotDto(UUID botId, String name, String strategyType, BotStatus status, UUID latestVersionId, String latestVersionNumber, BacktestStatus backtestStatus, String errorMessage, Instant createdAt, ComplianceCheckResponse latestComplianceCheck) {
         this.botId = botId;
         this.name = name;
         this.strategyType = strategyType;
@@ -30,6 +31,7 @@ public class SellerDashboardBotDto {
         this.latestVersionId = latestVersionId;
         this.latestVersionNumber = latestVersionNumber;
         this.backtestStatus = backtestStatus;
+        this.errorMessage = errorMessage;
         this.createdAt = createdAt;
         this.latestComplianceCheck = latestComplianceCheck;
     }
@@ -46,6 +48,7 @@ public class SellerDashboardBotDto {
         private UUID latestVersionId;
         private String latestVersionNumber;
         private BacktestStatus backtestStatus;
+        private String errorMessage;
         private Instant createdAt;
         private ComplianceCheckResponse latestComplianceCheck;
 
@@ -84,6 +87,11 @@ public class SellerDashboardBotDto {
             return this;
         }
 
+        public SellerDashboardBotDtoBuilder errorMessage(String errorMessage) {
+            this.errorMessage = errorMessage;
+            return this;
+        }
+
         public SellerDashboardBotDtoBuilder createdAt(Instant createdAt) {
             this.createdAt = createdAt;
             return this;
@@ -95,7 +103,7 @@ public class SellerDashboardBotDto {
         }
 
         public SellerDashboardBotDto build() {
-            return new SellerDashboardBotDto(botId, name, strategyType, status, latestVersionId, latestVersionNumber, backtestStatus, createdAt, latestComplianceCheck);
+            return new SellerDashboardBotDto(botId, name, strategyType, status, latestVersionId, latestVersionNumber, backtestStatus, errorMessage, createdAt, latestComplianceCheck);
         }
     }
 
@@ -155,7 +163,17 @@ public class SellerDashboardBotDto {
         this.backtestStatus = backtestStatus;
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     public Instant getCreatedAt() {
+        return createdAt;
+    }
         return createdAt;
     }
 

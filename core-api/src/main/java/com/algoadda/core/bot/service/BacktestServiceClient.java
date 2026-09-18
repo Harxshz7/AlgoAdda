@@ -63,8 +63,34 @@ public class BacktestServiceClient {
             .build();
     }
 
+    public static class ExecutionResult {
+        private final boolean success;
+        private final String errorMessage;
+
+        public ExecutionResult(boolean success, String errorMessage) {
+            this.success = success;
+            this.errorMessage = errorMessage;
+        }
+
+        public static ExecutionResult ok() {
+            return new ExecutionResult(true, null);
+        }
+
+        public static ExecutionResult failure(String errorMessage) {
+            return new ExecutionResult(false, errorMessage);
+        }
+
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
+        }
+    }
+
     @Transactional
-    public boolean runBacktest(BotVersion botVersion, String strategyConfigJson, Instant start, Instant end) {
+    public ExecutionResult runBacktestJob(BotVersion botVersion, String strategyConfigJson, Instant start, Instant end) {
         Instant rangeStart = start != null ? start : Instant.now().minus(365, ChronoUnit.DAYS);
         Instant rangeEnd = end != null ? end : Instant.now();
 
@@ -82,8 +108,8 @@ public class BacktestServiceClient {
                 payload.put("strategy_config", defaultConfig);
             }
         } catch (Exception e) {
-            log.warn("Failed to parse strategyConfigJson, using raw object: {}", e.getMessage());
-            payload.put("strategy_config", Map.of("raw", strategyConfigJson != null ? strategyConfigJson : ""));
+            log.warn("Failed to parse strategyConfigJson: {}", e.getMessage());
+            return ExecutionResult.failure("invalid strategy_config: " + e.getMessage());
         }
 
         payload.put("date_range_start", rangeStart.toString());
@@ -120,17 +146,14 @@ public class BacktestServiceClient {
                         .build();
 
                     backtestResultRepository.save(backtestResult);
-
-                    botVersion.setBacktestStatus(BacktestStatus.COMPLETED);
-                    BotVersion savedVersion = botVersionRepository.save(botVersion);
-                    log.info("Backtest successfully completed and persisted for botVersion {}", botVersion.getId());
-
-                    try {
-                        complianceService.runAutomatedComplianceCheck(savedVersion);
-                    } catch (Exception e) {
-                        log.error("Failed to run automated compliance check for botVersion {}: {}", botVersion.getId(), e.getMessage(), e);
-                    }
-                    return true;
+                    log.info("Backtest result persisted for botVersion {}", botVersion.getId());
+                    return ExecutionResult.ok();
+                }
+            } catch (org.springframework.web.client.HttpClientErrorException | org.springframework.web.client.HttpServerErrorException e) {
+                lastException = e;
+                log.warn("Backtest HTTP error (attempt {}): {} {}", attempts, e.getStatusCode(), e.getResponseBodyAsString());
+                if (e.getStatusCode().is4xxClientError()) {
+                    return ExecutionResult.failure("backtest-service HTTP " + e.getStatusCode().value() + ": " + e.getResponseBodyAsString());
                 }
             } catch (Exception e) {
                 lastException = e;
@@ -138,10 +161,27 @@ public class BacktestServiceClient {
             }
         }
 
-        // All retries failed - handle gracefully
-        log.error("All backtest attempts failed for botVersion {}. Setting status to FAILED. Cause: {}", botVersion.getId(), lastException != null ? lastException.getMessage() : "Unknown");
-        botVersion.setBacktestStatus(BacktestStatus.FAILED);
-        botVersionRepository.save(botVersion);
-        return false;
+        String detailedError = "backtest-service unreachable: " + (lastException != null ? lastException.getMessage() : "Connection timeout / no response");
+        log.error("All backtest attempts failed for botVersion {}. Cause: {}", botVersion.getId(), detailedError);
+        return ExecutionResult.failure(detailedError);
+    }
+
+    @Transactional
+    public boolean runBacktest(BotVersion botVersion, String strategyConfigJson, Instant start, Instant end) {
+        ExecutionResult result = runBacktestJob(botVersion, strategyConfigJson, start, end);
+        if (result.isSuccess()) {
+            botVersion.setBacktestStatus(BacktestStatus.COMPLETED);
+            BotVersion savedVersion = botVersionRepository.save(botVersion);
+            try {
+                complianceService.runAutomatedComplianceCheck(savedVersion);
+            } catch (Exception e) {
+                log.error("Failed compliance check for botVersion {}: {}", botVersion.getId(), e.getMessage());
+            }
+            return true;
+        } else {
+            botVersion.setBacktestStatus(BacktestStatus.FAILED);
+            botVersionRepository.save(botVersion);
+            return false;
+        }
     }
 }

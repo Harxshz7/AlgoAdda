@@ -4,7 +4,6 @@ import com.algoadda.core.bot.Bot;
 import com.algoadda.core.bot.BotVersion;
 import com.algoadda.core.compliance.ComplianceCheck;
 import com.algoadda.core.compliance.ReviewerType;
-import com.algoadda.core.order.License;
 import com.algoadda.core.order.Order;
 import com.algoadda.core.order.OrderItem;
 import com.algoadda.core.order.OrderStatus;

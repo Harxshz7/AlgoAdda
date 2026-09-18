@@ -1,7 +1,6 @@
 package com.algoadda.core.bot;
 
-public enum BacktestStatus {
-    PENDING,
+public enum BacktestJobStatus {
     QUEUED,
     RUNNING,
     COMPLETED,
