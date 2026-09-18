@@ -43,6 +43,9 @@ class BotServiceTest {
     private BacktestResultRepository backtestResultRepository;
 
     @Mock
+    private BacktestJobRepository backtestJobRepository;
+
+    @Mock
     private ListingRepository listingRepository;
 
     @Mock
@@ -65,6 +68,7 @@ class BotServiceTest {
             botRepository,
             botVersionRepository,
             backtestResultRepository,
+            backtestJobRepository,
             listingRepository,
             userRepository,
             s3StorageService,
@@ -148,7 +152,7 @@ class BotServiceTest {
         assertThat(response.getLatestVersion().getDisclosedLogic()).contains("SMA");
 
         verify(s3StorageService).uploadFile(contains("trend_master.py"), any(byte[].class), eq("text/x-python"));
-        verify(backtestServiceClient).runBacktest(any(BotVersion.class), eq("{\"symbol\":\"^NSEI\"}"), any(), any());
+        verify(backtestJobRepository).save(any(BacktestJob.class));
     }
 
     @Test
