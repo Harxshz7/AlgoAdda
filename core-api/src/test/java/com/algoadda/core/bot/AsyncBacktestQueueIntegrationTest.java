@@ -59,6 +59,9 @@ class AsyncBacktestQueueIntegrationTest {
     @Autowired
     private ComplianceCheckRepository complianceCheckRepository;
 
+    @Autowired
+    private BacktestResultRepository backtestResultRepository;
+
     @MockBean
     private BacktestServiceClient backtestServiceClient;
 
@@ -68,6 +71,7 @@ class AsyncBacktestQueueIntegrationTest {
     void setUp() {
         complianceCheckRepository.deleteAll();
         backtestJobRepository.deleteAll();
+        backtestResultRepository.deleteAll();
         botVersionRepository.deleteAll();
         botRepository.deleteAll();
         userRepository.deleteAll();
@@ -127,9 +131,17 @@ class AsyncBacktestQueueIntegrationTest {
         assertThat(initialCheck.isPassed()).isFalse();
         assertThat(initialCheck.getChecklistResults()).contains("Backtest status is QUEUED");
 
-        // 2. Mock successful backtest service execution
+        // 2. Mock successful backtest service execution and persist backtest result
         when(backtestServiceClient.runBacktestJob(any(), any(), any(), any()))
-            .thenReturn(BacktestServiceClient.ExecutionResult.ok());
+            .thenAnswer(invocation -> {
+                BotVersion bv = invocation.getArgument(0);
+                backtestResultRepository.save(BacktestResult.builder()
+                    .botVersion(bv)
+                    .metrics("{}")
+                    .riskLabel(RiskLabel.MODERATE)
+                    .build());
+                return BacktestServiceClient.ExecutionResult.ok();
+            });
 
         // 3. Trigger worker poller
         backtestJobWorker.processQueuedJobs();
