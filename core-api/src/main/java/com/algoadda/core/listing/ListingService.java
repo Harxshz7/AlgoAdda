@@ -3,12 +3,15 @@ package com.algoadda.core.listing;
 import com.algoadda.core.bot.*;
 import com.algoadda.core.bot.service.RiskClassifier;
 import com.algoadda.core.listing.dto.*;
-import com.algoadda.core.user.SellerProfile;
-import com.algoadda.core.user.SellerProfileRepository;
+import com.algoadda.core.user.User;
+import com.algoadda.core.user.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,17 +27,23 @@ public class ListingService {
     private final ListingRepository listingRepository;
     private final BacktestResultRepository backtestResultRepository;
     private final SellerProfileRepository sellerProfileRepository;
+    private final ListingViewRepository listingViewRepository;
+    private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
 
     public ListingService(
         ListingRepository listingRepository,
         BacktestResultRepository backtestResultRepository,
         SellerProfileRepository sellerProfileRepository,
+        ListingViewRepository listingViewRepository,
+        UserRepository userRepository,
         ObjectMapper objectMapper
     ) {
         this.listingRepository = listingRepository;
         this.backtestResultRepository = backtestResultRepository;
         this.sellerProfileRepository = sellerProfileRepository;
+        this.listingViewRepository = listingViewRepository;
+        this.userRepository = userRepository;
         this.objectMapper = objectMapper;
     }
 
@@ -193,12 +202,12 @@ public class ListingService {
         return new PageResponse<>(pageContent, safePage, safeSize, totalElements, totalPages);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ListingDetailResponse getListingDetail(UUID listingId) {
         return getListingDetail(listingId, null);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ListingDetailResponse getListingDetail(UUID listingId, Boolean officialOnly) {
         Listing listing = listingRepository.findById(listingId)
             .orElseThrow(() -> new java.util.NoSuchElementException("Listing not found with id: " + listingId));
@@ -219,6 +228,26 @@ public class ListingService {
         // Reject listings from suspended sellers
         if (version.getBot().getSeller() != null && version.getBot().getSeller().isSuspended()) {
             throw new IllegalArgumentException("This listing is currently unavailable");
+        }
+
+        // Track view
+        User viewer = null;
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof UserDetails userDetails) {
+                viewer = userRepository.findByEmail(userDetails.getUsername()).orElse(null);
+            }
+        } catch (Exception e) {
+            log.debug("No authenticated user for view tracking: {}", e.getMessage());
+        }
+
+        try {
+            listingViewRepository.save(ListingView.builder()
+                .listing(listing)
+                .viewer(viewer)
+                .build());
+        } catch (Exception e) {
+            log.warn("Failed to record listing view for listing {}: {}", listingId, e.getMessage());
         }
 
         Bot bot = version.getBot();
