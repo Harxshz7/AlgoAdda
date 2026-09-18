@@ -174,8 +174,6 @@ public class SellerDashboardBotDto {
     public Instant getCreatedAt() {
         return createdAt;
     }
-        return createdAt;
-    }
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;

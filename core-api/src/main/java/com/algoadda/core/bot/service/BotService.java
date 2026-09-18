@@ -32,6 +32,7 @@ public class BotService {
     private final BotRepository botRepository;
     private final BotVersionRepository botVersionRepository;
     private final BacktestResultRepository backtestResultRepository;
+    private final BacktestJobRepository backtestJobRepository;
     private final ListingRepository listingRepository;
     private final com.algoadda.core.user.UserRepository userRepository;
     private final S3StorageService s3StorageService;
@@ -42,6 +43,7 @@ public class BotService {
         BotRepository botRepository,
         BotVersionRepository botVersionRepository,
         BacktestResultRepository backtestResultRepository,
+        BacktestJobRepository backtestJobRepository,
         ListingRepository listingRepository,
         com.algoadda.core.user.UserRepository userRepository,
         S3StorageService s3StorageService,
@@ -51,6 +53,7 @@ public class BotService {
         this.botRepository = botRepository;
         this.botVersionRepository = botVersionRepository;
         this.backtestResultRepository = backtestResultRepository;
+        this.backtestJobRepository = backtestJobRepository;
         this.listingRepository = listingRepository;
         this.userRepository = userRepository;
         this.s3StorageService = s3StorageService;
@@ -102,23 +105,21 @@ public class BotService {
             .disclosedLogic(request.getDisclosedLogic().trim())
             .fileStorageKey(s3Key)
             .changelog("Initial bot version release")
-            .backtestStatus(BacktestStatus.PENDING)
+            .backtestStatus(BacktestStatus.QUEUED)
             .build();
 
         BotVersion savedVersion = botVersionRepository.save(initialVersion);
 
-        // Run backtest asynchronously or inline with graceful failure handling
-        backtestServiceClient.runBacktest(
-            savedVersion,
-            request.getStrategyConfig(),
-            request.getDateRangeStart(),
-            request.getDateRangeEnd()
-        );
+        BacktestJob job = BacktestJob.builder()
+            .botVersion(savedVersion)
+            .status(BacktestJobStatus.QUEUED)
+            .strategyConfig(request.getStrategyConfig())
+            .dateRangeStart(request.getDateRangeStart())
+            .dateRangeEnd(request.getDateRangeEnd())
+            .build();
+        backtestJobRepository.save(job);
 
-        // Re-read version for updated backtest status
-        BotVersion updatedVersion = botVersionRepository.findById(savedVersion.getId()).orElse(savedVersion);
-
-        return mapToBotResponse(savedBot, updatedVersion);
+        return mapToBotResponse(savedBot, savedVersion);
     }
 
     @Transactional
@@ -156,20 +157,21 @@ public class BotService {
             .disclosedLogic(request.getDisclosedLogic().trim())
             .fileStorageKey(s3Key)
             .changelog(request.getChangelog())
-            .backtestStatus(BacktestStatus.PENDING)
+            .backtestStatus(BacktestStatus.QUEUED)
             .build();
 
         BotVersion savedVersion = botVersionRepository.save(newVersion);
 
-        backtestServiceClient.runBacktest(
-            savedVersion,
-            request.getStrategyConfig(),
-            request.getDateRangeStart(),
-            request.getDateRangeEnd()
-        );
+        BacktestJob versionJob = BacktestJob.builder()
+            .botVersion(savedVersion)
+            .status(BacktestJobStatus.QUEUED)
+            .strategyConfig(request.getStrategyConfig())
+            .dateRangeStart(request.getDateRangeStart())
+            .dateRangeEnd(request.getDateRangeEnd())
+            .build();
+        backtestJobRepository.save(versionJob);
 
-        BotVersion updatedVersion = botVersionRepository.findById(savedVersion.getId()).orElse(savedVersion);
-        return mapToBotVersionResponse(updatedVersion);
+        return mapToBotVersionResponse(savedVersion);
     }
 
     @Transactional
