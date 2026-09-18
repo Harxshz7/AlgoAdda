@@ -55,9 +55,6 @@ class BotServiceTest {
     private S3StorageService s3StorageService;
 
     @Mock
-    private BacktestServiceClient backtestServiceClient;
-
-    @Mock
     private ComplianceService complianceService;
 
     private BotService botService;
@@ -72,7 +69,6 @@ class BotServiceTest {
             listingRepository,
             userRepository,
             s3StorageService,
-            backtestServiceClient,
             complianceService
         );
     }

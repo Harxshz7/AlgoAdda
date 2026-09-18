@@ -36,7 +36,6 @@ public class BotService {
     private final ListingRepository listingRepository;
     private final com.algoadda.core.user.UserRepository userRepository;
     private final S3StorageService s3StorageService;
-    private final BacktestServiceClient backtestServiceClient;
     private final ComplianceService complianceService;
 
     public BotService(
@@ -47,7 +46,6 @@ public class BotService {
         ListingRepository listingRepository,
         com.algoadda.core.user.UserRepository userRepository,
         S3StorageService s3StorageService,
-        BacktestServiceClient backtestServiceClient,
         @Lazy ComplianceService complianceService
     ) {
         this.botRepository = botRepository;
@@ -57,7 +55,6 @@ public class BotService {
         this.listingRepository = listingRepository;
         this.userRepository = userRepository;
         this.s3StorageService = s3StorageService;
-        this.backtestServiceClient = backtestServiceClient;
         this.complianceService = complianceService;
     }
 
