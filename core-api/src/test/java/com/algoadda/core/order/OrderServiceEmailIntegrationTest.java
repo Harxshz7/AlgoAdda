@@ -52,14 +52,13 @@ class OrderServiceEmailIntegrationTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         orderService = new OrderService(
-            orderRepository,
-            orderItemRepository,
-            licenseRepository,
-            userRepository,
-            cartService,
-            razorpayService,
-            emailService
-        );
+                orderRepository,
+                orderItemRepository,
+                licenseRepository,
+                userRepository,
+                cartService,
+                razorpayService,
+                emailService);
     }
 
     @Test
@@ -68,11 +67,11 @@ class OrderServiceEmailIntegrationTest {
         String rzpOrderId = "order_test_123456";
         User buyer = User.builder().id(UUID.randomUUID()).email("buyer@example.com").build();
         Order pendingOrder = Order.builder()
-            .id(UUID.randomUUID())
-            .buyer(buyer)
-            .status(OrderStatus.PENDING)
-            .paymentReference(rzpOrderId)
-            .build();
+                .id(UUID.randomUUID())
+                .buyer(buyer)
+                .status(OrderStatus.PENDING)
+                .paymentReference(rzpOrderId)
+                .build();
 
         JSONObject payloadObj = new JSONObject();
         payloadObj.put("event", "payment.captured");
@@ -102,7 +101,8 @@ class OrderServiceEmailIntegrationTest {
         // Duplicate retried webhook call
         orderService.processWebhook(payload, sig);
 
-        // Verify email service was still called ONLY ONCE (no duplicate email on retries)
+        // Verify email service was still called ONLY ONCE (no duplicate email on
+        // retries)
         verify(emailService, times(1)).sendPurchaseConfirmationAndLicenseEmail(any(), any(), any());
     }
 
@@ -112,11 +112,11 @@ class OrderServiceEmailIntegrationTest {
         UUID orderId = UUID.randomUUID();
         User buyer = User.builder().id(UUID.randomUUID()).email("buyer@example.com").build();
         Order paidOrder = Order.builder()
-            .id(orderId)
-            .buyer(buyer)
-            .status(OrderStatus.PAID)
-            .paymentReference("order_rzp_pay_99")
-            .build();
+                .id(orderId)
+                .buyer(buyer)
+                .status(OrderStatus.PAID)
+                .paymentReference("order_rzp_pay_99")
+                .build();
 
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(paidOrder));
         when(orderItemRepository.findByOrderId(orderId)).thenReturn(List.of());

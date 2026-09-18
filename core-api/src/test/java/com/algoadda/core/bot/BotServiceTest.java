@@ -1,7 +1,6 @@
 package com.algoadda.core.bot;
 
 import com.algoadda.core.bot.dto.*;
-import com.algoadda.core.bot.service.BacktestServiceClient;
 import com.algoadda.core.bot.service.BotService;
 import com.algoadda.core.bot.service.S3StorageService;
 import com.algoadda.core.compliance.ComplianceService;
