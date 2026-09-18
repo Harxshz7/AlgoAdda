@@ -209,6 +209,9 @@ public class ComplianceService {
     }
 
     public CheckItemResult checkBacktestStatus(BotVersion botVersion) {
+        if (botVersion.getBacktestStatus() == BacktestStatus.QUEUED || botVersion.getBacktestStatus() == BacktestStatus.RUNNING) {
+            return new CheckItemResult(false, "Backtest status is " + botVersion.getBacktestStatus());
+        }
         boolean hasResult = backtestResultRepository.findFirstByBotVersionIdOrderByCreatedAtDesc(botVersion.getId()).isPresent();
         boolean completed = botVersion.getBacktestStatus() == BacktestStatus.COMPLETED;
 

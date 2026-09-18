@@ -57,6 +57,9 @@ class RbacSecurityIntegrationTest {
     private com.algoadda.core.bot.BacktestResultRepository backtestResultRepository;
 
     @Autowired
+    private com.algoadda.core.bot.BacktestJobRepository backtestJobRepository;
+
+    @Autowired
     private com.algoadda.core.listing.ListingRepository listingRepository;
 
     @Autowired
@@ -76,6 +79,7 @@ class RbacSecurityIntegrationTest {
     void setUp() {
         listingRepository.deleteAll();
         complianceCheckRepository.deleteAll();
+        backtestJobRepository.deleteAll();
         backtestResultRepository.deleteAll();
         botVersionRepository.deleteAll();
         botRepository.deleteAll();
