@@ -75,6 +75,9 @@ class VersioningComplianceIntegrationTest {
     @Autowired
     private ComplianceService complianceService;
 
+    @Autowired
+    private com.algoadda.core.bot.BacktestJobRepository backtestJobRepository;
+
     @MockBean
     private S3StorageService s3StorageService;
 
@@ -88,6 +91,7 @@ class VersioningComplianceIntegrationTest {
     void setUp() {
         listingRepository.deleteAll();
         complianceCheckRepository.deleteAll();
+        backtestJobRepository.deleteAll();
         backtestResultRepository.deleteAll();
         botVersionRepository.deleteAll();
         botRepository.deleteAll();
@@ -158,7 +162,7 @@ class VersioningComplianceIntegrationTest {
                 .param("changelog", "Added RSI filter"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.versionNumber").value("1.1.0"))
-            .andExpect(jsonPath("$.backtestStatus").value("PENDING"));
+            .andExpect(jsonPath("$.backtestStatus").value("QUEUED"));
 
         // Retrieve created v2 version
         List<BotVersion> versions = botVersionRepository.findByBotId(bot.getId());

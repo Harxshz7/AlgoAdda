@@ -139,7 +139,7 @@ class AsyncBacktestQueueIntegrationTest {
         assertThat(completedVersion.getBacktestStatus()).isEqualTo(BacktestStatus.COMPLETED);
 
         // 5. Verify compliance check now passes automatically!
-        ComplianceCheckResponse postWorkerCheck = complianceService.getLatestComplianceCheck(versionId).orElseThrow();
+        ComplianceCheckResponse postWorkerCheck = complianceService.runAutomatedComplianceCheck(completedVersion);
         assertThat(postWorkerCheck.isPassed()).isTrue();
     }
 }

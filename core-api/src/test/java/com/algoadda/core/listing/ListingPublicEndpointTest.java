@@ -48,6 +48,9 @@ class ListingPublicEndpointTest {
     private BacktestResultRepository backtestResultRepository;
 
     @Autowired
+    private com.algoadda.core.bot.BacktestJobRepository backtestJobRepository;
+
+    @Autowired
     private ListingRepository listingRepository;
 
     @Autowired
@@ -61,6 +64,7 @@ class ListingPublicEndpointTest {
     void setUp() {
         listingRepository.deleteAll();
         complianceCheckRepository.deleteAll();
+        backtestJobRepository.deleteAll();
         backtestResultRepository.deleteAll();
         botVersionRepository.deleteAll();
         botRepository.deleteAll();

@@ -68,6 +68,9 @@ class PublishAndReviewIntegrationTest {
     @Autowired
     private ComplianceService complianceService;
 
+    @Autowired
+    private com.algoadda.core.bot.BacktestJobRepository backtestJobRepository;
+
     private String sellerToken;
     private String adminToken;
     private User seller;
@@ -77,6 +80,7 @@ class PublishAndReviewIntegrationTest {
     void setUp() {
         listingRepository.deleteAll();
         complianceCheckRepository.deleteAll();
+        backtestJobRepository.deleteAll();
         backtestResultRepository.deleteAll();
         botVersionRepository.deleteAll();
         botRepository.deleteAll();

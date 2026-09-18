@@ -70,12 +70,16 @@ class BotControllerIntegrationTest {
     @MockBean
     private BacktestServiceClient backtestServiceClient;
 
+    @Autowired
+    private com.algoadda.core.bot.BacktestJobRepository backtestJobRepository;
+
     private String sellerToken;
     private String buyerToken;
     private User seller;
 
     @BeforeEach
     void setUp() {
+        backtestJobRepository.deleteAll();
         backtestResultRepository.deleteAll();
         botVersionRepository.deleteAll();
         botRepository.deleteAll();

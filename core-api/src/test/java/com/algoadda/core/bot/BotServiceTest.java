@@ -140,7 +140,6 @@ class BotServiceTest {
         when(botRepository.save(any(Bot.class))).thenReturn(savedBot);
         when(s3StorageService.uploadFile(anyString(), any(byte[].class), anyString())).thenReturn("key");
         when(botVersionRepository.save(any(BotVersion.class))).thenReturn(savedVersion);
-        when(botVersionRepository.findById(versionId)).thenReturn(Optional.of(savedVersion));
 
         BotResponse response = botService.createBot(sellerId, request, file);
 
@@ -187,7 +186,6 @@ class BotServiceTest {
         when(botVersionRepository.findByBotId(botId)).thenReturn(List.of(v1));
         when(s3StorageService.uploadFile(anyString(), any(byte[].class), anyString())).thenReturn("key2");
         when(botVersionRepository.save(any(BotVersion.class))).thenReturn(v2);
-        when(botVersionRepository.findById(version2Id)).thenReturn(Optional.of(v2));
 
         BotVersionResponse response = botService.createBotVersion(sellerId, botId, request, file);
 
