@@ -17,8 +17,12 @@ public class License {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = true)
     private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subscription_id", nullable = true)
+    private Subscription subscription;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bot_version_id", nullable = false)
@@ -41,9 +45,10 @@ public class License {
     public License() {
     }
 
-    public License(UUID id, Order order, BotVersion botVersion, User buyer, Instant issuedAt, Instant expiresAt, boolean revoked) {
+    public License(UUID id, Order order, Subscription subscription, BotVersion botVersion, User buyer, Instant issuedAt, Instant expiresAt, boolean revoked) {
         this.id = id;
         this.order = order;
+        this.subscription = subscription;
         this.botVersion = botVersion;
         this.buyer = buyer;
         this.issuedAt = issuedAt;
@@ -58,6 +63,7 @@ public class License {
     public static class LicenseBuilder {
         private UUID id;
         private Order order;
+        private Subscription subscription;
         private BotVersion botVersion;
         private User buyer;
         private Instant issuedAt;
@@ -71,6 +77,11 @@ public class License {
 
         public LicenseBuilder order(Order order) {
             this.order = order;
+            return this;
+        }
+
+        public LicenseBuilder subscription(Subscription subscription) {
+            this.subscription = subscription;
             return this;
         }
 
@@ -100,7 +111,7 @@ public class License {
         }
 
         public License build() {
-            return new License(id, order, botVersion, buyer, issuedAt, expiresAt, revoked);
+            return new License(id, order, subscription, botVersion, buyer, issuedAt, expiresAt, revoked);
         }
     }
 
@@ -134,6 +145,14 @@ public class License {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
     }
 
     public BotVersion getBotVersion() {

@@ -33,6 +33,12 @@ public class Listing {
     @Column(name = "is_official", nullable = false)
     private boolean official = false;
 
+    @Column(name = "billing_interval", length = 50)
+    private String billingInterval;
+
+    @Column(name = "razorpay_plan_id")
+    private String razorpayPlanId;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -40,11 +46,13 @@ public class Listing {
     public Listing() {
     }
 
-    public Listing(UUID id, BotVersion botVersion, BigDecimal price, LicenseType licenseType, boolean active, boolean official, Instant createdAt) {
+    public Listing(UUID id, BotVersion botVersion, BigDecimal price, LicenseType licenseType, String billingInterval, String razorpayPlanId, boolean active, boolean official, Instant createdAt) {
         this.id = id;
         this.botVersion = botVersion;
         this.price = price != null ? price : BigDecimal.ZERO;
         this.licenseType = licenseType;
+        this.billingInterval = billingInterval;
+        this.razorpayPlanId = razorpayPlanId;
         this.active = active;
         this.official = official;
         this.createdAt = createdAt;
@@ -59,6 +67,8 @@ public class Listing {
         private BotVersion botVersion;
         private BigDecimal price = BigDecimal.ZERO;
         private LicenseType licenseType;
+        private String billingInterval;
+        private String razorpayPlanId;
         private boolean active = true;
         private boolean official = false;
         private Instant createdAt;
@@ -83,6 +93,16 @@ public class Listing {
             return this;
         }
 
+        public ListingBuilder billingInterval(String billingInterval) {
+            this.billingInterval = billingInterval;
+            return this;
+        }
+
+        public ListingBuilder razorpayPlanId(String razorpayPlanId) {
+            this.razorpayPlanId = razorpayPlanId;
+            return this;
+        }
+
         public ListingBuilder active(boolean active) {
             this.active = active;
             return this;
@@ -99,7 +119,7 @@ public class Listing {
         }
 
         public Listing build() {
-            return new Listing(id, botVersion, price, licenseType, active, official, createdAt);
+            return new Listing(id, botVersion, price, licenseType, billingInterval, razorpayPlanId, active, official, createdAt);
         }
     }
 
@@ -133,6 +153,22 @@ public class Listing {
 
     public void setLicenseType(LicenseType licenseType) {
         this.licenseType = licenseType;
+    }
+
+    public String getBillingInterval() {
+        return billingInterval;
+    }
+
+    public void setBillingInterval(String billingInterval) {
+        this.billingInterval = billingInterval;
+    }
+
+    public String getRazorpayPlanId() {
+        return razorpayPlanId;
+    }
+
+    public void setRazorpayPlanId(String razorpayPlanId) {
+        this.razorpayPlanId = razorpayPlanId;
     }
 
     public boolean isActive() {

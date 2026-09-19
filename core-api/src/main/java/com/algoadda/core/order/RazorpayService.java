@@ -107,7 +107,6 @@ public class RazorpayService {
                     refundRequest.put("amount", amount.multiply(new BigDecimal(100)).longValue());
                 }
 
-                // If reference is order_id or payment_id
                 com.razorpay.Refund refund = client.payments.refund(paymentReference, refundRequest);
                 return refund.get("id");
             }
@@ -116,6 +115,69 @@ public class RazorpayService {
         }
 
         return "rfnd_" + UUID.randomUUID().toString().replace("-", "").substring(0, 14);
+    }
+
+    public String createPlan(BigDecimal amount, String planName) {
+        long amountInPaise = amount.multiply(new BigDecimal(100)).longValue();
+        log.info("Creating Razorpay monthly plan for amount {} INR ({} paise), name: {}", amount, amountInPaise, planName);
+
+        try {
+            if (keyId != null && keyId.startsWith("rzp_test_") && !keySecret.equals("dummyKeySecret")) {
+                RazorpayClient client = new RazorpayClient(keyId, keySecret);
+                JSONObject planRequest = new JSONObject();
+                planRequest.put("period", "monthly");
+                planRequest.put("interval", 1);
+                JSONObject item = new JSONObject();
+                item.put("name", planName != null ? planName : "Bot Subscription");
+                item.put("amount", amountInPaise);
+                item.put("currency", "INR");
+                planRequest.put("item", item);
+
+                com.razorpay.Plan plan = client.plans.create(planRequest);
+                return plan.get("id");
+            }
+        } catch (Exception e) {
+            log.warn("Razorpay API plan creation failed: {}. Falling back to test plan reference.", e.getMessage());
+        }
+
+        return "plan_" + UUID.randomUUID().toString().replace("-", "").substring(0, 14);
+    }
+
+    public String createSubscription(String planId) {
+        log.info("Creating Razorpay subscription for plan ID: {}", planId);
+
+        try {
+            if (keyId != null && keyId.startsWith("rzp_test_") && !keySecret.equals("dummyKeySecret")) {
+                RazorpayClient client = new RazorpayClient(keyId, keySecret);
+                JSONObject subRequest = new JSONObject();
+                subRequest.put("plan_id", planId);
+                subRequest.put("total_count", 12);
+                subRequest.put("quantity", 1);
+
+                com.razorpay.Subscription subscription = client.subscriptions.create(subRequest);
+                return subscription.get("id");
+            }
+        } catch (Exception e) {
+            log.warn("Razorpay API subscription creation failed: {}. Falling back to test subscription reference.", e.getMessage());
+        }
+
+        return "sub_" + UUID.randomUUID().toString().replace("-", "").substring(0, 14);
+    }
+
+    public boolean cancelSubscription(String razorpaySubscriptionId) {
+        log.info("Cancelling Razorpay subscription: {}", razorpaySubscriptionId);
+
+        try {
+            if (keyId != null && keyId.startsWith("rzp_test_") && !keySecret.equals("dummyKeySecret")) {
+                RazorpayClient client = new RazorpayClient(keyId, keySecret);
+                client.subscriptions.cancel(razorpaySubscriptionId);
+                return true;
+            }
+        } catch (Exception e) {
+            log.warn("Razorpay API subscription cancellation failed: {}. Proceeding with test fallback.", e.getMessage());
+        }
+
+        return true;
     }
 
     public String getKeyId() {
