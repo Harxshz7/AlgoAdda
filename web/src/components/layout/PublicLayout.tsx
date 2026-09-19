@@ -333,17 +333,29 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
       </main>
 
       {/* Organic Footer */}
-      <footer className="mt-auto border-t border-[#DED8CF]/50 py-5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-3 text-xs font-body text-[#78786C]">
-            <span>AlgoAdda · Transparent White-Box Strategy Marketplace</span>
+      <footer className="mt-auto border-t border-[#DED8CF]/50 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1.5 text-xs font-body text-[#78786C]">
+            <span>AlgoAdda · White-Box Strategy Marketplace</span>
             <span>·</span>
             <Link to="/about" className="hover:text-[#5D7052] underline font-semibold transition-colors">
-              About &amp; Compliance
+              About
+            </Link>
+            <span>·</span>
+            <Link to="/terms" className="hover:text-[#5D7052] underline font-semibold transition-colors">
+              Terms of Service
+            </Link>
+            <span>·</span>
+            <Link to="/risk-disclosure" className="hover:text-[#5D7052] underline font-semibold transition-colors">
+              Risk Disclosure
+            </Link>
+            <span>·</span>
+            <Link to="/privacy" className="hover:text-[#5D7052] underline font-semibold transition-colors">
+              Privacy Policy
             </Link>
           </div>
-          <span className="text-xs font-body text-[#78786C]">
-            Verified Backtests &amp; Disclosed Strategy Logic
+          <span className="text-xs font-body text-[#78786C] text-center md:text-right">
+            Disclosed Strategy Logic &amp; Verified VectorBT Backtests
           </span>
         </div>
       </footer>

@@ -20,6 +20,9 @@ import { PublicSellerProfilePage } from './pages/seller/PublicSellerProfilePage'
 import { BuyerDashboardPage } from './pages/buyer/BuyerDashboardPage'
 import { CartPage } from './pages/buyer/CartPage'
 import { AboutPage } from './pages/about/AboutPage'
+import { TermsPage } from './pages/legal/TermsPage'
+import { RiskDisclosurePage } from './pages/legal/RiskDisclosurePage'
+import { PrivacyPage } from './pages/legal/PrivacyPage'
 import { AdminReportsPage } from './pages/admin/AdminReportsPage'
 
 export const App: React.FC = () => {
@@ -32,12 +35,36 @@ export const App: React.FC = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
-            {/* Public About Route */}
+            {/* Public About & Legal Routes */}
             <Route
               path="/about"
               element={
                 <PublicLayout>
                   <AboutPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/terms"
+              element={
+                <PublicLayout>
+                  <TermsPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/risk-disclosure"
+              element={
+                <PublicLayout>
+                  <RiskDisclosurePage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/privacy"
+              element={
+                <PublicLayout>
+                  <PrivacyPage />
                 </PublicLayout>
               }
             />

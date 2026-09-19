@@ -9,6 +9,7 @@ export const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [role, setRole] = useState<'BUYER' | 'SELLER'>('BUYER')
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -31,6 +32,11 @@ export const RegisterPage: React.FC = () => {
 
     if (password.length < 6) {
       setError('Password must be at least 6 characters.')
+      return
+    }
+
+    if (!agreedToTerms) {
+      setError('You must agree to the Terms of Service and Risk Disclosure to create an account.')
       return
     }
 
@@ -163,6 +169,41 @@ export const RegisterPage: React.FC = () => {
                   ? 'Buyer account: Browse, evaluate & license verified trading algorithms.'
                   : 'Seller account: Full bot upload, backtesting & strategy listing access.'}
               </span>
+            </div>
+
+            {/* Terms of Service & Risk Disclosure Consent Checkbox */}
+            <div className="flex items-start gap-2.5 pt-1 px-0.5">
+              <input
+                type="checkbox"
+                id="agree-terms-checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-[#DED8CF] text-[#5D7052] focus:ring-[#5D7052] cursor-pointer"
+                required
+              />
+              <label htmlFor="agree-terms-checkbox" className="text-xs font-body text-[#78786C] leading-snug cursor-pointer select-none">
+                I agree to the{' '}
+                <Link
+                  to="/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#5D7052] font-semibold underline hover:text-[#4a5a41]"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Terms of Service
+                </Link>{' '}
+                and{' '}
+                <Link
+                  to="/risk-disclosure"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#5D7052] font-semibold underline hover:text-[#4a5a41]"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Risk Disclosure
+                </Link>
+                .
+              </label>
             </div>
 
             <Button

@@ -364,6 +364,9 @@ export const ListingDetailPage: React.FC = () => {
                 </Button>
               </div>
             )}
+            <div className="text-[11px] text-[#78786C] font-body text-right mt-1.5">
+              Trading carries risk · <Link to="/risk-disclosure" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#5D7052]">Risk Disclosure</Link>
+            </div>
           </div>
         </div>
       </div>

@@ -193,6 +193,14 @@ export const CartPage: React.FC = () => {
                 </div>
               </div>
 
+              <div className="text-[11px] text-[#78786C] font-body text-center leading-snug pt-1">
+                Algorithmic trading carries risk. By continuing, you agree to our{' '}
+                <Link to="/risk-disclosure" target="_blank" rel="noopener noreferrer" className="text-[#5D7052] font-semibold underline hover:text-[#4a5a41]">
+                  Risk Disclosure
+                </Link>
+                .
+              </div>
+
               <Button
                 variant="primary"
                 size="lg"
