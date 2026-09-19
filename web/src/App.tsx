@@ -9,6 +9,7 @@ import { LoginPage } from './pages/auth/LoginPage'
 import { RegisterPage } from './pages/auth/RegisterPage'
 import { SellerOnboardPage } from './pages/seller/SellerOnboardPage'
 import { SellerDashboardPage } from './pages/seller/SellerDashboardPage'
+import { SellerAnalyticsPage } from './pages/seller/SellerAnalyticsPage'
 import { BotUploadPage } from './pages/seller/BotUploadPage'
 import { BotDetailPage } from './pages/seller/BotDetailPage'
 import { MarketplacePage } from './pages/marketplace/MarketplacePage'
@@ -137,6 +138,17 @@ export const App: React.FC = () => {
                 <ProtectedRoute requiredRole="SELLER">
                   <SellerLayout>
                     <SellerDashboardPage />
+                  </SellerLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/seller/analytics"
+              element={
+                <ProtectedRoute requiredRole="SELLER">
+                  <SellerLayout>
+                    <SellerAnalyticsPage />
                   </SellerLayout>
                 </ProtectedRoute>
               }

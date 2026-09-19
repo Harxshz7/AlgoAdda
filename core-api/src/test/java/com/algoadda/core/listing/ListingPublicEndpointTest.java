@@ -54,6 +54,9 @@ class ListingPublicEndpointTest {
     private ListingRepository listingRepository;
 
     @Autowired
+    private ListingViewRepository listingViewRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     private User seller;
@@ -62,6 +65,7 @@ class ListingPublicEndpointTest {
 
     @BeforeEach
     void setUp() {
+        listingViewRepository.deleteAll();
         listingRepository.deleteAll();
         complianceCheckRepository.deleteAll();
         backtestJobRepository.deleteAll();

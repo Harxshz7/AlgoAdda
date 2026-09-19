@@ -41,6 +41,7 @@ class AdminSuspendIntegrationTest {
     @Autowired private BacktestResultRepository backtestResultRepository;
     @Autowired private ComplianceCheckRepository complianceCheckRepository;
     @Autowired private ListingRepository listingRepository;
+    @Autowired private com.algoadda.core.listing.ListingViewRepository listingViewRepository;
     @Autowired private ListingReportRepository reportRepository;
     @Autowired private com.algoadda.core.bot.BacktestJobRepository backtestJobRepository;
     @Autowired private com.algoadda.core.user.RefreshTokenRepository refreshTokenRepository;
@@ -61,6 +62,7 @@ class AdminSuspendIntegrationTest {
     void setUp() {
         // Clean in dependency order
         reportRepository.deleteAll();
+        listingViewRepository.deleteAll();
         listingRepository.deleteAll();
         complianceCheckRepository.deleteAll();
         backtestJobRepository.deleteAll();

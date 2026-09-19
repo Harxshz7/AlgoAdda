@@ -325,4 +325,23 @@ public class BotService {
             .latestComplianceCheck(latestCheck)
             .build();
     }
+
+    @Transactional(readOnly = true)
+    public List<BotVersionResponse> getBotVersions(UUID botId) {
+        List<BotVersion> versions = botVersionRepository.findByBotId(botId);
+        List<BotVersionResponse> list = new ArrayList<>();
+        for (BotVersion v : versions) {
+            list.add(BotVersionResponse.builder()
+                .id(v.getId())
+                .botId(v.getBot().getId())
+                .versionNumber(v.getVersionNumber())
+                .disclosedLogic(v.getDisclosedLogic())
+                .fileStorageKey(v.getFileStorageKey())
+                .changelog(v.getChangelog())
+                .backtestStatus(v.getBacktestStatus())
+                .createdAt(v.getCreatedAt())
+                .build());
+        }
+        return list;
+    }
 }

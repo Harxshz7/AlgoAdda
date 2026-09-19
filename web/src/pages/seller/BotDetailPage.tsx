@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { api } from '../../lib/api'
-import type { BacktestResultResponse, BacktestMetrics, EquityPoint, SellerDashboardBot } from '../../lib/api'
+import type { BacktestResultResponse, BacktestMetrics, EquityPoint, SellerDashboardBot, BotVersionResponse, VersionComparisonResponse } from '../../lib/api'
 import { Button, Card, MetricGauge, EquityCurveChart } from '../../components/ui'
 import {
   ArrowLeft,
@@ -22,6 +22,13 @@ export const BotDetailPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Version comparison states
+  const [versions, setVersions] = useState<BotVersionResponse[]>([])
+  const [fromVersionId, setFromVersionId] = useState<string>('')
+  const [toVersionId, setToVersionId] = useState<string>('')
+  const [comparisonResult, setComparisonResult] = useState<VersionComparisonResponse | null>(null)
+  const [isComparing, setIsComparing] = useState<boolean>(false)
+
   const fetchData = async () => {
     if (!botId) return
     setIsLoading(true)
@@ -37,7 +44,19 @@ export const BotDetailPage: React.FC = () => {
       }
       setBot(currentBot)
 
-      // 2. Fetch backtest metrics if version exists
+      // 2. Fetch all versions for comparison
+      try {
+        const botVersions = await api.getBotVersions(botId)
+        setVersions(botVersions)
+        if (botVersions.length >= 2) {
+          setFromVersionId(botVersions[0].id)
+          setToVersionId(botVersions[botVersions.length - 1].id)
+        }
+      } catch (vErr: any) {
+        console.warn('Could not fetch bot versions:', vErr.message)
+      }
+
+      // 3. Fetch backtest metrics if version exists
       if (currentBot.latestVersionId) {
         try {
           const result = await api.getBacktestResult(botId, currentBot.latestVersionId)
@@ -55,6 +74,19 @@ export const BotDetailPage: React.FC = () => {
       setError(err.message || 'Failed to load bot details.')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleCompareVersions = async () => {
+    if (!botId || !fromVersionId || !toVersionId) return
+    setIsComparing(true)
+    try {
+      const res = await api.compareBotVersions(botId, fromVersionId, toVersionId)
+      setComparisonResult(res)
+    } catch (err: any) {
+      alert(err.message || 'Failed to compare versions')
+    } finally {
+      setIsComparing(false)
     }
   }
 
@@ -226,6 +258,134 @@ export const BotDetailPage: React.FC = () => {
 
       {/* Chart Section: Equity Curve vs Invested Baseline */}
       <EquityCurveChart equityCurve={equityCurve} metrics={metrics} />
+
+      {/* Version Comparison Section */}
+      {versions.length > 1 && (
+        <Card className="p-6 bg-white border border-[#DED8CF]/60 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#DED8CF]/50 pb-4">
+            <div>
+              <h2 className="text-lg font-bold font-heading text-[#2C2C24]">Strategy Version Comparison</h2>
+              <p className="text-xs text-[#78786C]">Compare disclosed logic changes and backtest performance deltas across versions.</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-1.5 text-xs">
+                <span className="font-semibold text-[#78786C]">From:</span>
+                <select
+                  value={fromVersionId}
+                  onChange={(e) => setFromVersionId(e.target.value)}
+                  className="px-2.5 py-1.5 bg-[#FDFCF8] border border-[#DED8CF] rounded-lg text-xs font-semibold text-[#2C2C24]"
+                >
+                  {versions.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      v{v.versionNumber}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center gap-1.5 text-xs">
+                <span className="font-semibold text-[#78786C]">To:</span>
+                <select
+                  value={toVersionId}
+                  onChange={(e) => setToVersionId(e.target.value)}
+                  className="px-2.5 py-1.5 bg-[#FDFCF8] border border-[#DED8CF] rounded-lg text-xs font-semibold text-[#2C2C24]"
+                >
+                  {versions.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      v{v.versionNumber}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handleCompareVersions}
+                disabled={isComparing || !fromVersionId || !toVersionId}
+              >
+                {isComparing ? 'Comparing...' : 'Compare Versions'}
+              </Button>
+            </div>
+          </div>
+
+          {comparisonResult && (
+            <div className="space-y-6">
+              {/* Performance Metrics Delta Table */}
+              <div>
+                <h3 className="text-sm font-bold text-[#2C2C24] mb-3">Performance Metrics Comparison</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b border-[#DED8CF] text-[#78786C] uppercase font-semibold">
+                        <th className="py-2 px-3">Metric</th>
+                        <th className="py-2 px-3 text-right">v{comparisonResult.fromVersionNumber}</th>
+                        <th className="py-2 px-3 text-right">v{comparisonResult.toVersionNumber}</th>
+                        <th className="py-2 px-3 text-right">Delta</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#DED8CF]/40 font-mono">
+                      {comparisonResult.performanceMetrics.map((m) => {
+                        const isPositiveBetter = m.metricName !== 'max_drawdown'
+                        const isGood = m.delta !== null && (isPositiveBetter ? m.delta >= 0 : m.delta <= 0)
+                        return (
+                          <tr key={m.metricName} className="hover:bg-[#FDFCF8]">
+                            <td className="py-2.5 px-3 font-sans font-semibold text-[#2C2C24] capitalize">
+                              {m.metricName.replace('_', ' ')}
+                            </td>
+                            <td className="py-2.5 px-3 text-right text-[#78786C]">
+                              {m.fromValue !== null ? m.fromValue : 'N/A'}
+                            </td>
+                            <td className="py-2.5 px-3 text-right text-[#2C2C24] font-bold">
+                              {m.toValue !== null ? m.toValue : 'N/A'}
+                            </td>
+                            <td className={`py-2.5 px-3 text-right font-bold ${
+                              m.delta === null
+                                ? 'text-[#78786C]'
+                                : isGood
+                                ? 'text-[#5D7052]'
+                                : 'text-[#A85448]'
+                            }`}>
+                              {m.delta !== null ? (m.delta > 0 ? `+${m.delta}` : `${m.delta}`) : 'N/A'}
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Logic Line Diff Viewer */}
+              <div>
+                <h3 className="text-sm font-bold text-[#2C2C24] mb-3">Disclosed Logic Diff</h3>
+                <div className="bg-[#1E1E1E] text-white p-4 rounded-xl font-mono text-xs overflow-x-auto space-y-1 max-h-80 overflow-y-auto">
+                  {comparisonResult.logicDiff.map((line, idx) => {
+                    let bg = 'hover:bg-white/5 text-gray-300'
+                    let prefix = ' '
+                    if (line.type === 'ADDED') {
+                      bg = 'bg-[#2E4A32]/40 text-[#6CE084]'
+                      prefix = '+'
+                    } else if (line.type === 'REMOVED') {
+                      bg = 'bg-[#4A2E2E]/40 text-[#FF7878]'
+                      prefix = '-'
+                    }
+                    return (
+                      <div key={idx} className={`px-2 py-0.5 rounded flex items-start gap-3 ${bg}`}>
+                        <span className="w-8 select-none text-gray-500 text-right text-[10px]">
+                          {line.lineNumberTo || line.lineNumberFrom || ''}
+                        </span>
+                        <span className="select-none font-bold w-3">{prefix}</span>
+                        <span className="whitespace-pre-wrap flex-1">{line.text}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
     </div>
   )
 }

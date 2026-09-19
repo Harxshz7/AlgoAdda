@@ -3,6 +3,8 @@ package com.algoadda.core.listing;
 import com.algoadda.core.user.User;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -17,10 +19,12 @@ public class ListingView {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "listing_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Listing listing;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "viewer_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User viewer;
 
     @CreationTimestamp

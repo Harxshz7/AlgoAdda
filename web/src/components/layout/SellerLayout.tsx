@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { Button, LogoIcon } from '../ui'
-import { LayoutDashboard, PlusCircle, LogOut } from 'lucide-react'
+import { LayoutDashboard, PlusCircle, LogOut, BarChart2 } from 'lucide-react'
 
 export const SellerLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth()
@@ -47,6 +47,17 @@ export const SellerLayout: React.FC<{ children: React.ReactNode }> = ({ children
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   <span>Dashboard</span>
+                </Button>
+              </Link>
+
+              <Link to="/seller/analytics">
+                <Button
+                  variant={isActive('/seller/analytics') ? 'primary' : 'ghost'}
+                  size="sm"
+                  className="gap-1.5"
+                >
+                  <BarChart2 className="w-4 h-4" />
+                  <span>Analytics</span>
                 </Button>
               </Link>
 

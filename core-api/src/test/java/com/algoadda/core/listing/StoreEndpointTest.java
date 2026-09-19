@@ -61,6 +61,9 @@ class StoreEndpointTest {
     private ListingRepository listingRepository;
 
     @Autowired
+    private ListingViewRepository listingViewRepository;
+
+    @Autowired
     private BotService botService;
 
     @Autowired
@@ -74,6 +77,7 @@ class StoreEndpointTest {
 
     @BeforeEach
     void setUp() {
+        listingViewRepository.deleteAll();
         listingRepository.deleteAll();
         complianceCheckRepository.deleteAll();
         backtestJobRepository.deleteAll();
