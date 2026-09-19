@@ -46,6 +46,9 @@ class OrderServiceEmailIntegrationTest {
     @Mock
     private EmailService emailService;
 
+    @Mock
+    private SubscriptionService subscriptionService;
+
     private OrderService orderService;
 
     @BeforeEach
@@ -58,7 +61,8 @@ class OrderServiceEmailIntegrationTest {
                 userRepository,
                 cartService,
                 razorpayService,
-                emailService);
+                emailService,
+                subscriptionService);
     }
 
     @Test

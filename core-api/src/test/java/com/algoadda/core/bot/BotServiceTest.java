@@ -56,6 +56,9 @@ class BotServiceTest {
     @Mock
     private ComplianceService complianceService;
 
+    @Mock
+    private com.algoadda.core.order.RazorpayService razorpayService;
+
     private BotService botService;
 
     @BeforeEach
@@ -68,7 +71,8 @@ class BotServiceTest {
             listingRepository,
             userRepository,
             s3StorageService,
-            complianceService
+            complianceService,
+            razorpayService
         );
     }
 
