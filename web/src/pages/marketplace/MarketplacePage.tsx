@@ -296,7 +296,7 @@ export const MarketplacePage: React.FC = () => {
 
           {/* Pagination Controls */}
           {listingsPage.totalPages > 1 && (
-            <div className="flex items-center justify-between pt-6 border-t border-[#DED8CF]/50">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-[#DED8CF]/50">
               <span className="text-sm font-body text-[#78786C]">
                 Showing page <strong className="text-[#2C2C24]">{page + 1}</strong> of{' '}
                 <strong className="text-[#2C2C24]">{listingsPage.totalPages}</strong> ({listingsPage.totalElements} total algorithms)

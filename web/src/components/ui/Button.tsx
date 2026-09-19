@@ -20,7 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   // Sizing — h-12 default meets 48px minimum touch target
   const sizeStyles = {
-    sm: 'h-10 px-5 text-sm gap-1.5',
+    sm: 'h-11 sm:h-10 px-4 sm:px-5 text-sm gap-1.5',
     md: 'h-12 px-8 text-sm gap-2',
     lg: 'h-14 px-10 text-base gap-2.5',
   }[size]

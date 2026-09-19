@@ -136,7 +136,7 @@ export const CartPage: React.FC = () => {
           {/* Cart Items List */}
           <div className="lg:col-span-2 space-y-3">
             {items.map((item) => (
-              <Card key={item.id} className="p-4 flex items-center justify-between gap-4 overflow-hidden min-w-0">
+              <Card key={item.id} className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 overflow-hidden min-w-0">
                 <div className="space-y-1 min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2 min-w-0">
                     <h3 className="font-heading font-bold text-base text-[#2C2C24] truncate min-w-0">
@@ -157,7 +157,7 @@ export const CartPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 shrink-0">
+                <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#DED8CF]/40">
                   <span className="font-heading font-bold text-lg text-[#2C2C24]">
                     ₹{item.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </span>

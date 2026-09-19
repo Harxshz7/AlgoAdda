@@ -81,14 +81,14 @@ export const PublicSellerProfilePage: React.FC = () => {
       </div>
 
       {/* Seller Header Banner Card */}
-      <Card className="p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-        <div className="flex items-center gap-5">
-          <div className="w-16 h-16 rounded-full bg-[#5D7052] flex items-center justify-center text-white text-2xl font-heading font-bold shadow-md">
+      <Card className="p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="flex items-center gap-4 sm:gap-5">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#5D7052] flex items-center justify-center text-white text-xl sm:text-2xl font-heading font-bold shadow-md shrink-0">
             {profile.displayName.substring(0, 2).toUpperCase()}
           </div>
           <div className="flex flex-col gap-1">
             <div className="flex flex-wrap items-center gap-2 min-w-0">
-              <h1 className="text-2xl font-heading font-extrabold text-[#2C2C24]">
+              <h1 className="text-xl sm:text-2xl font-heading font-extrabold text-[#2C2C24]">
                 {profile.displayName}
               </h1>
               <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#5D7052]/10 text-[#5D7052]">
@@ -106,7 +106,7 @@ export const PublicSellerProfilePage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 self-end sm:self-center">
+        <div className="flex items-center gap-3 self-start sm:self-center">
           <div className="p-3.5 rounded-2xl bg-[#FDFCF8] border border-[#DED8CF] text-center min-w-[120px]">
             <span className="text-xs text-[#78786C] uppercase font-semibold block">Active Bots</span>
             <span className="text-2xl font-heading font-extrabold text-[#5D7052]">

@@ -282,7 +282,7 @@ export const AboutPage: React.FC = () => {
       </div>
 
       {/* CTA Row */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-8 rounded-2xl bg-[#2C2C24] text-white">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 sm:p-8 rounded-2xl bg-[#2C2C24] text-white">
         <div className="flex flex-col gap-1">
           <h3 className="font-heading font-bold text-xl text-white">
             Explore Verified Algorithms

@@ -142,7 +142,7 @@ export const BotDetailPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <Button variant="secondary" size="md" onClick={fetchData} disabled={isLoading} className="gap-2">
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
             <span>POLL STATUS</span>

@@ -61,7 +61,7 @@ export const SellerOnboardPage: React.FC = () => {
           </p>
         </div>
 
-        <Card className="p-8">
+        <Card className="p-6 sm:p-8">
           {error && (
             <div className="mb-6 p-4 rounded-2xl bg-[#A85448]/8 border border-[#A85448]/25 flex items-start gap-3">
               <AlertTriangle className="w-4 h-4 text-[#A85448] shrink-0 mt-0.5" />

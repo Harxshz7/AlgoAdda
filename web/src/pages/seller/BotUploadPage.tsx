@@ -243,9 +243,9 @@ export const BotUploadPage: React.FC = () => {
         </Card>
 
         {/* Submit Bar */}
-        <div className="flex items-center justify-between p-6 rounded-2xl bg-[#e0e5ec] shadow-chassis-card border border-white/60">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-6 rounded-2xl bg-[#e0e5ec] shadow-chassis-card border border-white/60">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-[#2ed573]" />
+            <CheckCircle2 className="w-4 h-4 text-[#2ed573] shrink-0" />
             <span className="text-xs font-technical text-[#4a5568]">
               Ready for S3 encryption & Vectorbt backtest execution
             </span>
@@ -256,7 +256,7 @@ export const BotUploadPage: React.FC = () => {
             variant="primary"
             size="lg"
             disabled={isSubmitting}
-            className="gap-2"
+            className="gap-2 w-full sm:w-auto justify-center"
           >
             <UploadCloud className={`w-4 h-4 ${isSubmitting ? 'animate-bounce' : ''}`} />
             <span>{isSubmitting ? 'INGESTING & SIMULATING...' : 'PUBLISH STRATEGY (v1.0.0)'}</span>

@@ -289,7 +289,7 @@ export const StoreListingDetailPage: React.FC = () => {
         </div>
 
         {/* Pricing & Buy CTA */}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
           <div className="flex flex-col items-end leading-tight">
             <span className="text-2xl font-heading font-black text-[#2C2C24]">
               ₹{listing.price.toLocaleString()}

@@ -74,7 +74,7 @@ export const SellerDashboardPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <Button variant="secondary" size="md" onClick={fetchBots} disabled={isLoading} icon={<RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />}>
             Refresh
           </Button>
@@ -112,7 +112,7 @@ export const SellerDashboardPage: React.FC = () => {
         </div>
       ) : bots.length === 0 ? (
         /* Empty state */
-        <Card className="p-12 flex flex-col items-center justify-center text-center gap-4">
+        <Card className="p-8 sm:p-12 flex flex-col items-center justify-center text-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-[#5D7052]/10 flex items-center justify-center text-[#5D7052]">
             <BotIcon className="w-8 h-8" />
           </div>

@@ -135,7 +135,7 @@ export const AdminReportsPage: React.FC = () => {
       )}
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-2 border-b border-[#DED8CF]">
+      <div className="flex items-center gap-2 border-b border-[#DED8CF] overflow-x-auto">
         {(['PENDING', 'RESOLVED', 'ALL'] as const).map((status) => (
           <button
             key={status}

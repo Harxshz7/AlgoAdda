@@ -18,7 +18,7 @@ export const BuyerDashboardPage: React.FC = () => {
   return (
     <div className="flex flex-col gap-8">
       {/* Welcome Banner Card */}
-      <Card className="p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <Card className="p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div className="flex items-center gap-5">
           <div className="w-14 h-14 rounded-full bg-[#5D7052] flex items-center justify-center text-white text-xl font-heading font-bold shadow-md">
             {user?.email ? user.email.substring(0, 2).toUpperCase() : 'BY'}
