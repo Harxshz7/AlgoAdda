@@ -58,6 +58,12 @@ public class SubscriptionIntegrationTest {
     private OrderItemRepository orderItemRepository;
 
     @Autowired
+    private com.algoadda.core.compliance.ComplianceCheckRepository complianceCheckRepository;
+
+    @Autowired
+    private com.algoadda.core.user.SellerProfileRepository sellerProfileRepository;
+
+    @Autowired
     private SubscriptionService subscriptionService;
 
     @Autowired
@@ -78,8 +84,10 @@ public class SubscriptionIntegrationTest {
         orderRepository.deleteAll();
         subscriptionRepository.deleteAll();
         listingRepository.deleteAll();
+        complianceCheckRepository.deleteAll();
         botVersionRepository.deleteAll();
         botRepository.deleteAll();
+        sellerProfileRepository.deleteAll();
         userRepository.deleteAll();
 
         seller = userRepository.save(User.builder()
@@ -292,7 +300,8 @@ public class SubscriptionIntegrationTest {
             "  }\n" +
             "}";
 
-        orderService.processWebhook(paymentCapturedPayload, null);
+        String sig = calculateSignature(paymentCapturedPayload);
+        orderService.processWebhook(paymentCapturedPayload, sig);
 
         Order processedOrder = orderRepository.findById(order.getId()).orElseThrow();
         assertThat(processedOrder.getStatus()).isEqualTo(OrderStatus.PAID);
@@ -302,5 +311,23 @@ public class SubscriptionIntegrationTest {
         License oneTimeLicense = licenses.get(0);
         assertThat(oneTimeLicense.isPerpetual()).isTrue();
         assertThat(oneTimeLicense.isActive()).isTrue();
+    }
+
+    private String calculateSignature(String payloadBody) {
+        try {
+            javax.crypto.Mac hmacSHA256 = javax.crypto.Mac.getInstance("HmacSHA256");
+            javax.crypto.spec.SecretKeySpec secretKey = new javax.crypto.spec.SecretKeySpec("dummyWebhookSecret".getBytes(java.nio.charset.StandardCharsets.UTF_8), "HmacSHA256");
+            hmacSHA256.init(secretKey);
+            byte[] hash = hmacSHA256.doFinal(payloadBody.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

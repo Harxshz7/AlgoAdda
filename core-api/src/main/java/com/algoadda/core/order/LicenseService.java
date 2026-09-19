@@ -20,7 +20,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@SuppressWarnings("null")
 public class LicenseService {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseService.class);

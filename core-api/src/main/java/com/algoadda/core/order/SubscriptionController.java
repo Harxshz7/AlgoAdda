@@ -15,7 +15,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/subscriptions")
-@SuppressWarnings("null")
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
