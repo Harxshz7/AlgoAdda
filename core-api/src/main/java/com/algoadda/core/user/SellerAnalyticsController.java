@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/sellers")
+@SuppressWarnings("null")
 public class SellerAnalyticsController {
 
     private final SellerAnalyticsService sellerAnalyticsService;

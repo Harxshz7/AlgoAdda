@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Service
+@SuppressWarnings("null")
 public class SellerAnalyticsService {
 
     private final BotRepository botRepository;

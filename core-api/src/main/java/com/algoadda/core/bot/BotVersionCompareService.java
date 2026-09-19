@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
+@SuppressWarnings("null")
 public class BotVersionCompareService {
 
     private static final Logger log = LoggerFactory.getLogger(BotVersionCompareService.class);
