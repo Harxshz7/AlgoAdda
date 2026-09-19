@@ -20,6 +20,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@SuppressWarnings("null")
 public class LicenseService {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseService.class);
@@ -54,7 +55,18 @@ public class LicenseService {
                 .orElse(botVersion.getBot().getSeller().getEmail());
 
             boolean isOfficial = false;
-            if (license.getOrder() != null) {
+            String licenseType = "ONE_TIME";
+            UUID subId = null;
+            String subStatus = null;
+
+            if (license.getSubscription() != null) {
+                subId = license.getSubscription().getId();
+                subStatus = license.getSubscription().getStatus().name();
+                licenseType = "SUBSCRIPTION";
+                if (license.getSubscription().getListing() != null) {
+                    isOfficial = license.getSubscription().getListing().isOfficial();
+                }
+            } else if (license.getOrder() != null) {
                 List<OrderItem> items = orderItemRepository.findByOrderId(license.getOrder().getId());
                 boolean officialInItems = items.stream().anyMatch(item -> item.getListing() != null && item.getListing().isOfficial());
                 if (officialInItems) {
@@ -67,6 +79,9 @@ public class LicenseService {
             return new BuyerLicenseResponse(
                 license.getId(),
                 license.getOrder() != null ? license.getOrder().getId() : null,
+                subId,
+                subStatus,
+                licenseType,
                 botVersion.getBot().getId(),
                 botVersion.getBot().getName(),
                 botVersion.getVersionNumber(),

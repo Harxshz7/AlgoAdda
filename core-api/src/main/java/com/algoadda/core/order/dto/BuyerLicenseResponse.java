@@ -7,6 +7,9 @@ public class BuyerLicenseResponse {
 
     private UUID licenseId;
     private UUID orderId;
+    private UUID subscriptionId;
+    private String subscriptionStatus;
+    private String licenseType;
     private UUID botId;
     private String botName;
     private String versionNumber;
@@ -22,8 +25,15 @@ public class BuyerLicenseResponse {
     }
 
     public BuyerLicenseResponse(UUID licenseId, UUID orderId, UUID botId, String botName, String versionNumber, String sellerName, boolean isOfficial, Instant issuedAt, Instant expiresAt, boolean isPerpetual, boolean isActive, boolean revoked) {
+        this(licenseId, orderId, null, null, "ONE_TIME", botId, botName, versionNumber, sellerName, isOfficial, issuedAt, expiresAt, isPerpetual, isActive, revoked);
+    }
+
+    public BuyerLicenseResponse(UUID licenseId, UUID orderId, UUID subscriptionId, String subscriptionStatus, String licenseType, UUID botId, String botName, String versionNumber, String sellerName, boolean isOfficial, Instant issuedAt, Instant expiresAt, boolean isPerpetual, boolean isActive, boolean revoked) {
         this.licenseId = licenseId;
         this.orderId = orderId;
+        this.subscriptionId = subscriptionId;
+        this.subscriptionStatus = subscriptionStatus;
+        this.licenseType = licenseType;
         this.botId = botId;
         this.botName = botName;
         this.versionNumber = versionNumber;
@@ -50,6 +60,30 @@ public class BuyerLicenseResponse {
 
     public void setOrderId(UUID orderId) {
         this.orderId = orderId;
+    }
+
+    public UUID getSubscriptionId() {
+        return subscriptionId;
+    }
+
+    public void setSubscriptionId(UUID subscriptionId) {
+        this.subscriptionId = subscriptionId;
+    }
+
+    public String getSubscriptionStatus() {
+        return subscriptionStatus;
+    }
+
+    public void setSubscriptionStatus(String subscriptionStatus) {
+        this.subscriptionStatus = subscriptionStatus;
+    }
+
+    public String getLicenseType() {
+        return licenseType;
+    }
+
+    public void setLicenseType(String licenseType) {
+        this.licenseType = licenseType;
     }
 
     public UUID getBotId() {

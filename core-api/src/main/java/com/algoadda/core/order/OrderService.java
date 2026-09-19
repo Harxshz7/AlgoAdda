@@ -39,6 +39,7 @@ public class OrderService {
     private final CartService cartService;
     private final RazorpayService razorpayService;
     private final EmailService emailService;
+    private final SubscriptionService subscriptionService;
 
     public OrderService(
         OrderRepository orderRepository,
@@ -47,7 +48,8 @@ public class OrderService {
         UserRepository userRepository,
         CartService cartService,
         RazorpayService razorpayService,
-        EmailService emailService
+        EmailService emailService,
+        SubscriptionService subscriptionService
     ) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
@@ -56,6 +58,7 @@ public class OrderService {
         this.cartService = cartService;
         this.razorpayService = razorpayService;
         this.emailService = emailService;
+        this.subscriptionService = subscriptionService;
     }
 
     @Transactional
@@ -147,6 +150,11 @@ public class OrderService {
         JSONObject root = new JSONObject(payloadBody);
         String event = root.optString("event");
         log.info("Razorpay webhook event received: {}", event);
+
+        if (event != null && event.startsWith("subscription.")) {
+            subscriptionService.processSubscriptionWebhook(event, root);
+            return;
+        }
 
         String razorpayOrderId = extractRazorpayOrderId(root);
         if (razorpayOrderId == null || razorpayOrderId.isBlank()) {

@@ -37,6 +37,7 @@ public class BotService {
     private final com.algoadda.core.user.UserRepository userRepository;
     private final S3StorageService s3StorageService;
     private final ComplianceService complianceService;
+    private final com.algoadda.core.order.RazorpayService razorpayService;
 
     public BotService(
         BotRepository botRepository,
@@ -46,7 +47,8 @@ public class BotService {
         ListingRepository listingRepository,
         com.algoadda.core.user.UserRepository userRepository,
         S3StorageService s3StorageService,
-        @Lazy ComplianceService complianceService
+        @Lazy ComplianceService complianceService,
+        com.algoadda.core.order.RazorpayService razorpayService
     ) {
         this.botRepository = botRepository;
         this.botVersionRepository = botVersionRepository;
@@ -56,6 +58,7 @@ public class BotService {
         this.userRepository = userRepository;
         this.s3StorageService = s3StorageService;
         this.complianceService = complianceService;
+        this.razorpayService = razorpayService;
     }
 
     @Transactional
@@ -202,10 +205,21 @@ public class BotService {
             && bot.getSeller().getEmail() != null
             && bot.getSeller().getEmail().equalsIgnoreCase(officialSellerEmail);
 
+        LicenseType licenseType = request.getLicenseType() != null ? request.getLicenseType() : LicenseType.ONE_TIME;
+        String billingInterval = null;
+        String planId = null;
+
+        if (licenseType == LicenseType.SUBSCRIPTION) {
+            billingInterval = "MONTHLY";
+            planId = razorpayService.createPlan(request.getPrice(), "Subscription - " + bot.getName());
+        }
+
         Listing listing = Listing.builder()
             .botVersion(version)
             .price(request.getPrice())
-            .licenseType(request.getLicenseType() != null ? request.getLicenseType() : LicenseType.ONE_TIME)
+            .licenseType(licenseType)
+            .billingInterval(billingInterval)
+            .razorpayPlanId(planId)
             .official(isOfficial)
             .active(true)
             .build();
