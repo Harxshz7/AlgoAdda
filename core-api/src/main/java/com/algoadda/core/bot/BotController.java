@@ -104,6 +104,12 @@ public class BotController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/bots/{botId}/versions")
+    public ResponseEntity<List<BotVersionResponse>> getBotVersions(@PathVariable UUID botId) {
+        List<BotVersionResponse> responses = botService.getBotVersions(botId);
+        return ResponseEntity.ok(responses);
+    }
+
     @GetMapping("/bots/{botId}/versions/{versionId}/backtest")
     public ResponseEntity<BacktestResultResponse> getBacktestResult(
         @PathVariable UUID botId,
