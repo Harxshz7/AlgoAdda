@@ -71,6 +71,17 @@ public class GlobalExceptionHandler {
         ));
     }
 
+    @ExceptionHandler(com.algoadda.core.ratelimit.RateLimitExceededException.class)
+    public ResponseEntity<Map<String, Object>> handleRateLimitExceeded(com.algoadda.core.ratelimit.RateLimitExceededException ex) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+            .header("Retry-After", String.valueOf(ex.getRetryAfterSeconds()))
+            .body(Map.of(
+                "error", "Too Many Requests",
+                "message", ex.getMessage(),
+                "retryAfterSeconds", ex.getRetryAfterSeconds()
+            ));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(

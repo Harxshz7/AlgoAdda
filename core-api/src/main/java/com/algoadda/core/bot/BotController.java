@@ -3,6 +3,7 @@ package com.algoadda.core.bot;
 import com.algoadda.core.bot.dto.*;
 import com.algoadda.core.bot.service.BotService;
 import com.algoadda.core.config.UserPrincipal;
+import com.algoadda.core.ratelimit.RateLimiterService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +20,11 @@ import java.util.UUID;
 public class BotController {
 
     private final BotService botService;
+    private final RateLimiterService rateLimiterService;
 
-    public BotController(BotService botService) {
+    public BotController(BotService botService, RateLimiterService rateLimiterService) {
         this.botService = botService;
+        this.rateLimiterService = rateLimiterService;
     }
 
     @PostMapping(value = "/bots", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -38,6 +41,8 @@ public class BotController {
         @RequestParam(value = "dateRangeEnd", required = false) Instant dateRangeEnd,
         @RequestPart("file") MultipartFile file
     ) {
+        rateLimiterService.tryConsume(principal.getId());
+
         BotUploadRequest request = BotUploadRequest.builder()
             .name(name)
             .description(description)
@@ -65,6 +70,8 @@ public class BotController {
         @RequestParam(value = "dateRangeEnd", required = false) Instant dateRangeEnd,
         @RequestPart("file") MultipartFile file
     ) {
+        rateLimiterService.tryConsume(principal.getId());
+
         BotVersionUploadRequest request = BotVersionUploadRequest.builder()
             .disclosedLogic(disclosedLogic)
             .changelog(changelog)

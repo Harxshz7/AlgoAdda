@@ -30,3 +30,7 @@ algoadda:
     connect-timeout-ms: 1000
     read-timeout-ms: 2000
     max-retries: 1
+  rate-limit:
+    bot-upload:
+      capacity: 10
+      window-minutes: 60

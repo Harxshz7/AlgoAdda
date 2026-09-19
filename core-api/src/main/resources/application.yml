@@ -49,6 +49,10 @@ algoadda:
     key-id: ${RAZORPAY_KEY_ID:rzp_test_dummyKeyId}
     key-secret: ${RAZORPAY_KEY_SECRET:dummyKeySecret}
     webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:dummyWebhookSecret}
+  rate-limit:
+    bot-upload:
+      capacity: ${RATE_LIMIT_BOT_UPLOAD_CAPACITY:10}
+      window-minutes: ${RATE_LIMIT_BOT_UPLOAD_WINDOW_MINUTES:60}
 
 logging:
   level:
