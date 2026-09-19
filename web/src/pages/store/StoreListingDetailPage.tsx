@@ -4,7 +4,7 @@ import { api } from '../../lib/api'
 import type { ListingDetail, BacktestMetrics, EquityPoint, ReportReason } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
-import { Button, Card, MetricGauge, EquityCurveChart, OfficialBadge, RiskBadge } from '../../components/ui'
+import { Button, Card, MetricGauge, EquityCurveChart, OfficialBadge, RiskBadge, StarRating, ReviewsSection } from '../../components/ui'
 import {
   ArrowLeft,
   ShieldCheck,
@@ -211,6 +211,11 @@ export const StoreListingDetailPage: React.FC = () => {
               </span>
               <OfficialBadge size="md" />
               {listing.riskLabel && <RiskBadge riskLabel={listing.riskLabel} size="md" />}
+              {listing.averageRating ? (
+                <div className="flex items-center gap-1.5 bg-[#C18C5D]/10 border border-[#C18C5D]/30 px-2 py-0.5 rounded-full">
+                  <StarRating rating={listing.averageRating} count={listing.reviewCount} size="xs" />
+                </div>
+              ) : null}
             </div>
             <span className="text-xs text-[#78786C]">
               Official strategy by{' '}
@@ -501,6 +506,9 @@ export const StoreListingDetailPage: React.FC = () => {
           </div>
         )}
       </Card>
+
+      {/* Verified Buyer Ratings & Reviews Section */}
+      <ReviewsSection botId={listing.botId} />
 
       {/* Risk Disclaimer Box */}
       <div className="p-5 rounded-2xl bg-[#A85448]/10 border border-[#A85448]/25 flex items-start gap-3">

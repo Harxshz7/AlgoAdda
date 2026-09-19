@@ -12,4 +12,6 @@ public interface LicenseRepository extends JpaRepository<License, UUID> {
     List<License> findByBotVersionId(UUID botVersionId);
     List<License> findByOrderId(UUID orderId);
     List<License> findBySubscriptionId(UUID subscriptionId);
+    boolean existsByBuyerIdAndBotVersion_Bot_IdAndRevokedFalse(UUID buyerId, UUID botId);
+    List<License> findByBuyerIdAndBotVersion_Bot_Id(UUID buyerId, UUID botId);
 }

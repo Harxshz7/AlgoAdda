@@ -24,6 +24,8 @@ public class ListingSummaryResponse {
     private Double sharpeRatio;
     private RiskLabel riskLabel;
     private boolean isOfficial;
+    private Double averageRating;
+    private Long reviewCount;
     private Instant createdAt;
 
     public ListingSummaryResponse() {
@@ -45,6 +47,8 @@ public class ListingSummaryResponse {
         Double sharpeRatio,
         RiskLabel riskLabel,
         boolean isOfficial,
+        Double averageRating,
+        Long reviewCount,
         Instant createdAt
     ) {
         this.listingId = listingId;
@@ -62,6 +66,8 @@ public class ListingSummaryResponse {
         this.sharpeRatio = sharpeRatio;
         this.riskLabel = riskLabel;
         this.isOfficial = isOfficial;
+        this.averageRating = averageRating;
+        this.reviewCount = reviewCount;
         this.createdAt = createdAt;
     }
 
@@ -85,6 +91,8 @@ public class ListingSummaryResponse {
         private Double sharpeRatio;
         private RiskLabel riskLabel;
         private boolean isOfficial;
+        private Double averageRating;
+        private Long reviewCount;
         private Instant createdAt;
 
         public ListingSummaryResponseBuilder listingId(UUID listingId) {
@@ -162,6 +170,16 @@ public class ListingSummaryResponse {
             return this;
         }
 
+        public ListingSummaryResponseBuilder averageRating(Double averageRating) {
+            this.averageRating = averageRating;
+            return this;
+        }
+
+        public ListingSummaryResponseBuilder reviewCount(Long reviewCount) {
+            this.reviewCount = reviewCount;
+            return this;
+        }
+
         public ListingSummaryResponseBuilder createdAt(Instant createdAt) {
             this.createdAt = createdAt;
             return this;
@@ -171,7 +189,7 @@ public class ListingSummaryResponse {
             return new ListingSummaryResponse(
                 listingId, botId, botVersionId, name, description, strategyType,
                 price, licenseType, sellerId, sellerDisplayName, winRate, maxDrawdown,
-                sharpeRatio, riskLabel, isOfficial, createdAt
+                sharpeRatio, riskLabel, isOfficial, averageRating, reviewCount, createdAt
             );
         }
     }
@@ -294,6 +312,22 @@ public class ListingSummaryResponse {
 
     public void setOfficial(boolean official) {
         isOfficial = official;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public Long getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(Long reviewCount) {
+        this.reviewCount = reviewCount;
     }
 
     public Instant getCreatedAt() {

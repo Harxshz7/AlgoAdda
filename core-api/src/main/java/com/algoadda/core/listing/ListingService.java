@@ -31,6 +31,7 @@ public class ListingService {
     private final SellerProfileRepository sellerProfileRepository;
     private final ListingViewRepository listingViewRepository;
     private final UserRepository userRepository;
+    private final com.algoadda.core.review.ReviewRepository reviewRepository;
     private final ObjectMapper objectMapper;
 
     public ListingService(
@@ -39,6 +40,7 @@ public class ListingService {
         SellerProfileRepository sellerProfileRepository,
         ListingViewRepository listingViewRepository,
         UserRepository userRepository,
+        com.algoadda.core.review.ReviewRepository reviewRepository,
         ObjectMapper objectMapper
     ) {
         this.listingRepository = listingRepository;
@@ -46,6 +48,7 @@ public class ListingService {
         this.sellerProfileRepository = sellerProfileRepository;
         this.listingViewRepository = listingViewRepository;
         this.userRepository = userRepository;
+        this.reviewRepository = reviewRepository;
         this.objectMapper = objectMapper;
     }
 
@@ -147,6 +150,10 @@ public class ListingService {
                 ? backtest.getRiskLabel()
                 : (backtest != null ? RiskClassifier.classify(backtest.getMetrics()) : null);
 
+            Double avgRating = reviewRepository.getAverageRatingByBotId(bot.getId());
+            Double roundedAvgRating = avgRating != null && avgRating > 0.0 ? Math.round(avgRating * 10.0) / 10.0 : null;
+            Long reviewCount = reviewRepository.countByBotId(bot.getId());
+
             summaries.add(ListingSummaryResponse.builder()
                 .listingId(listing.getId())
                 .botId(bot.getId())
@@ -163,6 +170,8 @@ public class ListingService {
                 .sharpeRatio(sharpeRatio)
                 .riskLabel(riskLabel)
                 .isOfficial(listing.isOfficial())
+                .averageRating(roundedAvgRating)
+                .reviewCount(reviewCount)
                 .createdAt(listing.getCreatedAt())
                 .build());
         }
@@ -180,6 +189,9 @@ public class ListingService {
                 case "winrate":
                 case "win_rate":
                     summaries.sort(Comparator.comparing(ListingSummaryResponse::getWinRate, Comparator.nullsLast(Comparator.reverseOrder())));
+                    break;
+                case "rating":
+                    summaries.sort(Comparator.comparing(ListingSummaryResponse::getAverageRating, Comparator.nullsLast(Comparator.reverseOrder())));
                     break;
                 case "newest":
                 default:
@@ -266,6 +278,10 @@ public class ListingService {
             ? backtest.getRiskLabel()
             : (backtest != null ? RiskClassifier.classify(backtest.getMetrics()) : null);
 
+        Double avgRating = reviewRepository.getAverageRatingByBotId(bot.getId());
+        Double roundedAvgRating = avgRating != null && avgRating > 0.0 ? Math.round(avgRating * 10.0) / 10.0 : null;
+        Long reviewCount = reviewRepository.countByBotId(bot.getId());
+
         return ListingDetailResponse.builder()
             .listingId(listing.getId())
             .botId(bot.getId())
@@ -286,6 +302,8 @@ public class ListingService {
             .riskLabel(riskLabel)
             .reportFileKey(backtest != null ? backtest.getReportFileKey() : null)
             .isOfficial(listing.isOfficial())
+            .averageRating(roundedAvgRating)
+            .reviewCount(reviewCount)
             .createdAt(listing.getCreatedAt())
             .build();
     }

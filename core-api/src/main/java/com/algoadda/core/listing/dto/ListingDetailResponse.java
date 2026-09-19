@@ -28,6 +28,8 @@ public class ListingDetailResponse {
     private RiskLabel riskLabel;
     private String reportFileKey;
     private boolean isOfficial;
+    private Double averageRating;
+    private Long reviewCount;
     private Instant createdAt;
 
     public ListingDetailResponse() {
@@ -53,6 +55,8 @@ public class ListingDetailResponse {
         RiskLabel riskLabel,
         String reportFileKey,
         boolean isOfficial,
+        Double averageRating,
+        Long reviewCount,
         Instant createdAt
     ) {
         this.listingId = listingId;
@@ -74,6 +78,8 @@ public class ListingDetailResponse {
         this.riskLabel = riskLabel;
         this.reportFileKey = reportFileKey;
         this.isOfficial = isOfficial;
+        this.averageRating = averageRating;
+        this.reviewCount = reviewCount;
         this.createdAt = createdAt;
     }
 
@@ -101,6 +107,8 @@ public class ListingDetailResponse {
         private RiskLabel riskLabel;
         private String reportFileKey;
         private boolean isOfficial;
+        private Double averageRating;
+        private Long reviewCount;
         private Instant createdAt;
 
         public ListingDetailResponseBuilder listingId(UUID listingId) {
@@ -198,6 +206,16 @@ public class ListingDetailResponse {
             return this;
         }
 
+        public ListingDetailResponseBuilder averageRating(Double averageRating) {
+            this.averageRating = averageRating;
+            return this;
+        }
+
+        public ListingDetailResponseBuilder reviewCount(Long reviewCount) {
+            this.reviewCount = reviewCount;
+            return this;
+        }
+
         public ListingDetailResponseBuilder createdAt(Instant createdAt) {
             this.createdAt = createdAt;
             return this;
@@ -207,7 +225,8 @@ public class ListingDetailResponse {
             return new ListingDetailResponse(
                 listingId, botId, botVersionId, name, description, strategyType,
                 price, licenseType, disclosedLogic, riskDisclaimer, sellerId, sellerDisplayName,
-                sellerBio, sellerCreatedAt, methodologyNotes, metrics, riskLabel, reportFileKey, isOfficial, createdAt
+                sellerBio, sellerCreatedAt, methodologyNotes, metrics, riskLabel, reportFileKey, isOfficial,
+                averageRating, reviewCount, createdAt
             );
         }
     }
@@ -362,6 +381,22 @@ public class ListingDetailResponse {
 
     public void setOfficial(boolean official) {
         isOfficial = official;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public Long getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(Long reviewCount) {
+        this.reviewCount = reviewCount;
     }
 
     public Instant getCreatedAt() {

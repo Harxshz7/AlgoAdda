@@ -10,4 +10,6 @@ export * from './EquityCurveChart'
 export * from './OfficialBadge'
 export * from './RiskBadge'
 export * from './LogoIcon'
+export * from './StarRating'
+export * from './ReviewsSection'
 // LedIndicator.tsx now also exports StatusBadge and LedIndicator alias — no import changes needed in pages

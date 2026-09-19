@@ -52,6 +52,7 @@ public class SecurityConfig {
                 })
             )
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/bots/*/reviews", "/api/bots/*/reviews/**").permitAll()
                 .requestMatchers("/api/health", "/api/auth/**", "/api/listings/**", "/api/store/**", "/api/sellers/*", "/api/payments/webhook").permitAll()
                 .anyRequest().authenticated()
             )

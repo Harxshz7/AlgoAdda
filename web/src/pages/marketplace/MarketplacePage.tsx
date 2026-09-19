@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingSummary, PageResponse } from '../../lib/api'
-import { Card, Button, Input, Select, OfficialBadge, RiskBadge } from '../../components/ui'
+import { Card, Button, Input, Select, OfficialBadge, RiskBadge, StarRating } from '../../components/ui'
 import {
   Search,
   Filter,
@@ -244,13 +244,21 @@ export const MarketplacePage: React.FC = () => {
                     <h3 className="font-heading font-bold text-xl text-[#2C2C24] line-clamp-1">
                       {listing.name}
                     </h3>
-                    <Link
-                      to={`/sellers/${listing.sellerId}`}
-                      className="inline-flex items-center gap-1 text-xs text-[#78786C] hover:text-[#5D7052] transition-colors"
-                    >
-                      <User className="w-3.5 h-3.5" />
-                      <span>by <strong className="text-[#2C2C24]">{listing.sellerDisplayName}</strong></span>
-                    </Link>
+                    <div className="flex items-center justify-between gap-2 pt-0.5">
+                      <Link
+                        to={`/sellers/${listing.sellerId}`}
+                        className="inline-flex items-center gap-1 text-xs text-[#78786C] hover:text-[#5D7052] transition-colors truncate"
+                      >
+                        <User className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">by <strong className="text-[#2C2C24]">{listing.sellerDisplayName}</strong></span>
+                      </Link>
+
+                      {listing.averageRating ? (
+                        <StarRating rating={listing.averageRating} count={listing.reviewCount} size="xs" />
+                      ) : (
+                        <span className="text-[11px] text-[#78786C]/70 shrink-0">No reviews yet</span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Description */}

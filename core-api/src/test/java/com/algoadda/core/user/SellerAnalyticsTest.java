@@ -48,6 +48,12 @@ class SellerAnalyticsTest {
     private BacktestResultRepository backtestResultRepository;
 
     @Autowired
+    private com.algoadda.core.order.LicenseRepository licenseRepository;
+
+    @Autowired
+    private com.algoadda.core.review.ReviewRepository reviewRepository;
+
+    @Autowired
     private SellerAnalyticsService sellerAnalyticsService;
 
     private User seller;
@@ -56,6 +62,8 @@ class SellerAnalyticsTest {
 
     @BeforeEach
     void setUp() {
+        reviewRepository.deleteAll();
+        licenseRepository.deleteAll();
         orderItemRepository.deleteAll();
         orderRepository.deleteAll();
         listingViewRepository.deleteAll();
