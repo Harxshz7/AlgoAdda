@@ -6,6 +6,7 @@
 # 1. Java / Spring Boot / Maven (core-api)
 # ------------------------------------------------------------------------------
 **/target/
+target/
 *.class
 *.jar
 *.war
@@ -15,13 +16,14 @@
 *.tar.gz
 *.rar
 core-api/.mvn/wrapper/maven-wrapper.jar
-core-api/.maven/
+**/.maven/
 .mtj.tmp/
 
 # ------------------------------------------------------------------------------
 # 2. Python / FastAPI / vectorbt (backtest-service)
 # ------------------------------------------------------------------------------
 **/__pycache__/
+__pycache__/
 *.py[cod]
 *$py.class
 *.so
@@ -51,12 +53,15 @@ env/
 ENV/
 env.bak/
 venv.bak/
-backtest-service/venv/
-backtest-service/.venv/
+**/venv/
+**/.venv/
+**/env/
+**/ENV/
 
 # Pytest / Coverage
 .cache
 .pytest_cache/
+**/.pytest_cache/
 .coverage
 .coverage.*
 htmlcov/
@@ -69,8 +74,11 @@ coverage.xml
 # 3. Node / React / TypeScript / Vite (web)
 # ------------------------------------------------------------------------------
 **/node_modules/
+node_modules/
 **/dist/
+dist/
 **/dist-ssr/
+dist-ssr/
 **/build/
 .npm
 *.tsbuildinfo
@@ -89,25 +97,17 @@ lerna-debug.log*
 # 4. Environment & Secrets (.env files)
 # ------------------------------------------------------------------------------
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-web/.env
-web/.env.local
-web/.env.production
-backtest-service/.env
-core-api/.env
-
-# Exception: keep template/example files tracked
+.env.*
+**/.env
+**/.env.*
 !.env.example
-!web/.env.example
-!backtest-service/.env.example
+!**/.env.example
 
 # ------------------------------------------------------------------------------
 # 5. IDEs, Editors & OS Files
 # ------------------------------------------------------------------------------
 .idea/
+**/.idea/
 *.iml
 *.iws
 *.ipr
@@ -130,10 +130,11 @@ Thumbs.db
 [Dd]esktop.ini
 
 # ------------------------------------------------------------------------------
-# 6. Database / Local Storage
+# 6. Database / Local Storage / Artifacts
 # ------------------------------------------------------------------------------
 *.sqlite
 *.sqlite3
 *.db
 local_storage/
 minio_data/
+

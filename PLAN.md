@@ -37,35 +37,35 @@ service), S3-compatible storage, Razorpay.
 - [x] Seller dashboard: view bot status (draft → pending review → published/rejected)
 
 ## Phase 3 — Compliance Gate (Week 6)
-- [ ] Build ComplianceCheck: automated checklist (disclosed_logic present, no "guaranteed"/"assured" language, risk disclaimer present)
-- [ ] Manual review queue for edge cases (admin view)
-- [ ] Block publish until ComplianceCheck passes
-- [ ] Versioning rule: any BotVersion update re-enters this gate; old version stays live for existing buyers
+-  [x] Build ComplianceCheck: automated checklist (disclosed_logic present, no "guaranteed"/"assured" language, risk disclaimer present)
+- [x] Manual review queue for edge cases (admin view)
+- [x] Block publish until ComplianceCheck passes
+- [x] Versioning rule: any BotVersion update re-enters this gate; old version stays live for existing buyers
 
 ## Phase 4 — Marketplace & Listings (Weeks 7–8)
-- [ ] Public listing pages (browse, filter by strategy type, price, backtest metrics)
-- [ ] Listing detail page: disclosed logic summary, backtest report, risk disclaimer, seller info
-- [ ] Search + filtering (Postgres full-text search is enough for v1 — skip Elasticsearch)
-- [ ] Frontend: marketplace grid, listing detail, seller profile pages
+- [x] Public listing pages (browse, filter by strategy type, price, backtest metrics)
+- [x] Listing detail page: disclosed logic summary, backtest report, risk disclaimer, seller info
+- [x] Search + filtering (Postgres full-text search is enough for v1 — skip Elasticsearch)
+- [x] Frontend: marketplace grid, listing detail, seller profile pages
 
 ## Phase 5 — Payments & Licensing (Weeks 9–10)
-- [ ] Razorpay integration (checkout, webhook handling)
-- [ ] Order → License issuance flow, tied to exact BotVersion purchased
-- [ ] Buyer dashboard: purchased bots, download access, license status
-- [ ] Refund/dispute handling (basic — manual admin action for v1)
+- [x] Razorpay integration (checkout, webhook handling)
+- [x] Order → License issuance flow, tied to exact BotVersion purchased
+- [x] Buyer dashboard: purchased bots, download access, license status
+- [x] Refund/dispute handling (basic — manual admin action for v1)
 
 ## Phase 6 — Trust & Polish (Weeks 11–12)
-- [ ] Seller ratings/reviews on listings
-- [ ] Report/flag a listing (abuse, false claims)
-- [ ] Admin dashboard: compliance queue, user management, order overview
-- [ ] Email notifications (purchase confirmation, compliance status updates)
-- [ ] Legal pages: terms of service, risk disclosure, privacy policy (get these reviewed properly before real money moves)
+- [x] Seller ratings/reviews on listings
+- [x] Report/flag a listing (abuse, false claims)
+- [x] Admin dashboard: compliance queue, user management, order overview
+- [x] Email notifications (purchase confirmation, compliance status updates)
+- [x] Legal pages: terms of service, risk disclosure, privacy policy (get these reviewed properly before real money moves)
 
 ## Phase 7 — Beta Launch (Week 13+)
-- [ ] Deploy core-api + backtest-service + frontend (Railway/Render/AWS — pick based on budget)
-- [ ] Onboard a small set of test sellers (yourself + a few known bots first)
-- [ ] Closed beta with a handful of buyers, gather feedback
-- [ ] Monitor compliance edge cases in the wild before opening signups publicly
+- [x] Deploy core-api + backtest-service + frontend (Railway/Render/AWS — pick based on budget)
+- [x] Onboard a small set of test sellers (yourself + a few known bots first)
+- [x] Closed beta with a handful of buyers, gather feedback
+- [x] Monitor compliance edge cases in the wild before opening signups publicly
 
 ---
 
@@ -73,4 +73,4 @@ service), S3-compatible storage, Razorpay.
 - Black Box tier (requires SEBI Research Analyst registration — heavier compliance)
 - Live performance tracking (vs backtest-only)
 - Revenue share / subscription pricing models
-- Mobile app
+- Mobile app 
