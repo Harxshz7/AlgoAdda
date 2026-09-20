@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { PublicSellerProfile } from '../../lib/api'
-import { Card, Button, RiskBadge } from '../../components/ui'
+import { Card, Button, RiskBadge, FavoriteButton } from '../../components/ui'
 import {
   Calendar,
   Store,
@@ -140,9 +140,12 @@ export const PublicSellerProfilePage: React.FC = () => {
                       </span>
                       {listing.riskLabel && <RiskBadge riskLabel={listing.riskLabel} />}
                     </div>
-                    <span className="font-heading font-extrabold text-lg text-[#2C2C24] shrink-0 ml-auto">
-                      ₹{listing.price.toLocaleString()}
-                    </span>
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
+                      <span className="font-heading font-extrabold text-lg text-[#2C2C24]">
+                        ₹{listing.price.toLocaleString()}
+                      </span>
+                      <FavoriteButton botId={listing.botId} isFavorited={listing.isFavorited} size="sm" />
+                    </div>
                   </div>
 
                   {/* Title & Description */}

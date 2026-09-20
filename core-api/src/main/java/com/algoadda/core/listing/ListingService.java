@@ -2,6 +2,7 @@ package com.algoadda.core.listing;
 
 import com.algoadda.core.bot.*;
 import com.algoadda.core.bot.service.RiskClassifier;
+import com.algoadda.core.favorite.FavoriteRepository;
 import com.algoadda.core.listing.dto.*;
 import com.algoadda.core.user.SellerProfile;
 import com.algoadda.core.user.SellerProfileRepository;
@@ -32,6 +33,7 @@ public class ListingService {
     private final ListingViewRepository listingViewRepository;
     private final UserRepository userRepository;
     private final com.algoadda.core.review.ReviewRepository reviewRepository;
+    private final FavoriteRepository favoriteRepository;
     private final ObjectMapper objectMapper;
 
     public ListingService(
@@ -41,6 +43,7 @@ public class ListingService {
         ListingViewRepository listingViewRepository,
         UserRepository userRepository,
         com.algoadda.core.review.ReviewRepository reviewRepository,
+        FavoriteRepository favoriteRepository,
         ObjectMapper objectMapper
     ) {
         this.listingRepository = listingRepository;
@@ -49,6 +52,7 @@ public class ListingService {
         this.listingViewRepository = listingViewRepository;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
+        this.favoriteRepository = favoriteRepository;
         this.objectMapper = objectMapper;
     }
 
@@ -62,7 +66,7 @@ public class ListingService {
         int page,
         int size
     ) {
-        return getPublicListings(q, strategyType, minPrice, maxPrice, sortBy, page, size, null);
+        return getPublicListings(q, strategyType, minPrice, maxPrice, sortBy, page, size, null, null);
     }
 
     @Transactional(readOnly = true)
@@ -76,9 +80,27 @@ public class ListingService {
         int size,
         Boolean officialOnly
     ) {
+        return getPublicListings(q, strategyType, minPrice, maxPrice, sortBy, page, size, officialOnly, null);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<ListingSummaryResponse> getPublicListings(
+        String q,
+        String strategyType,
+        BigDecimal minPrice,
+        BigDecimal maxPrice,
+        String sortBy,
+        int page,
+        int size,
+        Boolean officialOnly,
+        UUID buyerId
+    ) {
         List<Listing> activeListings = listingRepository.findByActiveTrue();
 
-        // Filter by published bot status & criteria
+        Set<UUID> favoritedBotIds = (buyerId != null && favoriteRepository != null)
+            ? favoriteRepository.findBotIdsByBuyerId(buyerId)
+            : Collections.emptySet();
+
         List<ListingSummaryResponse> summaries = new ArrayList<>();
 
         for (Listing listing : activeListings) {
@@ -154,6 +176,8 @@ public class ListingService {
             Double roundedAvgRating = avgRating != null && avgRating > 0.0 ? Math.round(avgRating * 10.0) / 10.0 : null;
             Long reviewCount = reviewRepository.countByBotId(bot.getId());
 
+            boolean isFavorited = favoritedBotIds.contains(bot.getId());
+
             summaries.add(ListingSummaryResponse.builder()
                 .listingId(listing.getId())
                 .botId(bot.getId())
@@ -172,6 +196,7 @@ public class ListingService {
                 .isOfficial(listing.isOfficial())
                 .averageRating(roundedAvgRating)
                 .reviewCount(reviewCount)
+                .isFavorited(isFavorited)
                 .createdAt(listing.getCreatedAt())
                 .build());
         }
@@ -218,11 +243,16 @@ public class ListingService {
 
     @Transactional
     public ListingDetailResponse getListingDetail(UUID listingId) {
-        return getListingDetail(listingId, null);
+        return getListingDetail(listingId, null, null);
     }
 
     @Transactional
     public ListingDetailResponse getListingDetail(UUID listingId, Boolean officialOnly) {
+        return getListingDetail(listingId, officialOnly, null);
+    }
+
+    @Transactional
+    public ListingDetailResponse getListingDetail(UUID listingId, Boolean officialOnly, UUID buyerId) {
         Listing listing = listingRepository.findById(listingId)
             .orElseThrow(() -> new java.util.NoSuchElementException("Listing not found with id: " + listingId));
 
@@ -282,6 +312,10 @@ public class ListingService {
         Double roundedAvgRating = avgRating != null && avgRating > 0.0 ? Math.round(avgRating * 10.0) / 10.0 : null;
         Long reviewCount = reviewRepository.countByBotId(bot.getId());
 
+        boolean isFavorited = (buyerId != null && favoriteRepository != null)
+            ? favoriteRepository.existsByBuyerIdAndBotId(buyerId, bot.getId())
+            : false;
+
         return ListingDetailResponse.builder()
             .listingId(listing.getId())
             .botId(bot.getId())
@@ -304,6 +338,7 @@ public class ListingService {
             .isOfficial(listing.isOfficial())
             .averageRating(roundedAvgRating)
             .reviewCount(reviewCount)
+            .isFavorited(isFavorited)
             .createdAt(listing.getCreatedAt())
             .build();
     }

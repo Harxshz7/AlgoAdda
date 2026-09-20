@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import { Button, LogoIcon } from '../ui'
-import { Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag, Sparkles, Info, ShoppingCart, ShieldAlert, Menu, X } from 'lucide-react'
+import { Store, LayoutDashboard, LogIn, UserPlus, LogOut, ShoppingBag, Sparkles, Info, ShoppingCart, ShieldAlert, Menu, X, Bookmark } from 'lucide-react'
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth()
@@ -98,6 +98,17 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
                     >
                       <ShoppingBag className="w-4 h-4" />
                       <span>My Purchased Bots</span>
+                    </Button>
+                  </Link>
+
+                  <Link to="/buyer/watchlist">
+                    <Button
+                      variant={isActive('/buyer/watchlist') ? 'primary' : 'ghost'}
+                      size="sm"
+                      className="gap-1.5"
+                    >
+                      <Bookmark className="w-4 h-4" />
+                      <span>Watchlist</span>
                     </Button>
                   </Link>
 
@@ -255,16 +266,29 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
               )}
 
               {user?.role === 'BUYER' && (
-                <Link to="/buyer/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant={isActive('/buyer/dashboard') ? 'primary' : 'ghost'}
-                    size="sm"
-                    className="w-full justify-start gap-2 h-11"
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                    <span>My Purchased Bots</span>
-                  </Button>
-                </Link>
+                <>
+                  <Link to="/buyer/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                    <Button
+                      variant={isActive('/buyer/dashboard') ? 'primary' : 'ghost'}
+                      size="sm"
+                      className="w-full justify-start gap-2 h-11"
+                    >
+                      <ShoppingBag className="w-4 h-4" />
+                      <span>My Purchased Bots</span>
+                    </Button>
+                  </Link>
+
+                  <Link to="/buyer/watchlist" onClick={() => setMobileMenuOpen(false)}>
+                    <Button
+                      variant={isActive('/buyer/watchlist') ? 'primary' : 'ghost'}
+                      size="sm"
+                      className="w-full justify-start gap-2 h-11"
+                    >
+                      <Bookmark className="w-4 h-4" />
+                      <span>Watchlist</span>
+                    </Button>
+                  </Link>
+                </>
               )}
 
               {user?.role === 'ADMIN' && (

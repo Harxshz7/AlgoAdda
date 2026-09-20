@@ -26,6 +26,7 @@ public class ListingSummaryResponse {
     private boolean isOfficial;
     private Double averageRating;
     private Long reviewCount;
+    private Boolean isFavorited;
     private Instant createdAt;
 
     public ListingSummaryResponse() {
@@ -49,6 +50,7 @@ public class ListingSummaryResponse {
         boolean isOfficial,
         Double averageRating,
         Long reviewCount,
+        Boolean isFavorited,
         Instant createdAt
     ) {
         this.listingId = listingId;
@@ -68,6 +70,7 @@ public class ListingSummaryResponse {
         this.isOfficial = isOfficial;
         this.averageRating = averageRating;
         this.reviewCount = reviewCount;
+        this.isFavorited = isFavorited;
         this.createdAt = createdAt;
     }
 
@@ -93,6 +96,7 @@ public class ListingSummaryResponse {
         private boolean isOfficial;
         private Double averageRating;
         private Long reviewCount;
+        private Boolean isFavorited;
         private Instant createdAt;
 
         public ListingSummaryResponseBuilder listingId(UUID listingId) {
@@ -180,6 +184,11 @@ public class ListingSummaryResponse {
             return this;
         }
 
+        public ListingSummaryResponseBuilder isFavorited(Boolean isFavorited) {
+            this.isFavorited = isFavorited;
+            return this;
+        }
+
         public ListingSummaryResponseBuilder createdAt(Instant createdAt) {
             this.createdAt = createdAt;
             return this;
@@ -189,7 +198,7 @@ public class ListingSummaryResponse {
             return new ListingSummaryResponse(
                 listingId, botId, botVersionId, name, description, strategyType,
                 price, licenseType, sellerId, sellerDisplayName, winRate, maxDrawdown,
-                sharpeRatio, riskLabel, isOfficial, averageRating, reviewCount, createdAt
+                sharpeRatio, riskLabel, isOfficial, averageRating, reviewCount, isFavorited, createdAt
             );
         }
     }
@@ -328,6 +337,18 @@ public class ListingSummaryResponse {
 
     public void setReviewCount(Long reviewCount) {
         this.reviewCount = reviewCount;
+    }
+
+    public Boolean getIsFavorited() {
+        return isFavorited;
+    }
+
+    public Boolean isFavorited() {
+        return isFavorited;
+    }
+
+    public void setIsFavorited(Boolean isFavorited) {
+        this.isFavorited = isFavorited;
     }
 
     public Instant getCreatedAt() {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { ListingSummary, PageResponse } from '../../lib/api'
-import { Card, Button, Input, Select, OfficialBadge, RiskBadge, StarRating } from '../../components/ui'
+import { Card, Button, Input, Select, OfficialBadge, RiskBadge, StarRating, FavoriteButton } from '../../components/ui'
 import {
   Search,
   Filter,
@@ -231,11 +231,14 @@ export const MarketplacePage: React.FC = () => {
                       {(listing.official || listing.isOfficial) && <OfficialBadge />}
                       {listing.riskLabel && <RiskBadge riskLabel={listing.riskLabel} />}
                     </div>
-                    <div className="flex items-center gap-1 font-heading font-extrabold text-lg text-[#2C2C24] shrink-0 ml-auto">
-                      <span>₹{listing.price.toLocaleString()}</span>
-                      <span className="text-[11px] font-normal text-[#78786C]">
-                        / {listing.licenseType === 'TIMED' ? 'mo' : 'one-time'}
-                      </span>
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
+                      <div className="flex items-center gap-1 font-heading font-extrabold text-lg text-[#2C2C24]">
+                        <span>₹{listing.price.toLocaleString()}</span>
+                        <span className="text-[11px] font-normal text-[#78786C]">
+                          / {listing.licenseType === 'TIMED' ? 'mo' : 'one-time'}
+                        </span>
+                      </div>
+                      <FavoriteButton botId={listing.botId} isFavorited={listing.isFavorited} size="sm" />
                     </div>
                   </div>
 

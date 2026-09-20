@@ -18,6 +18,7 @@ import { StorePage } from './pages/store/StorePage'
 import { StoreListingDetailPage } from './pages/store/StoreListingDetailPage'
 import { PublicSellerProfilePage } from './pages/seller/PublicSellerProfilePage'
 import { BuyerDashboardPage } from './pages/buyer/BuyerDashboardPage'
+import { WatchlistPage } from './pages/buyer/WatchlistPage'
 import { CartPage } from './pages/buyer/CartPage'
 import { AboutPage } from './pages/about/AboutPage'
 import { TermsPage } from './pages/legal/TermsPage'
@@ -120,6 +121,17 @@ export const App: React.FC = () => {
                 <ProtectedRoute requiredRole="BUYER">
                   <PublicLayout>
                     <BuyerDashboardPage />
+                  </PublicLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/buyer/watchlist"
+              element={
+                <ProtectedRoute requiredRole="BUYER">
+                  <PublicLayout>
+                    <WatchlistPage />
                   </PublicLayout>
                 </ProtectedRoute>
               }

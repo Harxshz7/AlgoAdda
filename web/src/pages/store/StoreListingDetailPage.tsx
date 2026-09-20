@@ -4,7 +4,7 @@ import { api } from '../../lib/api'
 import type { ListingDetail, BacktestMetrics, EquityPoint, ReportReason } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
-import { Button, Card, MetricGauge, EquityCurveChart, OfficialBadge, RiskBadge, StarRating, ReviewsSection } from '../../components/ui'
+import { Button, Card, MetricGauge, EquityCurveChart, OfficialBadge, RiskBadge, StarRating, ReviewsSection, FavoriteButton } from '../../components/ui'
 import {
   ArrowLeft,
   ShieldCheck,
@@ -295,13 +295,16 @@ export const StoreListingDetailPage: React.FC = () => {
 
         {/* Pricing & Buy CTA */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
-          <div className="flex flex-col items-end leading-tight">
-            <span className="text-2xl font-heading font-black text-[#2C2C24]">
-              ₹{listing.price.toLocaleString()}
-            </span>
-            <span className="text-xs text-[#78786C]">
-              {listing.licenseType === 'TIMED' ? 'Monthly Subscription' : 'One-Time License'}
-            </span>
+          <div className="flex items-center gap-3">
+            <div className="flex flex-col items-end leading-tight">
+              <span className="text-2xl font-heading font-black text-[#2C2C24]">
+                ₹{listing.price.toLocaleString()}
+              </span>
+              <span className="text-xs text-[#78786C]">
+                {listing.licenseType === 'TIMED' ? 'Monthly Subscription' : 'One-Time License'}
+              </span>
+            </div>
+            <FavoriteButton botId={listing.botId} isFavorited={listing.isFavorited} size="md" />
           </div>
 
           <div className="relative group">

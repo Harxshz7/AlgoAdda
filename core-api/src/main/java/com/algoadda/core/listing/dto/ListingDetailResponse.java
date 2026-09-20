@@ -30,6 +30,7 @@ public class ListingDetailResponse {
     private boolean isOfficial;
     private Double averageRating;
     private Long reviewCount;
+    private Boolean isFavorited;
     private Instant createdAt;
 
     public ListingDetailResponse() {
@@ -57,6 +58,7 @@ public class ListingDetailResponse {
         boolean isOfficial,
         Double averageRating,
         Long reviewCount,
+        Boolean isFavorited,
         Instant createdAt
     ) {
         this.listingId = listingId;
@@ -80,6 +82,7 @@ public class ListingDetailResponse {
         this.isOfficial = isOfficial;
         this.averageRating = averageRating;
         this.reviewCount = reviewCount;
+        this.isFavorited = isFavorited;
         this.createdAt = createdAt;
     }
 
@@ -109,6 +112,7 @@ public class ListingDetailResponse {
         private boolean isOfficial;
         private Double averageRating;
         private Long reviewCount;
+        private Boolean isFavorited;
         private Instant createdAt;
 
         public ListingDetailResponseBuilder listingId(UUID listingId) {
@@ -216,6 +220,11 @@ public class ListingDetailResponse {
             return this;
         }
 
+        public ListingDetailResponseBuilder isFavorited(Boolean isFavorited) {
+            this.isFavorited = isFavorited;
+            return this;
+        }
+
         public ListingDetailResponseBuilder createdAt(Instant createdAt) {
             this.createdAt = createdAt;
             return this;
@@ -226,7 +235,7 @@ public class ListingDetailResponse {
                 listingId, botId, botVersionId, name, description, strategyType,
                 price, licenseType, disclosedLogic, riskDisclaimer, sellerId, sellerDisplayName,
                 sellerBio, sellerCreatedAt, methodologyNotes, metrics, riskLabel, reportFileKey, isOfficial,
-                averageRating, reviewCount, createdAt
+                averageRating, reviewCount, isFavorited, createdAt
             );
         }
     }
@@ -380,7 +389,7 @@ public class ListingDetailResponse {
     }
 
     public void setOfficial(boolean official) {
-        isOfficial = official;
+        this.isOfficial = official;
     }
 
     public Double getAverageRating() {
@@ -397,6 +406,18 @@ public class ListingDetailResponse {
 
     public void setReviewCount(Long reviewCount) {
         this.reviewCount = reviewCount;
+    }
+
+    public Boolean getIsFavorited() {
+        return isFavorited;
+    }
+
+    public Boolean isFavorited() {
+        return isFavorited;
+    }
+
+    public void setIsFavorited(Boolean isFavorited) {
+        this.isFavorited = isFavorited;
     }
 
     public Instant getCreatedAt() {
