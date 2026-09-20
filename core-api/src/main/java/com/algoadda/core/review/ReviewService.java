@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@SuppressWarnings("null")
 @Service
 public class ReviewService {
 
